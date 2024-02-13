@@ -1,0 +1,11 @@
+
+library(afex)
+
+proj_path <- 'C:/Users/isaac/Projects/schemas'
+data_path <- file.path(proj_path, 'metrics', 'core-metrics-prolific-2.csv')
+data_path <- file.path(proj_path, 'metrics', 'twin-metrics-cogflex.csv')
+
+df <- read.csv(data_path)
+
+t.test(df$mean_schematicity ~ df$Condition)
+t.test(df$topic_similarity ~ df$Condition)

@@ -1,0 +1,272 @@
+
+library(afex)
+
+proj_path <- 'C:/Users/isaac/Projects/schemas'
+data_path <- file.path(proj_path, 'metrics', 'core-metrics-prolific-2.csv')
+data_path <- file.path(proj_path, 'metrics', 'core-metrics-cogflex.csv')
+
+df <- read.csv(data_path)
+
+t.test(df$mean_interrelation ~ df$type)
+
+hist(df$ppn_core)
+t.test(df$ppn_core ~ df$type)
+boxplot(df$ppn_core ~ df$type)
+
+plot(df$ppn_core ~ df$core_clust)
+plot(df$ppn_core ~ df$topic_0_mean_relatedness)
+
+df <- subset(df, (type == 'C.' & difficulty < 3) | (type == 'I.' & difficulty > 3))
+
+X <- df[order(df$core_trans), ]$TRANSCRIPTS
+
+t.test(df$core_trans ~ df$type)
+t.test(df$core_clust ~ df$type)
+boxplot(df$core_trans ~ df$type)
+
+hist(df$core_trans)
+hist(df$core_clust)
+hist(df$ppn_core)
+
+plot(df$topic_0_mean_relatedness ~ df$core_trans)
+
+t.test(df$topic_0_mean_relatedness ~ df$type)
+t.test(df$topic_1_mean_relatedness ~ df$type)
+t.test(df$topic_2_mean_relatedness ~ df$type)
+t.test(df$topic_3_mean_relatedness ~ df$type)
+t.test(df$topic_4_mean_relatedness ~ df$type)
+t.test(df$topic_5_mean_relatedness ~ df$type)
+t.test(df$topic_6_mean_relatedness ~ df$type)
+
+t.test(df$topic_0_median_relatedness ~ df$type)
+t.test(df$topic_1_median_relatedness ~ df$type)
+t.test(df$topic_2_median_relatedness ~ df$type)
+t.test(df$topic_3_median_relatedness ~ df$type)
+t.test(df$topic_4_median_relatedness ~ df$type)
+t.test(df$topic_5_median_relatedness ~ df$type)
+t.test(df$topic_6_median_relatedness ~ df$type)
+
+t.test(df$topic_0_median_relatedness ~ df$type)
+summary(lmer(median_relatedness ~ type + (1|participant), data = df))
+summary(lmer(topic_0_mean_relatedness ~ plausibility + (1|participant), data = df))
+
+t.test(df$topic_0_ppn_high_relatedness ~ df$type)
+boxplot(df$topic_0_ppn_high_relatedness ~ df$type)
+
+t.test(df$core_clust ~ df$Condition)
+t.test(df$core_trans ~ df$Condition)
+t.test(df$ppn_core ~ df$Condition)
+
+t.test(df$topic_0_mean_relatedness ~ df$Condition)
+t.test(df$topic_0_ppn_high_relatedness ~ df$Condition)
+boxplot(df$mean_relatedness ~ df$Condition)
+t.test(df$ppn_high_relatedness ~ df$Condition)
+boxplot(df$ppn_high_relatedness ~ df$Condition)
+summary(lmer(mean_relatedness ~ Condition + (1|Participant), data = df))
+
+t.test(df$topic_0_mean_relatedness ~ df$Condition)
+t.test(df$topic_1_mean_relatedness ~ df$Condition)
+t.test(df$topic_2_mean_relatedness ~ df$Condition)
+t.test(df$topic_3_mean_relatedness ~ df$Condition)
+t.test(df$topic_4_mean_relatedness ~ df$Condition)
+t.test(df$topic_5_mean_relatedness ~ df$Condition)
+t.test(df$topic_6_mean_relatedness ~ df$Condition)
+
+summary(lmer(difficulty ~ type + (1|participant), data = df))
+summary(lmer(plausibility ~ type + (1|participant), data = df))
+summary(lmer(similarity ~ type + (1|participant), data = df))
+
+summary(lmer(adj_inv_mean_efficiency ~ type + (1|participant), data = df))
+summary(lmer(all_inv_mean_efficiency ~ type + (1|participant), data = df))
+summary(lmer(all_inv_median_efficiency ~ type + (1|participant), data = df))
+summary(lmer(all_inv_max_efficiency ~ type + (1|participant), data = df))
+
+plotting_data <- c()
+for (stat in c('Mean', 'Median', 'Max')) {
+  curr_col <- sprintf('adj_inv_%s_efficiency', tolower(stat))
+  fml <- as.formula(sprintf('%s ~ type + (1|participant) + 0', curr_col))
+  mod <- lmer(fml, data = df)
+  cf <- coef(summary(mod))[, c('Estimate', 'Std. Error')]
+  plotting_data <- rbind(
+    plotting_data,
+    data.frame(
+      stat = stat,
+      g = rownames(cf),
+      y = cf[, 'Estimate'],
+      se = cf[, 'Std. Error']
+    )
+  )
+}
+
+img <- ggplot(plotting_data,
+              aes(y = y, x = g)) +
+  geom_errorbar(aes(ymin = y - se, ymax = y + se),
+                width = 0.5) +
+  geom_point() +
+  facet_wrap(~stat, scales = 'free',) +
+  scale_x_discrete(labels = c('typeC.' = 'Congruent', 'typeI.' = 'Incongruent')) +
+  labs(y = 'Measure', x = 'Condition', title = 'Experiment 2') +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = -10))
+plot(img)
+img1 <- img
+
+ggsave(filename = file.path(proj_path, 'figs', 'expt-2.pdf'), plot = img,
+       height = 4, width = 6)
+
+aggd <- aggregate(adj_inv_mean_efficiency ~ participant + type, data = df, FUN = mean)
+diffs <- c()
+for (ptpt in unique(aggd$participant)) {
+  ptpt_df <- subset(aggd, participant == ptpt)
+  ptpt_df <- ptpt_df[order(ptpt_df$type), ]
+  diffs <- c(diffs, diff(ptpt_df$adj_inv_mean_efficiency))
+}
+
+binom.test(sum(diffs < 0), length(diffs), alternative = 'g')
+
+diffs1 <- diffs
+
+data_path <- file.path(proj_path, 'metrics', 'all-metrics-cogflex.csv')
+
+df <- read.csv(data_path)
+
+summary(lmer(Diff ~ Condition + (1|Participant), data = df))
+summary(lmer(Plaus ~ Condition + (1|Participant), data = df))
+summary(lmer(STE ~ Condition + (1|Participant), data = df))
+
+summary(lmer(mean_efficiency ~ Condition + (1|Participant), data = df))
+summary(lmer(median_efficiency ~ Condition + (1|Participant), data = df))
+summary(lmer(max_efficiency ~ Condition + (1|Participant), data = df))
+
+plotting_data <- c()
+for (stat in c('Mean', 'Median', 'Max')) {
+  curr_col <- sprintf('%s_efficiency', tolower(stat))
+  fml <- as.formula(sprintf('%s ~ Condition + (1|Participant) + 0', curr_col))
+  mod <- lmer(fml, data = df)
+  cf <- coef(summary(mod))[, c('Estimate', 'Std. Error')]
+  plotting_data <- rbind(
+    plotting_data,
+    data.frame(
+      stat = stat,
+      g = rownames(cf),
+      y = cf[, 'Estimate'],
+      se = cf[, 'Std. Error']
+    )
+  )
+}
+
+img <- ggplot(plotting_data,
+              aes(y = y, x = g)) +
+  geom_errorbar(aes(ymin = y - se, ymax = y + se),
+                width = 0.5) +
+  geom_point() +
+  facet_wrap(~stat, scales = 'free',) +
+  scale_x_discrete(labels = c('ConditionCongruent' = 'Congruent', 'ConditionIncongruent' = 'Incongruent')) +
+  labs(y = 'Measure', x = 'Condition', title = 'Experiment 1') +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = -10))
+plot(img)
+img2 <- img
+
+ggsave(filename = file.path(proj_path, 'figs', 'expt-1.pdf'), plot = img,
+       height = 6, width = 8)
+
+img_both <- grid.arrange(img2, img1, ncol = 1)
+ggsave(filename = file.path(proj_path, 'figs', 'expt-1-2.pdf'), plot = img_both,
+       height = 10, width = 6)
+
+t.test(df$mean_efficiency ~ df$Condition)
+t.test(df$median_efficiency ~ df$Condition)
+t.test(df$max_efficiency ~ df$Condition)
+
+df$cof_var <- df$std_efficiency / df$mean_efficiency
+t.test(df$cof_var ~ df$Condition)
+summary(lmer(cof_var ~ Condition + (1|Participant), data = df))
+
+aggd <- aggregate(mean_efficiency ~ Participant + Condition, data = df, FUN = mean)
+diffs <- c()
+for (ptpt in unique(aggd$Participant)) {
+  ptpt_df <- subset(aggd, Participant == ptpt)
+  ptpt_df <- ptpt_df[order(ptpt_df$Condition), ]
+  diffs <- c(diffs, diff(ptpt_df$mean_efficiency))
+}
+diffs2 <- diffs
+
+df_big <- rbind(
+  data.frame(
+    expt = '1',
+    diffs = (diffs2 < 0) + 0
+  ),
+  data.frame(
+    expt = '2',
+    diffs = (diffs1 < 0) + 0
+  )
+)
+# df_big$diffs <- as.character(df_big$diffs)
+img <- ggplot(data = df_big,
+              aes(x = expt, fill = as.character(diffs))) +
+  geom_bar(stat = 'count', position = 'stack', colour = 'black', width = 0.5) +
+  scale_fill_manual(labels = c('0' = 'Neg.', '1' = 'Pos.'), values = c('white', 'darkgray')) +
+  scale_x_discrete(labels = c('1' = 'Experiment 1', '2' = 'Experiment 2')) +
+  labs(y = 'Count', x = '', fill = 'Case') +
+  theme(axis.title.x = element_blank()) +
+  theme_classic()
+plot(img)
+binom.test(sum(diffs < 0), length(diffs), alternative = 'g')
+
+ggsave(filename = file.path(proj_path, 'figs', 'bin.pdf'), plot = img,
+       height = 6, width = 4)
+
+diffs_both <- c(diffs, diffs1)
+
+binom.test(sum(diffs_both < 0), length(diffs_both), alternative = 'g')
+
+plots <- list()
+for (idx in 1:4) {
+  df$curr <- df[[paste('all_inv_', metric_names[idx], '_efficiency', sep='')]]
+  img <- ggplot(df, aes(y = curr, x = type)) +
+    geom_violin(fill = 'gray') +
+    geom_boxplot(width = 0.5) +
+    labs(title = metric_names[idx],
+         x = 'Narrative type',
+         y = 'Measure') +
+    theme_classic()
+  plot(img)
+  plots[[idx]] <- img
+}
+
+grid_plot <- plot_grid(plotlist = plots)
+
+plot(grid_plot)
+
+data_path <- file.path(proj_path, 'metrics', 'all-metrics-cogflex.csv')
+df1 <- read.csv(data_path)
+data_path <- file.path(proj_path, 'metrics', 'swow-bigger-network-no-search-metrics-prolific.csv')
+df2 <- read.csv(data_path)
+
+df_big <- rbind(
+  data.frame(
+    experiment = '1',
+    congruent = df1$Condition == 'Congruent',
+    mean_efficiency = df1$mean_efficiency,
+    participant = sprintf('expt-1-%s', df1$Participant),
+    nchar = nchar(df1$TRANSCRIPTS)
+  ),
+  data.frame(
+    experiment = '2',
+    congruent = df2$type == 'C.',
+    mean_efficiency = df2$adj_inv_mean_efficiency,
+    participant = sprintf('expt-1-%s', df2$participant),
+    nchar = nchar(df2$TRANSCRIPTS)
+  )
+)
+
+mod <- lmer(mean_efficiency ~ congruent + experiment + (1|participant), data = df_big)
+summary(mod)
+
+t.test(nchar ~ experiment, data = df_big, var.equal = T)
+
+mod <- lmer(mean_efficiency ~ congruent + experiment + nchar + (1|participant), data = df_big)
+summary(mod)

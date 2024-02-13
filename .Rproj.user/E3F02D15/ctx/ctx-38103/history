@@ -1,0 +1,14 @@
+?fit
+missing('a')
+missing(x)
+library(ddDesidModels)
+fit
+get_ranges
+get_param_ranges
+ddDesidModels::ll()
+ddDesidModels::ll
+library(ddDesidModels)
+ddDesidModels::all_param_names
+ddDesidModels::case
+ddDesidModels::discount_functions
+install.packages('ddDesidModels')
