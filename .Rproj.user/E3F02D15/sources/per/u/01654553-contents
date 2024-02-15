@@ -1,0 +1,19 @@
+
+df <- data.frame(val_imm = seq(1, 99, length.out = 10), val_del = 100, del = rep(exp(1:10), each=10))
+logistic <- function(x) 1 / (1 + exp(-x))
+logit <- function(x) log(x / (1 - x))
+gamma <- 0.8
+prob <- logistic(gamma*(logit(df$val_imm / df$val_del) - logit(1 / (1 + 0.001*df$del)))) # hyperbolic discounting
+df$imm_chosen <- runif(nrow(df)) < prob
+# Fit model
+mod <- ddDesidModels::dd_prob_model(df)
+print(mod$discount_function_name) # should usually be "hyperbolic"
+
+# Plot predicted indifference points
+delays <- exp(seq(0, 9, length.out = 100))
+indiffs <- ddDesidModels::predict_indiffs(mod, del = delays)
+plot(indiffs ~ delays, type = 'l')
+# Plot predicted probabilities of selecting immediate reward
+df <- data.frame(val_imm = 0:100, val_del = 100, del = 500)
+p_imm <- ddDesidModels::predict_prob_imm(mod, data = df)
+plot(p_imm ~ seq(0, 1, length.out = 101), type = 'l')

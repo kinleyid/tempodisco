@@ -133,13 +133,15 @@ run_optimization <- function(nll_fn, param_ranges, silent) {
 #' @param param_ranges A list containing the starting values to try for each parameter. Defaults to `c(-5, 0, 5)` for most parameters
 #' @param silent A Boolean specifying whether the call to `optim` (which occurs in a `try` block) should be silent on error
 #' @return A list from `optim` with additional components specifying the AIC, the discount function, and the probabilistic model
-#' @note The `par` component of the output list is for internal use. For statistical analyses, use the `untransformed_parameters`
+#' @note The `par` component of the output list is for internal use. For statistical analyses, use the `untransformed_parameters`. `par` contains the parameters after various transformations intended to keep them within certain bounds (e.g., k parameters should never be negative)
 #' @examples 
-#' df <- data.frame(val_imm = seq(1, 99, length.out = 10), val_del = 100, del = rep(exp(1:10), each=10)) # random choices
+#' # Generate data
+#' df <- data.frame(val_imm = seq(1, 99, length.out = 10), val_del = 100, del = rep(exp(1:10), each=10))
 #' logistic <- function(x) 1 / (1 + exp(-x))
 #' logit <- function(x) log(x / (1 - x))
 #' prob <- logistic(logit(df$val_imm / df$val_del) - logit(1 / (1 + 0.001*df$del)))
 #' df$imm_chosen <- runif(nrow(df)) < prob
+#' # Fit model
 #' mod <- dd_prob_model(df)
 #' print(mod$discount_function_name)
 #' @export
@@ -230,16 +232,16 @@ dd_prob_model <- function(data, discount_function = 'all', absval = 'none', dplu
 #' @param del A vector of delays. Defaults to the delays from the data used to fit the model
 #' @return A vector of indifference points
 #' @examples
-#'\dontrun{
-#' df <- data.frame(val_imm = seq(1, 99, length.out = 10), val_del = 100, del = rep(exp(1:10), each=10)) # random choices
+#' # Generate data
+#' df <- data.frame(val_imm = seq(1, 99, length.out = 10), val_del = 100, del = rep(exp(1:10), each=10))
 #' logistic <- function(x) 1 / (1 + exp(-x))
 #' logit <- function(x) log(x / (1 - x))
 #' prob <- logistic(logit(df$val_imm / df$val_del) - logit(1 / (1 + 0.001*df$del)))
 #' df$imm_chosen <- runif(nrow(df)) < prob
+#' # Fit model
 #' mod <- dd_prob_model(df)
 #' indiffs <- predict_indiffs(mod)
 #' plot(indiffs ~ log(mod$data$del), type = 'l')
-#'}
 #' @export
 predict_indiffs <- function(mod, del = NULL) {
   if (is.null(del)) {
@@ -256,11 +258,13 @@ predict_indiffs <- function(mod, del = NULL) {
 #' @param data A data frame with columns `val_imm`, `val_del`, and `del`, specifying the immediate and delayed rewards, and the delay of the delayed reward. Defaults to the data used to fit the model
 #' @return A vector of probabilities
 #' @examples 
-#' df <- data.frame(val_imm = seq(1, 99, length.out = 10), val_del = 100, del = rep(exp(1:10), each=10)) # random choices
+#' # Generate data
+#' df <- data.frame(val_imm = seq(1, 99, length.out = 10), val_del = 100, del = rep(exp(1:10), each=10))
 #' logistic <- function(x) 1 / (1 + exp(-x))
 #' logit <- function(x) log(x / (1 - x))
 #' prob <- logistic(logit(df$val_imm / df$val_del) - logit(1 / (1 + 0.001*df$del)))
 #' df$imm_chosen <- runif(nrow(df)) < prob
+#' # Fit model
 #' mod <- dd_prob_model(df)
 #' prob_imm <- predict_prob_imm(mod)
 #' boxplot(prob_imm ~ mod$data$imm_chosen)

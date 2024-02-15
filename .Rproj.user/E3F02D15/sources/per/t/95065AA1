@@ -3,7 +3,7 @@
     "path": "C:/Users/isaac/Projects/dd_fitting_package/R/nonlinear-model-fitting.R",
     "project_path": "R/nonlinear-model-fitting.R",
     "type": "r_source",
-    "hash": "0",
+    "hash": "4166758187",
     "contents": "",
     "dirty": false,
     "created": 1707784461642.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "135,118",
-        "scrollLine": "127"
+        "cursorPosition": "189,26",
+        "scrollLine": "181"
     },
     "folds": "",
-    "lastKnownWriteTime": 1707788943,
+    "lastKnownWriteTime": 1708003995,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1707788943493,
+    "last_content_update": 1708003995261,
     "read_only": false,
     "read_only_alternatives": []
 }
