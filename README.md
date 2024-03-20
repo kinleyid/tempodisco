@@ -50,3 +50,37 @@ df <- data.frame(val_imm = 0:100, val_del = 100, del = 500)
 p_imm <- ddDesidModels::predict_prob_imm(mod, data = df)
 plot(p_imm ~ seq(0, 1, length.out = 101), type = 'l')
 ```
+
+To compare discounting between individuals with different discount curves, you can use the "ED50" measure (the delay at which a delayed reward's subjective value is reduced to 50% of its objective value; [Yoon & Higgins, 2008](https://doi.org/10.1016/j.drugalcdep.2007.12.011)). This can be done as follows:
+
+```R
+# Generate data
+df <- data.frame(val_imm = seq(1, 99, length.out = 10), val_del = 100, del = rep(exp(1:10), each=10))
+dels <- seq(0, max(df$del), length.out = 1000)
+logistic <- function(x) 1 / (1 + exp(-x))
+logit <- function(x) log(x / (1 - x))
+# Indifference points for 2 different discounters
+indiffs_1 <- function(x) 1 / (1 + 0.0005*x)
+indiffs_2 <- function(x) exp(-0.0001*x)
+prob_1 <- logistic(logit(df$val_imm / df$val_del) - logit(indiffs_1(df$del)))
+prob_2 <- logistic(logit(df$val_imm / df$val_del) - logit(indiffs_2(df$del)))
+df_1 <- df
+df_1$imm_chosen <- runif(nrow(df)) < prob_1
+mod_1 <- ddDesidModels::dd_prob_model(df_1)
+df_2 <- df
+df_2$imm_chosen <- runif(nrow(df)) < prob_2
+mod_2 <- ddDesidModels::dd_prob_model(df_2, discount_function = 'inverse-q-exponential')
+
+# Plot ED50 values
+plot(1, type = "n", xlab = "delay", ylab = "indifference",
+     xlim = c(0, max(df$del)), ylim = c(0, 1))
+abline(h = 0.5, col = 'gray')
+lines(ddDesidModels::predict_indiffs(mod_1, dels) ~ dels)
+abline(v = mod_1$ED50)
+lines(ddDesidModels::predict_indiffs(mod_2, dels) ~ dels, col = 'red')
+abline(v = mod_2$ED50, col = 'red')
+```
+This results in the following plot (where ED50 values are shown as vertical lines):
+
+![image](https://github.com/kinleyid/ddDesidModels/assets/18541620/07f1ef91-8333-42dc-bed5-7d6920344713)
+
