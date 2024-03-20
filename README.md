@@ -59,9 +59,12 @@ df <- data.frame(val_imm = seq(1, 99, length.out = 10), val_del = 100, del = rep
 dels <- seq(0, max(df$del), length.out = 1000)
 logistic <- function(x) 1 / (1 + exp(-x))
 logit <- function(x) log(x / (1 - x))
+
 # Indifference points for 2 different discounters
 indiffs_1 <- function(x) 1 / (1 + 0.0005*x)
 indiffs_2 <- function(x) exp(-0.0001*x)
+
+# Fit a model for each discounter
 prob_1 <- logistic(logit(df$val_imm / df$val_del) - logit(indiffs_1(df$del)))
 prob_2 <- logistic(logit(df$val_imm / df$val_del) - logit(indiffs_2(df$del)))
 df_1 <- df
@@ -71,7 +74,7 @@ df_2 <- df
 df_2$imm_chosen <- runif(nrow(df)) < prob_2
 mod_2 <- ddDesidModels::dd_prob_model(df_2, discount_function = 'exponential')
 
-# Plot ED50 values
+# Plot discount functions with ED50 values
 plot(1, type = "n", xlab = "delay", ylab = "indifference",
      xlim = c(0, max(df$del)), ylim = c(0, 1))
 abline(h = 0.5, col = 'gray')
