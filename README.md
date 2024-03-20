@@ -66,10 +66,10 @@ prob_1 <- logistic(logit(df$val_imm / df$val_del) - logit(indiffs_1(df$del)))
 prob_2 <- logistic(logit(df$val_imm / df$val_del) - logit(indiffs_2(df$del)))
 df_1 <- df
 df_1$imm_chosen <- runif(nrow(df)) < prob_1
-mod_1 <- ddDesidModels::dd_prob_model(df_1)
+mod_1 <- ddDesidModels::dd_prob_model(df_1, discount_function = 'hyperbolic')
 df_2 <- df
 df_2$imm_chosen <- runif(nrow(df)) < prob_2
-mod_2 <- ddDesidModels::dd_prob_model(df_2, discount_function = 'inverse-q-exponential')
+mod_2 <- ddDesidModels::dd_prob_model(df_2, discount_function = 'exponential')
 
 # Plot ED50 values
 plot(1, type = "n", xlab = "delay", ylab = "indifference",
@@ -82,5 +82,6 @@ abline(v = mod_2$ED50, col = 'red')
 ```
 This results in the following plot (where ED50 values are shown as vertical lines):
 
-![image](https://github.com/kinleyid/ddDesidModels/assets/18541620/07f1ef91-8333-42dc-bed5-7d6920344713)
+![image](https://github.com/kinleyid/ddDesidModels/assets/18541620/e793b520-063e-4880-84c3-bc586e8530a4)
+
 
