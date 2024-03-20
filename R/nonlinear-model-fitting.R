@@ -162,6 +162,19 @@ dd_prob_model <- function(data, discount_function = 'all', absval = 'none', dplu
   if (missing(data)) {
     stop('data unspecified')
   }
+  # Required data columns
+  req_cols <- c('val_imm', 'val_del', 'del', 'imm_chosen')
+  cols <- names(data)
+  missing_cols <- c()
+  for (req_col in req_cols) {
+    if (!(req_col %in% cols)) {
+      missing_cols <- c(missing_cols, req_col)
+    }
+  }
+  if (length(missing_cols) > 0) {
+    stop(sprintf('Missing data column(s): %s', paste(missing_cols, collapse = ', ')))
+  }
+  # Valid discount function
   for (d_f in discount_function) {
     if (!(d_f %in% names(all_discount_functions))) {
       valid_opts <- paste(sprintf('\n- "%s"', names(all_discount_functions)), collapse = '')
@@ -215,6 +228,7 @@ dd_prob_model <- function(data, discount_function = 'all', absval = 'none', dplu
     }
   }
   best_output$data <- data
+  
   # Give untransformed parameters
   u_p <- best_output$par
   idx <- grepl('k|s', names(u_p))
@@ -222,6 +236,28 @@ dd_prob_model <- function(data, discount_function = 'all', absval = 'none', dplu
   idx <- names(u_p) == 'w'
   u_p[idx] <- logistic(u_p[idx])
   best_output$untransformed_parameters <- u_p
+  
+  # Compute ED50
+  best_output$ED50 <- switch(
+    best_output$discount_function_name,
+    "hyperbolic"= 1/u_p['k'],
+    "exponential"= log(2)/u_p['k'],
+    "inverse-q-exponential" = (2^(1/u_p['s']) - 1) / u_p['k'],
+    "nonlinear-time-hyperbolic" = (1/u_p['k']) ^ (1/u_p['s']),
+    "nonlinear-time-exponential" = (log(2)/u_p['k'])^(1/u_p['s']),
+    "scaled-exponential" = log(2*u_p['w'])/u_p['k'],
+    "dual-systems-exponential" = NA
+  )
+  if (best_output$discount_function_name == 'dual-systems-exponential') {
+    # No analytic solution, therefore optimize
+    optim_func <- function(cand) {
+      (predict_indiffs(best_output, cand) - 0.5)**2
+    }
+    optimized <- optim(fn = optim_func, par = 1, method = 'BFGS')
+    best_output$ED50 <- optimized$par
+  }
+  names(best_output$ED50) <- NULL
+  
   return(best_output)
 }
 
@@ -248,6 +284,7 @@ predict_indiffs <- function(mod, del = NULL) {
     del <- mod$data$del
   }
   indiffs <- mod$discount_function(del, mod$par)
+  names(indiffs) <- NULL
   return(indiffs)
 }
 
@@ -274,5 +311,6 @@ predict_prob_imm <- function(mod, data = NULL) {
     data <- mod$data
   }
   probs <- mod$prob_model(data, mod$par)
+  names(probs) <- NULL
   return(probs)
 }
