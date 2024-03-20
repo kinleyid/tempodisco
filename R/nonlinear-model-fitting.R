@@ -132,7 +132,7 @@ run_optimization <- function(nll_fn, param_ranges, silent) {
 #' @param dplus A Boolean specifying whether the model should satisfy the desiderata that subjects should always prefer something over nothing (i.e., nonzero delayed reward over nothing) and the same reward sooner rather than later
 #' @param param_ranges A list containing the starting values to try for each parameter. Defaults to `c(-5, 0, 5)` for most parameters
 #' @param silent A Boolean specifying whether the call to `optim` (which occurs in a `try` block) should be silent on error
-#' @return A list from `optim` with additional components specifying the AIC, the discount function, and the probabilistic model
+#' @return A list from `optim` with additional components specifying the AIC, the ED50, the discount function, and the probabilistic model
 #' @note The `par` component of the output list is for internal use. For statistical analyses, use the `untransformed_parameters`. `par` contains the parameters after various transformations intended to keep them within certain bounds (e.g., k parameters should never be negative)
 #' @examples 
 #' # Generate data
