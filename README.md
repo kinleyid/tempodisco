@@ -1,5 +1,5 @@
 # ddDesidModels
-An R package for fitting probabilistic models of delay discounting, as described in the paper "[Probabilistic models of delay discounting: improving plausibility and performance](https://doi.org/10.31234/osf.io/y2fdh)."
+An R package for fitting models of delay discounting, as described in the paper "[Probabilistic models of delay discounting: improving plausibility and performance](https://doi.org/10.31234/osf.io/y2fdh)."
 
 ## Installation
 ```
@@ -8,7 +8,7 @@ install_github("kinleyid/ddDesidModels");
 ```
 
 ## Description
-What's unique about this package is the option to fit models that satisfy two desiderata (hence dd**Desid**Models) specified in the above-mentioned paper: that individuals should always prefer something over nothing (i.e., should never choose \$0 over \$100 later) and should always prefer sooner rather than later for equal reward values (i.e., should never choose \$100 later over \$100 now). As shown in the paper, this improves the performance of these models. You can also fit conventional models that don't satisfy these desiderata. By default, the package tests 7 candidate discount functions and identifies the one yielding the lowest AIC:
+This package tests 7 candidate discount functions and identifies the best fit to an individual's data (the one yielding the lowest AIC):
 
 | Name | Functional form |
 |------|-----------------|
@@ -20,9 +20,14 @@ What's unique about this package is the option to fit models that satisfy two de
 | Hyperbolic (Mazur, 1987) | $f(t; k) = \frac{1}{1 + kt}$ |
 | Nonlinear-time hyperbolic (Rachlin, 2006) | $f(t; k, s) = \frac{1}{1 + k t^s}$ |
 
+
+This package also allows you to fit probabilistic models that satisfy two desiderata (hence dd**Desid**Models) specified in the above-mentioned paper: that individuals should always prefer something over nothing (i.e., should never choose \$0 over \$100 later) and should always prefer sooner rather than later for equal reward values (i.e., should never choose \$100 later over \$100 now). As shown in the paper, this improves the performance of these models. You can also fit conventional models that don't satisfy these desiderata.
+
 ## Example usage
 
-The main function is `dd_prob_model`, which fits a probabilistic model of a given individual's delay discounting:
+### Fitting probabilistic models: `dd_prob_model()`
+
+`dd_prob_model` fits a probabilistic model of a given individual's delay discounting:
 
 ```R
 library(ddDesidModels)
@@ -34,22 +39,48 @@ gamma <- 2
 prob <- logistic(gamma*(logit(df$val_imm / df$val_del) - logit(1 / (1 + 0.001*df$del)))) # hyperbolic discounting
 df$imm_chosen <- runif(nrow(df)) < prob
 # Fit model
-mod <- ddDesidModels::dd_prob_model(df)
+mod <- dd_prob_model(df)
 print(mod$discount_function_name) # should usually be "hyperbolic"
 ```
 
-Given such a model, you can predict both an individual's indifference points at a given set of delays and the probabilities that they will select the immediate reward in a given set of intertemporal choices:
+Use `?dd_prob_model` to read the full documentation
+
+### Fitting deterministic models: `dd_det_model()`
+
+If you simply want to fit a discounting curve to a set of indifference points, you can use `dd_det_model` for this:
 
 ```R
-# Plot predicted indifference points
-delays <- exp(seq(0, 9, length.out = 100))
-indiffs <- ddDesidModels::predict_indiffs(mod, del = delays)
-plot(indiffs ~ delays, type = 'l')
-# Plot predicted probabilities of selecting immediate reward
-df <- data.frame(val_imm = 0:100, val_del = 100, del = 500)
-p_imm <- ddDesidModels::predict_prob_imm(mod, data = df)
-plot(p_imm ~ seq(0, 1, length.out = 101), type = 'l')
+df <- data.frame(del = exp(1:10), indiff = 1 / (1 + 0.001*exp(1:10)))
+# Fit model
+mod <- dd_det_model(df)
+print(mod$discount_function_name)
 ```
+
+### Plotting models: `plot_dd()`
+
+To double check that the results make sense, you can plot them using `plot_dd`. For a probabilistic model, this produces the following plot:
+
+<img src="https://github.com/kinleyid/ddDesidModels/assets/18541620/58efbe67-acc7-4993-81e0-2d896448fb5d" width="400">
+
+It's not publication-ready, but it is a good way of quickly checking the model fit. On the x-axis is the delay and on the y-axis is the relative value of the immediate reward. Each point is a different decision. Red means the immediate reward was chosen and blue means the delayed reward was chosen. The bold line is the best fitting discount curve, and the plot's title tells you which type of discount function it's from. The dashed lines give a sense of how stochastic the decisions were: the wider apart they are, the more stochastic. Just as the discount curve shows all the points where the probability of selecting the immediate reward is 0.5, the dotted lines show where this probability would be 0.4 and 0.6 (these values can be adjusted using the `pr_range` argument to `plot_dd`).
+
+### Predicting indifference points and decision probabilities: `predict_indiffs()` and `predict_prob_imm()`
+
+Given the output of either of the above functions, you can use the function `predict_indiffs` to predict an individual's indifference points:
+
+```R
+predict_indiffs(mod) # Predict the indifference points for the data the model was fit on
+predict_indiffs(mod, del = 1:100) # Predict indifference points for a new set of delays (e.g., for plotting)
+```
+
+Given a probabilistic model (the output of `dd_prob_model`), you can also predict an individual's probability of selecting the immediate reward:
+
+```R
+predict_prob_imm(mod) # Predicted probabilities for the data the model was fit on
+predict_prob_imm(mod, data = data.frame(del = 1000, val_imm = 1:99, val_del = 100)) # Predicted probabilities for new data
+```
+
+### Using ED50 values to measure discounting between different discount functions
 
 To compare discounting between individuals with different discount curves, you can use the "ED50" measure (the delay at which a delayed reward's subjective value is reduced to 50% of its objective value; [Yoon & Higgins, 2008](https://doi.org/10.1016/j.drugalcdep.2007.12.011)). This can be done as follows:
 
