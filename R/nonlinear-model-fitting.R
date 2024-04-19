@@ -137,7 +137,7 @@ run_optimization <- function(fn, param_ranges, silent) {
 untransform <- function(par) {
   # Get untransformed parameters
   u_p <- par
-  idx <- grepl('k|s', names(u_p))
+  idx <- grepl('k|s|gamma', names(u_p))
   u_p[idx] <- exp(u_p[idx])
   idx <- names(u_p) == 'w'
   u_p[idx] <- logistic(u_p[idx])
