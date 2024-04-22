@@ -24,6 +24,22 @@ all_discount_functions <- list(
   'dual-systems-exponential' = function(D, p) logistic(p['w'])*exp(-exp(p['k1'])*D) + (1 - logistic(p['w']))*exp(-(exp(p['k2']) + exp(p['k1']))*D),
   'nonlinear-time-exponential' = function(D, p) exp(-exp(p['k'])*D**exp(p['s']))
 )
+
+none_func <- function(D, p) {
+  p <- logistic(p[grep('\\d', names(p))])
+  a <- approx(x = as.numeric(names(p)), y = p, xout = D)
+  return(a$y)
+}
+
+get_discount_function <- function(func_name) {
+  if (func_name == 'none') {
+    func <- none_func
+  } else {
+    func <- all_discount_functions[[func_name]]
+  }
+  return(func)
+}
+
 # Plausible parameter ranges
 default_param_ranges <- list(
   'hyperbolic' = list(
@@ -59,7 +75,8 @@ default_param_ranges <- list(
   'varsigma' = list(
     alpha = seq(-5, 5, length.out = 3),
     lambda = seq(-1, 1, length.out = 3)
-  )
+  ),
+  'none' = NA
 )
 
 get_prob_mod_frame <- function(discount_function, dplus, absval) {
@@ -67,12 +84,15 @@ get_prob_mod_frame <- function(discount_function, dplus, absval) {
   # "structural" aspects (such as the discount function) specified
   
   # What is the discount function?
-  discount_func <- all_discount_functions[[discount_function]]
+  discount_func <- get_discount_function(discount_function)
+  
   # Are we using the logit function?
   if (dplus) {
     rel_diff <- function(data, par) logit(data$val_imm/data$val_del) - logit(discount_func(data$del, par))
   } else {
-    rel_diff <- function(data, par) data$val_imm/data$val_del - discount_func(data$del, par)
+    rel_diff <- function(data, par) {
+      data$val_imm/data$val_del - discount_func(data$del, par)
+    }
   }
   # Are we accounting for the absolute values of the rewards in any way?
   absval <- switch(absval,
@@ -139,7 +159,7 @@ untransform <- function(par) {
   u_p <- par
   idx <- grepl('k|s|gamma', names(u_p))
   u_p[idx] <- exp(u_p[idx])
-  idx <- names(u_p) == 'w'
+  idx <- grepl('\\d', names(u_p)) | names(u_p) == 'w'
   u_p[idx] <- logistic(u_p[idx])
   return(u_p)
 }
@@ -154,7 +174,8 @@ get_ED50 <- function(mod) {
     "nonlinear-time-hyperbolic" = (1/u_p['k']) ^ (1/u_p['s']),
     "nonlinear-time-exponential" = (log(2)/u_p['k'])^(1/u_p['s']),
     "scaled-exponential" = log(2*u_p['w'])/u_p['k'],
-    "dual-systems-exponential" = NA
+    "dual-systems-exponential" = NA,
+    "none" = NA
   )
   if (mod$discount_function_name == 'dual-systems-exponential') {
     # No analytic solution, therefore optimize
@@ -173,7 +194,7 @@ get_ED50 <- function(mod) {
 #'
 #' Compute a probabilistic model for a single subject's delay discounting
 #' @param data A data frame with columns `val_imm` and `val_del` for the values of the immediate and delayed rewards, `del` for the delay, and `imm_chosen` (Boolean) for whether the immediate reward was chosen
-#' @param discount_function A vector of strings specifying the name of the discount functions to use. Options are `'hyperbolic'`, `'exponential'`, `'inverse-q-exponential'`, `'nonlinear-time-hyperbolic'`, `'scaled-exponential'`, `'dual-systems-exponential'`, and `'nonlinear-time-exponential'`. Default is `'all'`, meaning every discount function is tested and the one with the best AIC is selected.
+#' @param discount_function A vector of strings specifying the name of the discount functions to use. Options are `'hyperbolic'`, `'exponential'`, `'inverse-q-exponential'`, `'nonlinear-time-hyperbolic'`, `'scaled-exponential'`, `'dual-systems-exponential'`, `'nonlinear-time-exponential'`, and `'none'`. Default is `'all'`, meaning every discount function is tested and the one with the best AIC is selected. When `'none'` is used, each indifference point is estimated as a separate parameter, and these indifference points can be accessed through the `untransformed_parameters` component of the output.
 #' @param absval A string specifying how the absolute value of the delayed reward should be accounted for. Defaults to `'none'`. Other options are `'identity'` (linear scaling) and `'varsigma'` (flexible nonlinear scaling)
 #' @param dplus A Boolean specifying whether the model should satisfy the desiderata that subjects should always prefer something over nothing (i.e., nonzero delayed reward over nothing) and the same reward sooner rather than later
 #' @param param_ranges A list containing the starting values to try for each parameter. Defaults to `c(-5, 0, 5)` for most parameters
@@ -239,7 +260,7 @@ dd_prob_model <- function(data, discount_function = 'all', absval = 'none', dplu
   }
   # Valid discount function
   for (d_f in discount_function) {
-    if (!(d_f %in% names(all_discount_functions))) {
+    if (!(d_f %in% c(names(all_discount_functions), 'none'))) {
       valid_opts <- paste(sprintf('\n- "%s"', names(all_discount_functions)), collapse = '')
       stop(sprintf('"%s" is not a recognized discount function. Valid options are: %s', d_f, valid_opts))
     }
@@ -263,7 +284,13 @@ dd_prob_model <- function(data, discount_function = 'all', absval = 'none', dplu
     prob_mod_frame <- do.call(get_prob_mod_frame, prob_mod_args)
     nll_fn <- get_nll_fn(data, prob_mod_frame)
     # Get parameter ranges
-    curr_param_ranges <- param_ranges[[prob_mod_args$discount_function]]
+    if (prob_mod_args$discount_function == 'none') {
+      unique_delays <- unique(data$del)
+      curr_param_ranges <- as.list(rep(0.5, length(unique_delays)))
+      names(curr_param_ranges) <- sprintf('%s', unique_delays)
+    } else {
+      curr_param_ranges <- param_ranges[[prob_mod_args$discount_function]]
+    }
     curr_param_ranges <- c(curr_param_ranges, param_ranges$gamma)
     if (prob_mod_args$absval == 'varsigma') {
       curr_param_ranges <- c(curr_param_ranges, param_ranges$varsigma)
@@ -285,7 +312,7 @@ dd_prob_model <- function(data, discount_function = 'all', absval = 'none', dplu
       }
       optimized$AIC <- curr_aic
       optimized$discount_function_name <- prob_mod_args$discount_function
-      optimized$discount_function <- all_discount_functions[[prob_mod_args$discount_function]]
+      optimized$discount_function <- get_discount_function(prob_mod_args$discount_function)
       optimized$prob_model <- prob_mod_frame
       best_output <- optimized
     }
@@ -387,7 +414,7 @@ dd_det_model <- function(data, discount_function = 'all', param_ranges = NULL, s
         }
       }
       optimized$discount_function_name <- discount_function
-      optimized$discount_function <- all_discount_functions[[discount_function]]
+      optimized$discount_function <- get_discount_function(discount_function)
       best_output <- optimized
     }
   }
@@ -511,7 +538,9 @@ plot_dd <- function(mod, p_range = c(0.4, 0.6)) {
            data = subset(mod$data, !imm_chosen))
   } else {
     # Plot deterministic model
-    plot(NA, NA, xlim = c(0, max_del), ylim = c(0, 1))
+    plot(NA, NA, xlim = c(0, max_del), ylim = c(0, 1),
+         xlab = 'Delay',
+         ylab = 'Indifference point')
     points(indiff ~ del, data = mod$data)
     lines(pred_indiffs ~ plotting_delays)
   }
