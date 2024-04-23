@@ -1,6 +1,8 @@
 
 # Utility functions
-logit <- function(x) log(x / (1 - x))
+p2o <- function(p) (1 / (1/p - 1)) # proportion/probability to odds
+o2p <- function(o) (1 / (1/o + 1)) # odds to proportion/probability
+logit <- function(x) log(p2o(x))
 logistic <- function(x) 1 / (1 + exp(-x))
 ll <- function(p, x) { # log-likelihood
   sum(log(c(p[x], (1-p)[!x])))
@@ -79,30 +81,43 @@ default_param_ranges <- list(
   'none' = NA
 )
 
-get_prob_mod_frame <- function(discount_function, dplus, absval) {
+get_prob_mod_frame <- function(discount_function, fixed.ends, choice.rule, absval) {
   # Get probabilistic model without parameter values specified, but with
   # "structural" aspects (such as the discount function) specified
   
   # What is the discount function?
   discount_func <- get_discount_function(discount_function)
   
-  # Are we using the logit function?
-  if (dplus) {
-    rel_diff <- function(data, par) logit(data$val_imm/data$val_del) - logit(discount_func(data$del, par))
-  } else {
-    rel_diff <- function(data, par) {
-      data$val_imm/data$val_del - discount_func(data$del, par)
+  # What is the choice rule?
+  if (choice.rule == 'exponential') {
+    # Are we using the logit function?
+    if (fixed.ends) {
+      rel_diff <- function(data, par) logit(data$val_imm/data$val_del) - logit(discount_func(data$del, par))
+    } else {
+      rel_diff <- function(data, par) data$val_imm/data$val_del - discount_func(data$del, par)
+    }
+    # Are we accounting for the absolute values of the rewards in any way?
+    absval <- switch(absval,
+                     'none' = function(data, par) 1,
+                     'linear' = function(data, par) data$val_del,
+                     'nonlinear' = function(data, par) varsigma(data$val_del, alpha = exp(par['alpha']), lambda = par['lambda'])
+    )
+    frame <- function(data, par) {
+      return( logistic( exp(par['gamma']) * absval(data, par) * rel_diff(data, par) ) )
+    }
+  } else if (choice.rule == 'power') {
+    if (fixed.ends) {
+      R <- function(data) data$val_imm/data$val_del
+      f <- function(data, par) discount_func(data$del, par)
+    } else {
+      R <- function(data) p2o(data$val_imm/data$val_del)
+      f <- function(data, par) p2o(discount_func(data$del, par))
+    }
+    frame <- function(data, par) {
+      return( (1 + (f(data, par)/R(data))**exp(par['gamma']))**-1 )
     }
   }
-  # Are we accounting for the absolute values of the rewards in any way?
-  absval <- switch(absval,
-                   'none' = function(data, par) 1,
-                   'identity' = function(data, par) data$val_del,
-                   'varsigma' = function(data, par) varsigma(data$val_del, alpha = exp(par['alpha']), lambda = par['lambda'])
-  )
-  frame <- function(data, par) {
-    return( logistic( exp(par['gamma']) * absval(data, par) * rel_diff(data, par) ) )
-  }
+  
   return(frame)
 }
 
@@ -195,8 +210,9 @@ get_ED50 <- function(mod) {
 #' Compute a probabilistic model for a single subject's delay discounting
 #' @param data A data frame with columns `val_imm` and `val_del` for the values of the immediate and delayed rewards, `del` for the delay, and `imm_chosen` (Boolean) for whether the immediate reward was chosen
 #' @param discount_function A vector of strings specifying the name of the discount functions to use. Options are `'hyperbolic'`, `'exponential'`, `'inverse-q-exponential'`, `'nonlinear-time-hyperbolic'`, `'scaled-exponential'`, `'dual-systems-exponential'`, `'nonlinear-time-exponential'`, and `'none'`. Default is `'all'`, meaning every discount function is tested and the one with the best AIC is selected. When `'none'` is used, each indifference point is estimated as a separate parameter, and these indifference points can be accessed through the `untransformed_parameters` component of the output.
-#' @param absval A string specifying how the absolute value of the delayed reward should be accounted for. Defaults to `'none'`. Other options are `'identity'` (linear scaling) and `'varsigma'` (flexible nonlinear scaling)
-#' @param dplus A Boolean specifying whether the model should satisfy the desiderata that subjects should always prefer something over nothing (i.e., nonzero delayed reward over nothing) and the same reward sooner rather than later
+#' @param choice.rule A string specifying whether the `'exponential'` (default) or `'power'` choice rule should be used.
+#' @param absval A string specifying how the absolute value of the delayed reward should be accounted for when the choice rule is `'exponential'`. Ignored when the choice rule is `'power'`. Defaults to `'none'`. Other options are `'linear'` (linear scaling) and `'nonlinear'` (flexible nonlinear scaling)
+#' @param fixed.ends A Boolean specifying whether the model should satisfy the desiderata that subjects should always prefer something over nothing (i.e., nonzero delayed reward over nothing) and the same reward sooner rather than later
 #' @param param_ranges A list containing the starting values to try for each parameter. Defaults to `c(-5, 0, 5)` for most parameters
 #' @param silent A Boolean specifying whether the call to `optim` (which occurs in a `try` block) should be silent on error
 #' @return A list from `optim` with additional components specifying the AIC, the ED50, the discount function, and the probabilistic model
@@ -212,12 +228,19 @@ get_ED50 <- function(mod) {
 #' mod <- dd_prob_model(df)
 #' print(mod$discount_function_name)
 #' @export
-dd_prob_model <- function(data, discount_function = 'all', absval = 'none', dplus = T, param_ranges = NULL, silent = T) {
+dd_prob_model <- function(data, discount_function = 'all', absval = 'none', choice.rule = 'exponential', fixed.ends = T, param_ranges = NULL, silent = T) {
   
   # Set parameter ranges
   tmp <- default_param_ranges
   if (!is.null(param_ranges)) {
-    tmp[names(param_ranges)] <- param_ranges
+    # Overwrite defaults
+    for (group in names(default_param_ranges)) {
+      for (param_name in names(param_ranges)) {
+        if (param_name %in% names(tmp[[group]])) {
+          tmp[[group]][[param_name]] <- param_ranges[[param_name]]
+        }
+      }
+    }
   }
   param_ranges <- tmp
   # Set discount functions
@@ -244,7 +267,7 @@ dd_prob_model <- function(data, discount_function = 'all', absval = 'none', dplu
   # Ensure imm_chosen is logical
   data$imm_chosen <- as.logical(data$imm_chosen)
   # Endpoints
-  if (dplus) {
+  if (fixed.ends) {
     R0 <- subset(data, val_imm == 0)
     if (any(R0$imm_chosen)) {
       stop('Participant chose an immediate reward with a value of 0. When desid=True, this makes the negative log likelihood function impossible to optimize.')
@@ -265,12 +288,18 @@ dd_prob_model <- function(data, discount_function = 'all', absval = 'none', dplu
       stop(sprintf('"%s" is not a recognized discount function. Valid options are: %s', d_f, valid_opts))
     }
   }
+  if (!(choice.rule %in% c('exponential', 'power'))) {
+    stop(sprintf('choice.rule must be either "exponential" or "power" (currently %s)', choice.rule))
+  }
   
   # Get a table of combinations of model settings
   prob_mod_arg_permutations <- do.call(
     expand.grid,
     c(
-      c(as.list(environment()))[c('discount_function', 'absval', 'dplus')],
+      c(as.list(environment()))[c('discount_function',
+                                  'absval',
+                                  'fixed.ends',
+                                  'choice.rule')],
       list(stringsAsFactors = F)
     )
   )
@@ -292,7 +321,7 @@ dd_prob_model <- function(data, discount_function = 'all', absval = 'none', dplu
       curr_param_ranges <- param_ranges[[prob_mod_args$discount_function]]
     }
     curr_param_ranges <- c(curr_param_ranges, param_ranges$gamma)
-    if (prob_mod_args$absval == 'varsigma') {
+    if (prob_mod_args$absval == 'nonlinear') {
       curr_param_ranges <- c(curr_param_ranges, param_ranges$varsigma)
     }
     
@@ -326,7 +355,8 @@ dd_prob_model <- function(data, discount_function = 'all', absval = 'none', dplu
   best_output$ED50 <- get_ED50(best_output)
   
   # Add other metadata
-  best_output$dplus <- dplus
+  best_output$choice.rule <- choice.rule
+  best_output$fixed.ends <- fixed.ends
   best_output$absval <- absval
   
   return(best_output)
@@ -486,12 +516,20 @@ predict_prob_imm <- function(mod, data = NULL) {
 invert_decision_function <- function(mod, prob, del) {
   # Given some model and some delay, get the relative value of the immediate 
   # reward at which its probability of being chosen is some desired value
-  if (mod$dplus) {
-    R <- logistic(
-      logit(prob)/exp(mod$par['gamma']) +
-        logit(predict_indiffs(mod, del)))
-  } else {
-    R <- logit(prob)/exp(mod$par['gamma']) + predict_indiffs(mod, del)
+  if (mod$choice.rule == 'exponential') {
+    if (mod$fixed.ends) {
+      R <- logistic(
+        logit(prob)/exp(mod$par['gamma']) +
+          logit(predict_indiffs(mod, del)))
+    } else {
+      R <- logit(prob)/exp(mod$par['gamma']) + predict_indiffs(mod, del)
+    }
+  } else if (mod$choice.rule == 'power') {
+    if (mod$fixed.ends) {
+      R <- o2p( p2o(predict_indiffs(mod, del)) * (1/prob - 1) ** (-1/exp(mod$par['gamma'])) )
+    } else {
+      R <- predict_indiffs(mod, del) * (1/prob - 1) ** (-1/exp(mod$par['gamma']))
+    }
   }
   return(R)
 }
