@@ -8,7 +8,8 @@ dd_prob_model(
   data,
   discount_function = "all",
   absval = "none",
-  dplus = T,
+  choice.rule = "exponential",
+  fixed.ends = T,
   param_ranges = NULL,
   silent = T
 )
@@ -18,9 +19,11 @@ dd_prob_model(
 
 \item{discount_function}{A vector of strings specifying the name of the discount functions to use. Options are `'hyperbolic'`, `'exponential'`, `'inverse-q-exponential'`, `'nonlinear-time-hyperbolic'`, `'scaled-exponential'`, `'dual-systems-exponential'`, `'nonlinear-time-exponential'`, and `'none'`. Default is `'all'`, meaning every discount function is tested and the one with the best AIC is selected. When `'none'` is used, each indifference point is estimated as a separate parameter, and these indifference points can be accessed through the `untransformed_parameters` component of the output.}
 
-\item{absval}{A string specifying how the absolute value of the delayed reward should be accounted for. Defaults to `'none'`. Other options are `'identity'` (linear scaling) and `'varsigma'` (flexible nonlinear scaling)}
+\item{absval}{A string specifying how the absolute value of the delayed reward should be accounted for when the choice rule is `'exponential'`. Ignored when the choice rule is `'power'`. Defaults to `'none'`. Other options are `'linear'` (linear scaling) and `'nonlinear'` (flexible nonlinear scaling)}
 
-\item{dplus}{A Boolean specifying whether the model should satisfy the desiderata that subjects should always prefer something over nothing (i.e., nonzero delayed reward over nothing) and the same reward sooner rather than later}
+\item{choice.rule}{A string specifying whether the `'exponential'` (default) or `'power'` choice rule should be used.}
+
+\item{fixed.ends}{A Boolean specifying whether the model should satisfy the desiderata that subjects should always prefer something over nothing (i.e., nonzero delayed reward over nothing) and the same reward sooner rather than later}
 
 \item{param_ranges}{A list containing the starting values to try for each parameter. Defaults to `c(-5, 0, 5)` for most parameters}
 
