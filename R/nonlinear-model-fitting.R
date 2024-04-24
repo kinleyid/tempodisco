@@ -1,9 +1,7 @@
 
 # Utility functions
-# p2o <- function(p) (1 / (1/p - 1)) # proportion/probability to odds
-p2o <- function(p) -log(1 - p) # candidate replacement
-# o2p <- function(o) (1 / (1/o + 1)) # odds to proportion/probability
-o2p <- function(o) 1 - exp(-o) # candidate replacement
+p2o <- function(p) (1 / (1/p - 1)) # proportion/probability to odds
+o2p <- function(o) (1 / (1/o + 1)) # odds to proportion/probability
 logit <- function(x) log(1 / (1/x - 1))
 logistic <- function(x) 1 / (1 + exp(-x))
 ll <- function(p, x) { # log-likelihood
