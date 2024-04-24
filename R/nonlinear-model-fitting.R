@@ -1,8 +1,10 @@
 
 # Utility functions
-p2o <- function(p) (1 / (1/p - 1)) # proportion/probability to odds
-o2p <- function(o) (1 / (1/o + 1)) # odds to proportion/probability
-logit <- function(x) log(p2o(x))
+# p2o <- function(p) (1 / (1/p - 1)) # proportion/probability to odds
+p2o <- function(p) -log(1 - p) # candidate replacement
+# o2p <- function(o) (1 / (1/o + 1)) # odds to proportion/probability
+o2p <- function(o) 1 - exp(-o) # candidate replacement
+logit <- function(x) log(1 / (1/x - 1))
 logistic <- function(x) 1 / (1 + exp(-x))
 ll <- function(p, x) { # log-likelihood
   sum(log(c(p[x], (1-p)[!x])))
@@ -107,11 +109,11 @@ get_prob_mod_frame <- function(discount_function, fixed.ends, choice.rule, absva
     }
   } else if (choice.rule == 'power') {
     if (fixed.ends) {
-      R <- function(data) data$val_imm/data$val_del
-      f <- function(data, par) discount_func(data$del, par)
-    } else {
       R <- function(data) p2o(data$val_imm/data$val_del)
       f <- function(data, par) p2o(discount_func(data$del, par))
+    } else {
+      R <- function(data) data$val_imm/data$val_del
+      f <- function(data, par) discount_func(data$del, par)
     }
     frame <- function(data, par) {
       return( (1 + (f(data, par)/R(data))**exp(par['gamma']))**-1 )
@@ -195,10 +197,10 @@ get_ED50 <- function(mod) {
   if (mod$discount_function_name == 'dual-systems-exponential') {
     # No analytic solution, therefore optimize
     optim_func <- function(cand) {
-      (predict_indiffs(mod, cand) - 0.5)**2
+      (predict_indiffs(mod, exp(cand)) - 0.5)**2
     }
-    optimized <- optim(fn = optim_func, par = 1, method = 'BFGS')
-    ED50 <- optimized$par
+    optimized <- optim(fn = optim_func, par = 0, method = 'BFGS')
+    ED50 <- exp(optimized$par)
   }
   names(ED50) <- NULL
   
@@ -327,6 +329,9 @@ dd_prob_model <- function(data, discount_function = 'all', absval = 'none', choi
     
     # Run optimization
     optimized <- run_optimization(nll_fn, curr_param_ranges, silent)
+    if (length(optimized) == 0) {
+      stop('Optimization failed; optim() returned an error for every choice of initial parameter values')
+    }
     curr_aic <- 2*length(optimized$par) + 2*optimized$value
     if (curr_aic < best_aic) {
       best_aic <- curr_aic
