@@ -17,6 +17,7 @@ ln_lambda <- function(x, lambda) { # box-cox transform
   }
 }
 varsigma <- function(x, alpha, lambda) alpha*ln_lambda(x + 1, lambda) + 1
+eps <- .Machine$double.eps
 
 # Discount functions
 all_discount_functions <- list(
@@ -129,6 +130,7 @@ get_nll_fn <- function(data, prob_mod_frame) {
   
   nll_fn <- function(par) {
     p <- prob_mod_frame(data, par)
+    p <- eps/2 + (1 - eps)*p # Laplace smoothing
     return(-ll(p, data$imm_chosen))
   }
   return(nll_fn)
