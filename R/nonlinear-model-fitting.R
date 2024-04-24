@@ -158,7 +158,8 @@ run_optimization <- function(fn, param_ranges, silent) {
         optimized <- optim(
           fn = fn,
           par = param_vals[val_idx, ],
-          control = list('warn.1d.NelderMead' = F)
+          control = list('warn.1d.NelderMead' = F,
+                         maxit = 1000)
         )
         if (optimized$value < best_value) {
           best_value <- optimized$value
