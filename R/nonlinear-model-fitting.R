@@ -15,7 +15,7 @@ ln_lambda <- function(x, lambda) { # box-cox transform
   }
 }
 varsigma <- function(x, alpha, lambda) alpha*ln_lambda(x + 1, lambda) + 1
-eps <- .Machine$double.eps
+eps <- .Machine$double.eps # For later use in Laplace smoothing
 
 # Discount functions
 all_discount_functions <- list(
@@ -128,7 +128,7 @@ get_nll_fn <- function(data, prob_mod_frame) {
   
   nll_fn <- function(par) {
     p <- prob_mod_frame(data, par)
-    p <- eps/2 + (1 - eps)*p # Laplace smoothing
+    p <- eps + (1 - 2*eps)*p # Laplace smoothing
     return(-ll(p, data$imm_chosen))
   }
   return(nll_fn)
@@ -185,7 +185,7 @@ untransform <- function(par) {
 get_ED50 <- function(mod) {
   u_p <- mod$untransformed_parameters
   ED50 <- switch(
-    mod$discount_function_name,
+    mod$discount_function,
     "hyperbolic"= 1/u_p['k'],
     "exponential"= log(2)/u_p['k'],
     "inverse-q-exponential" = (2^(1/u_p['s']) - 1) / u_p['k'],
@@ -195,7 +195,7 @@ get_ED50 <- function(mod) {
     "dual-systems-exponential" = NA,
     "none" = NA
   )
-  if (mod$discount_function_name == 'dual-systems-exponential') {
+  if (mod$discount_function == 'dual-systems-exponential') {
     # No analytic solution, therefore optimize
     optim_func <- function(cand) {
       (predict_indiffs(mod, exp(cand)) - 0.5)**2
@@ -229,7 +229,7 @@ get_ED50 <- function(mod) {
 #' df$imm_chosen <- runif(nrow(df)) < prob
 #' # Fit model
 #' mod <- dd_prob_model(df)
-#' print(mod$discount_function_name)
+#' print(mod$discount_function)
 #' @export
 dd_prob_model <- function(data, discount_function = 'all', absval = 'none', choice.rule = 'exponential', fixed.ends = T, param_ranges = NULL, silent = T) {
   
@@ -346,9 +346,7 @@ dd_prob_model <- function(data, discount_function = 'all', absval = 'none', choi
         }
       }
       optimized$AIC <- curr_aic
-      optimized$discount_function_name <- prob_mod_args$discount_function
-      optimized$discount_function <- get_discount_function(prob_mod_args$discount_function)
-      optimized$prob_model <- prob_mod_frame
+      optimized$discount_function <- prob_mod_args$discount_function
       best_output <- optimized
     }
   }
@@ -382,7 +380,7 @@ dd_prob_model <- function(data, discount_function = 'all', absval = 'none', choi
 #' df <- data.frame(del = exp(1:10), indiff = 1 / (1 + 0.001*exp(1:10)))
 #' # Fit model
 #' mod <- dd_det_model(df)
-#' print(mod$discount_function_name)
+#' print(mod$discount_function)
 #' @export
 dd_det_model <- function(data, discount_function = 'all', param_ranges = NULL, silent = T) {
   
@@ -449,8 +447,7 @@ dd_det_model <- function(data, discount_function = 'all', param_ranges = NULL, s
           optimized$par['w'] <- -optimized$par['w']
         }
       }
-      optimized$discount_function_name <- discount_function
-      optimized$discount_function <- get_discount_function(discount_function)
+      optimized$discount_function <- discount_function
       best_output <- optimized
     }
   }
@@ -487,7 +484,7 @@ predict_indiffs <- function(mod, del = NULL) {
   if (is.null(del)) {
     del <- mod$data$del
   }
-  indiffs <- mod$discount_function(del, mod$par)
+  indiffs <- get_discount_function(mod$discount_function)(del, mod$par)
   names(indiffs) <- NULL
   return(indiffs)
 }
@@ -514,7 +511,11 @@ predict_prob_imm <- function(mod, data = NULL) {
   if (is.null(data)) {
     data <- mod$data
   }
-  probs <- mod$prob_model(data, mod$par)
+  frame_args <- c('discount_function',
+                  'fixed.ends',
+                  'choice.rule',
+                  'absval')
+  probs <- do.call(get_prob_mod_frame, mod[frame_args])(data, mod$par)
   names(probs) <- NULL
   return(probs)
 }
@@ -560,7 +561,7 @@ plot_dd <- function(mod, p_range = c(0.4, 0.6)) {
   max_del <- max(mod$data$del)
   plotting_delays <- seq(0, max_del, length.out = 1000)
   pred_indiffs <- predict_indiffs(mod, del = plotting_delays)
-  if ('prob_model' %in% names(mod)) {
+  if ('choice.rule' %in% names(mod)) {
     # Plot probabilistic model
     if (mod$absval == 'none') {
       lower <- invert_decision_function(mod, prob = p_range[1], del = plotting_delays)
@@ -588,5 +589,5 @@ plot_dd <- function(mod, p_range = c(0.4, 0.6)) {
     points(indiff ~ del, data = mod$data)
     lines(pred_indiffs ~ plotting_delays)
   }
-  title(mod$discount_function_name)
+  title(mod$discount_function)
 }
