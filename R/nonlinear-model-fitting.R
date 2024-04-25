@@ -16,6 +16,7 @@ ln_lambda <- function(x, lambda) { # box-cox transform
 }
 varsigma <- function(x, alpha, lambda) alpha*ln_lambda(x + 1, lambda) + 1
 eps <- .Machine$double.eps # For later use in Laplace smoothing
+laplace_smooth <- function(p) p <- eps + (1 - 2*eps)*p
 
 # Discount functions
 all_discount_functions <- list(
@@ -127,8 +128,7 @@ get_nll_fn <- function(data, prob_mod_frame) {
   # "frame" with structural aspects specified but parameters unspecified
   
   nll_fn <- function(par) {
-    p <- prob_mod_frame(data, par)
-    p <- eps + (1 - 2*eps)*p # Laplace smoothing
+    p <- laplace_smooth(prob_mod_frame(data, par))
     return(-ll(p, data$imm_chosen))
   }
   return(nll_fn)
@@ -507,7 +507,7 @@ predict_indiffs <- function(mod, del = NULL) {
 #' prob_imm <- predict_prob_imm(mod)
 #' boxplot(prob_imm ~ mod$data$imm_chosen)
 #' @export
-predict_prob_imm <- function(mod, data = NULL) {
+predict_prob_imm <- function(mod, data = NULL, laplace = T) {
   if (is.null(data)) {
     data <- mod$data
   }
@@ -515,9 +515,12 @@ predict_prob_imm <- function(mod, data = NULL) {
                   'fixed.ends',
                   'choice.rule',
                   'absval')
-  probs <- do.call(get_prob_mod_frame, mod[frame_args])(data, mod$par)
-  names(probs) <- NULL
-  return(probs)
+  p <- do.call(get_prob_mod_frame, mod[frame_args])(data, mod$par)
+  if (laplace) {
+    p <- laplace_smooth(p)
+  }
+  names(p) <- NULL
+  return(p)
 }
 
 invert_decision_function <- function(mod, prob, del) {
