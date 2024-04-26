@@ -5,7 +5,7 @@ o2p <- function(o) (1 / (1/o + 1)) # odds to proportion/probability
 logit <- function(x) log(1 / (1/x - 1))
 logistic <- function(x) 1 / (1 + exp(-x))
 ll <- function(p, x) { # log-likelihood
-  sum(log(c(p[x], (1-p)[!x])))
+  log(c(p[x], (1-p)[!x]))
 }
 ln_lambda <- function(x, lambda) { # box-cox transform
   if (lambda == 0) {
@@ -129,9 +129,27 @@ get_nll_fn <- function(data, prob_mod_frame) {
   
   nll_fn <- function(par) {
     p <- laplace_smooth(prob_mod_frame(data, par))
-    return(-ll(p, data$imm_chosen))
+    return(sum(-ll(p, data$imm_chosen)))
   }
   return(nll_fn)
+}
+
+huber <- function(t, c) {
+  idx <- t > c
+  t[idx] <- 2*sqrt(t[idx]*c) - c
+  return(t)
+}
+
+get_rob_fn <- function(data, prob_mod_frame) {
+  # Get negative log-likelihood function, given a set of data and a model
+  # "frame" with structural aspects specified but parameters unspecified
+  
+  rob_fn <- function(par) {
+    p <- laplace_smooth(prob_mod_frame(data, par))
+    nll <- -ll(p, data$imm_chosen)
+    return(sum(huber(nll, 1)))
+  }
+  return(rob_fn)
 }
 
 get_rss_fn <- function(data, discount_function) {
@@ -231,7 +249,7 @@ get_ED50 <- function(mod) {
 #' mod <- dd_prob_model(df)
 #' print(mod$discount_function)
 #' @export
-dd_prob_model <- function(data, discount_function = 'all', absval = 'none', choice.rule = 'exponential', fixed.ends = T, param_ranges = NULL, silent = T) {
+dd_prob_model <- function(data, discount_function = 'all', absval = 'none', choice.rule = 'exponential', fixed.ends = T, param_ranges = NULL, silent = T, robust = F) {
   
   # Set parameter ranges
   tmp <- default_param_ranges
@@ -314,7 +332,11 @@ dd_prob_model <- function(data, discount_function = 'all', absval = 'none', choi
     prob_mod_args <- prob_mod_arg_permutations[perm_idx, ]
     # Get prob. model with the given settings but parameter values unspecified
     prob_mod_frame <- do.call(get_prob_mod_frame, prob_mod_args)
-    nll_fn <- get_nll_fn(data, prob_mod_frame)
+    if (robust) {
+      nll_fn <- get_rob_fn(data, prob_mod_frame)
+    } else {
+      nll_fn <- get_nll_fn(data, prob_mod_frame)
+    }
     # Get parameter ranges
     if (prob_mod_args$discount_function == 'none') {
       unique_delays <- unique(data$del)
