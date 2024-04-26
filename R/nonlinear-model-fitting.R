@@ -176,8 +176,10 @@ run_optimization <- function(fn, param_ranges, silent) {
         optimized <- optim(
           fn = fn,
           par = param_vals[val_idx, ],
-          control = list('warn.1d.NelderMead' = F,
-                         maxit = 1000)
+          control = list(
+            'warn.1d.NelderMead' = F, # For finding ED50 with dual-systems exponential discount function
+            maxit = 5000 # For when discount function is "none"; this can take a long time to converge
+          )
         )
         if (optimized$value < best_value) {
           best_value <- optimized$value
