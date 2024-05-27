@@ -273,6 +273,7 @@ dd_prob_model <- function(data, discount_function = 'all', absval = 'none', choi
     }
     if (robust) {
       curr_aic <- optimized$value
+      curr_bic <- optimized$value
     } else {
       curr_aic <- 2*length(optimized$par) + 2*optimized$value
       curr_bic <- log(nrow(data))*length(optimized$par) + 2*optimized$value
