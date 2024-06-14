@@ -2,9 +2,11 @@
 p2o <- function(p) (1 / (1/p - 1)) # proportion/probability to odds
 o2p <- function(o) (1 / (1/o + 1)) # odds to proportion/probability
 logit <- function(x) log(1 / (1/x - 1))
+clog <- function(x) -log(1 - x)
 logistic <- function(x) 1 / (1 + exp(-x))
 ll <- function(p, x) { # log-likelihood
-  log(c(p[x], (1-p)[!x]))
+  x*log(p) + (1 - x)*log(1 - p)
+  # log(c(p[x], (1-p)[!x]))
 }
 ln_lambda <- function(x, lambda) { # box-cox transform
   if (lambda == 0) {
@@ -17,24 +19,42 @@ varsigma <- function(x, alpha, lambda) alpha*ln_lambda(x + 1, lambda) + 1
 eps <- .Machine$double.eps # For later use in Laplace smoothing
 laplace_smooth <- function(p) p <- eps + (1 - 2*eps)*p
 
+get_transform <- function(config, inverse = F) {
+  if (inverse) {
+    out <- switch(
+      config$fixed_ends,
+      'none' = identity,
+      'neither' = identity,
+      'left' = exp,
+      'right' = function(x) 1 - exp(-x),
+      'both' = get(sprintf('p%s', config$noise_dist))
+    )
+  } else {
+    out <- switch(
+      config$fixed_ends,
+      'none' = identity,
+      'neither' = identity,
+      'left' = log,
+      'right' = function(x) -log(1 - x),
+      'both' = get(sprintf('q%s', config$noise_dist)) # quantile function of current CDF
+    )
+  }
+  return(out)
+}
+
 invert_decision_function <- function(mod, prob, del) {
   # Given some model and some delay, get the relative value of the immediate 
   # reward at which its probability of being chosen is some desired value
-  if (mod$choice.rule == 'exponential') {
-    if (mod$fixed.ends) {
-      R <- logistic(
-        logit(prob)/exp(mod$par['gamma']) +
-          logit(predict_indiffs(mod, del)))
-    } else {
-      R <- logit(prob)/exp(mod$par['gamma']) + predict_indiffs(mod, del)
-    }
-  } else if (mod$choice.rule == 'power') {
-    if (mod$fixed.ends) {
-      R <- o2p( p2o(predict_indiffs(mod, del)) * (1/prob - 1) ** (-1/exp(mod$par['gamma'])) )
-    } else {
-      R <- predict_indiffs(mod, del) * (1/prob - 1) ** (-1/exp(mod$par['gamma']))
-    }
-  }
+  
+  indiffs <- predict(mod, newdata = data.frame(del = del), type = 'indiff')
+  
+  qfunc <- get(sprintf('q%s', mod$config$noise_dist))
+  
+  transform <- get_transform(mod$config, inverse = F)
+  inverse_transform <- get_transform(mod$config, inverse = T)
+  
+  R <- inverse_transform(qfunc(prob) / coef(mod)['gamma'] + transform(indiffs))
+  
   return(R)
 }
 
@@ -65,4 +85,73 @@ run_optimization <- function(fn, param_ranges, silent) {
     )
   }
   return(best_optimized)
+}
+
+#' @export
+predict.td_gnlm <- function(mod, newdata = NULL, type = 'link') {
+  if (is.null(newdata)) {
+    newdata <- mod$data
+  }
+  
+  if (type == 'link') {
+    
+    score_func <- do.call(get_score_func_frame, mod$config)
+    scores <- score_func(newdata, coef(mod, rescaled = F))
+    return(scores)
+    
+  } else if (type == 'response') {
+    
+    prob_mod <- do.call(get_prob_mod_frame, mod$config)
+    probs <- prob_mod(newdata, coef(mod, rescaled = F))
+    return(probs)
+    
+  } else if (type == 'indiff') {
+    
+    indiff_func <- get_discount_function(mod$config$discount_function)
+    indiffs <- indiff_func(newdata$del, coef(mod, rescaled = F))
+    names(indiffs) <- NULL
+    return(indiffs)
+    
+  }
+}
+
+#' @export
+AIC.td_gnlm <- function(mod, k = 2) {
+  return(-2*as.numeric(logLik(mod)) + k*length(coef(mod)))
+}
+
+#' @export
+BIC.td_gnlm <- function(mod) {
+  return(AIC(mod, k = log(nrow(mod$data))))
+}
+
+#' @export
+logLik.td_gnlm <- function(mod) {
+  p <- laplace_smooth(predict(mod, type = 'response'))
+  x <- mod$data$imm_chosen
+  val <- sum(ll(p, x))
+  attr(val, "nobs") <- nrow(mod$data)
+  attr(val, "df") <- length(coef(mod))
+  class(val) <- "logLik"
+  return(val)
+}
+
+#' @export
+print.td_gnlm <- function(mod) {
+  cat(sprintf('Probabilistic temporal discounting model with config:\n'))
+  for (k in names(mod$config)) {
+    cat(sprintf(' %s: %s\n', k, mod$config[k]))
+  }
+}
+
+#' @export
+coef.td_gnlm <- function(mod, rescaled = T) {
+  if (rescaled) {
+    # For viewing
+    cf <- untransform(mod$optim$par)
+  } else {
+    # For using in internal functions
+    cf <- mod$optim$par
+  }
+  return(cf)
 }

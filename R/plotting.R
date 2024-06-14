@@ -14,55 +14,60 @@
 #' mod <- dd_prob_model(df)
 #' plot_dd(mod)
 #' @export
-plot_dd <- function(mod, p_range = c(0.4, 0.6)) {
-  max_del <- max(mod$data$del)
-  plotting_delays <- seq(0, max_del, length.out = 1000)
-  pred_indiffs <- predict_indiffs(mod, del = plotting_delays)
-  if ('choice.rule' %in% names(mod)) {
-    # Plot probabilistic model
-    if (mod$absval == 'none') {
-      lower <- invert_decision_function(mod, prob = p_range[1], del = plotting_delays)
-      upper <- invert_decision_function(mod, prob = p_range[2], del = plotting_delays)
-    }
-    plot(NA, NA,
-         xlim = c(0, max_del), ylim = c(0, 1),
-         xlab = 'Delay',
-         ylab = 'Rel. val. imm. rew.')
-    lines(pred_indiffs ~ plotting_delays)
-    if (mod$absval == 'none') {
-      lines(lower ~ plotting_delays, lty = 'dashed')
-      lines(upper ~ plotting_delays, lty = 'dashed')
-    }
-    mod$data$rel_val <- mod$data$val_imm / mod$data$val_del
-    points(rel_val ~ del, col = 'red',
-           data = subset(mod$data, imm_chosen))
-    points(rel_val ~ del, col = 'blue',
-           data = subset(mod$data, !imm_chosen))
-  } else {
-    # Plot deterministic model
-    plot(NA, NA, xlim = c(0, max_del), ylim = c(0, 1),
-         xlab = 'Delay',
-         ylab = 'Indifference point')
-    points(indiff ~ del, data = mod$data)
-    lines(pred_indiffs ~ plotting_delays)
+plot.td_gnlm <- function(mod, type = 'summary', ...) {
+  if (type == 'summary') {
+    plot_summary(mod, ...)
+  } else if (type == 'endpoints') {
+    plot_endpoints(mod, ...)
+  } else if (type == 'scores') {
+    plot_scores(mod, ...)
   }
-  title(mod$discount_function)
 }
 
-#' @export
+plot_summary <- function(mod, p_range = c(0.4, 0.6)) {
+  max_del <- max(mod$data$del)
+  plotting_delays <- seq(0, max_del, length.out = 1000)
+  pred_indiffs <- predict(mod, newdata = data.frame(del = plotting_delays), type = 'indiff')
+  # Plot probabilistic model
+  if (mod$config$gamma_scale == 'none') {
+    lower <- invert_decision_function(mod, prob = p_range[1], del = plotting_delays)
+    upper <- invert_decision_function(mod, prob = p_range[2], del = plotting_delays)
+  }
+  plot(NA, NA,
+       xlim = c(0, max_del), ylim = c(0, 1),
+       xlab = 'Delay',
+       ylab = 'Rel. val. imm. rew.')
+  lines(pred_indiffs ~ plotting_delays)
+  if (mod$config$gamma_scale == 'none') {
+    lines(lower ~ plotting_delays, lty = 'dashed')
+    lines(upper ~ plotting_delays, lty = 'dashed')
+  }
+  mod$data$rel_val <- mod$data$val_imm / mod$data$val_del
+  points(rel_val ~ del, col = 'red',
+         data = subset(mod$data, imm_chosen))
+  points(rel_val ~ del, col = 'blue',
+         data = subset(mod$data, !imm_chosen))
+  title(mod$config$discount_function)
+}
+
+# else {
+#     # Plot deterministic model
+#     plot(NA, NA, xlim = c(0, max_del), ylim = c(0, 1),
+#          xlab = 'Delay',
+#          ylab = 'Indifference point')
+#     points(indiff ~ del, data = mod$data)
+#     lines(pred_indiffs ~ plotting_delays)
+#   }
+#   title(mod$discount_function)
+# }
+
 plot_scores <- function(mod, outlier.idx = NULL) {
   if (is.null(outlier.idx)) {
     outlier.idx <- rep(F, nrow(mod$data))
   }
-  # Get scores
-  score_func <- do.call(get_score_func_frame,
-                        mod[names(formals(get_score_func_frame))])
-  scores <- do.call(score_func,
-                    mod[names(formals(score_func))])
-  # Get probabilities
-  prob_func <- do.call(get_prob_func_frame,
-                       mod[names(formals(get_prob_func_frame))])
-  p <- prob_func(scores, mod$par)
+  # Plot scores
+  score_func <- do.call(get_score_func_frame, mod$config)
+  scores <- score_func(mod$data, coef(mod))
   lim <- max(abs(min(scores)), abs(max(scores)))
   plot(mod$data$imm_chosen[!outlier.idx] ~ scores[!outlier.idx],
        ylim = c(0, 1),
@@ -70,22 +75,42 @@ plot_scores <- function(mod, outlier.idx = NULL) {
        ylab = 'Prob. imm.',
        xlab = 'Score')
   points(mod$data$imm_chosen[outlier.idx] ~ scores[outlier.idx], col = 'red')
-  smooth_scores <- seq(-lim, lim, length.out = 1000)
-  lines(prob_func(smooth_scores, mod$par) ~ smooth_scores)
+  # Plot probabilities
+  prob_func <- do.call(get_prob_func_frame, mod$config)
+  score_range <- seq(-lim, lim, length.out = 1000)
+  p <- prob_func(score_range, coef(mod))
+  lines(p ~ score_range)
 }
 
-#' @export
-plot_rs <- function(mod) {
-  ED50 <- get_ED50(mod)
+plot_endpoints <- function(mod, del=NULL) {
+  if (mod$config$gamma_scale != 'none') {
+    warning('In reality there would be a different value of gamma for each delayed reward value')
+  }
+  if (is.null(del)) {
+    del <- get_ED50(mod)
+    if (is.na(del)) {
+      if (mod$config$discount_function == 'none') {
+        del <- mean(c(min(mod$data$del), max(c(mod$data$del))))
+        warning(sprintf('No ED50 for this discount function. Setting del=%s (halfway between min delay and max delay). Consider setting this manually.', del))
+      } else {
+        del <- 1
+      }
+    }
+  }
   plotting_rs <- seq(0, 1, length.out = 1000)
-  newdat <- data.frame(
-    del = ED50,
+  newdata <- data.frame(
+    del = del,
     val_del = 1,
     val_imm = plotting_rs
   )
-  p <- predict_prob_imm(mod, newdat)
+  p <- predict(mod, newdata = newdata, type = 'response')
   plot(p ~ plotting_rs, type = 'l',
        ylim = c(0, 1),
        xlab = 'R',
        ylab = 'Prob. Imm')
+  if (del %in% mod$data$del) {
+    sdf <- mod$data[mod$data$del == del, ]
+    sdf$R <-sdf$val_imm / sdf$val_del
+    points(imm_chosen ~ R, data = sdf)
+  }
 }

@@ -1,6 +1,7 @@
 
 # Discount functions
 all_discount_functions <- list(
+  'noise' = function(D, p) rep(logistic(p['k']), length(D)),
   'hyperbolic' = function(D, p) 1 / (1 + exp(p['k'])*D),
   'exponential' = function(D, p) exp(-exp(p['k'])*D),
   'inverse-q-exponential' = function(D, p) 1 / (1 + exp(p['k'])*D)**exp(p['s']),
@@ -27,6 +28,9 @@ get_discount_function <- function(func_name) {
 
 # Plausible parameter ranges
 default_param_ranges <- list(
+  'noise' = list(
+    k = seq(-5, 5, length.out = 3)
+  ),
   'hyperbolic' = list(
     k = seq(-5, 5, length.out = 3)
   ),
@@ -70,19 +74,23 @@ default_param_ranges <- list(
 untransform <- function(par) {
   # Get untransformed parameters
   u_p <- par
+  # Log-transformed
   idx <- names(u_p) %in% c('k', 's', 'gamma', 'alpha')
   u_p[idx] <- exp(u_p[idx])
+  # Logit-transformed
   idx <- grepl('\\d', names(u_p)) | names(u_p) == 'w'
   u_p[idx] <- logistic(u_p[idx])
+  # 0.5*logistic
   idx <- names(u_p) == 'eps'
   u_p[idx] <- 0.5*logistic(u_p[idx])
   return(u_p)
 }
 
 get_ED50 <- function(mod) {
-  u_p <- mod$untransformed_parameters
+  u_p <- coef(mod) # untransformed parameters
   ED50 <- switch(
-    mod$discount_function,
+    mod$config$discount_function,
+    "noise" = NA,
     "hyperbolic"= 1/u_p['k'],
     "exponential"= log(2)/u_p['k'],
     "inverse-q-exponential" = (2^(1/u_p['s']) - 1) / u_p['k'],
@@ -92,7 +100,7 @@ get_ED50 <- function(mod) {
     "dual-systems-exponential" = NA,
     "none" = NA
   )
-  if (mod$discount_function == 'dual-systems-exponential') {
+  if (mod$config$discount_function == 'dual-systems-exponential') {
     # No analytic solution, therefore optimize
     optim_func <- function(cand) {
       (predict_indiffs(mod, exp(cand)) - 0.5)**2

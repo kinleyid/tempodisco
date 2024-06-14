@@ -60,3 +60,4 @@ predict_prob_imm <- function(mod, data = NULL, laplace = T) {
   names(p) <- NULL
   return(p)
 }
+
