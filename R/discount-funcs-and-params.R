@@ -102,8 +102,10 @@ get_ED50 <- function(mod) {
   )
   if (mod$config$discount_function == 'dual-systems-exponential') {
     # No analytic solution, therefore optimize
-    optim_func <- function(cand) {
-      (predict_indiffs(mod, exp(cand)) - 0.5)**2
+    f_tp <- get_discount_function(mod$config$discount_function)
+    f_t <- function(del) f_tp(del, coef(mod, bounded = F)) # parameterized
+    optim_func <- function(t) {
+      ((f_t(exp(t))) - 0.5)**2
     }
     optimized <- optim(fn = optim_func, par = 0, method = 'BFGS')
     ED50 <- exp(optimized$par)

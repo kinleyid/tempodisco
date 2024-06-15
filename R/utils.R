@@ -96,19 +96,19 @@ predict.td_gnlm <- function(mod, newdata = NULL, type = 'link') {
   if (type == 'link') {
     
     score_func <- do.call(get_score_func_frame, mod$config)
-    scores <- score_func(newdata, coef(mod, rescaled = F))
+    scores <- score_func(newdata, coef(mod, bounded = F))
     return(scores)
     
   } else if (type == 'response') {
     
     prob_mod <- do.call(get_prob_mod_frame, mod$config)
-    probs <- prob_mod(newdata, coef(mod, rescaled = F))
+    probs <- prob_mod(newdata, coef(mod, bounded = F))
     return(probs)
     
   } else if (type == 'indiff') {
     
     indiff_func <- get_discount_function(mod$config$discount_function)
-    indiffs <- indiff_func(newdata$del, coef(mod, rescaled = F))
+    indiffs <- indiff_func(newdata$del, coef(mod, bounded = F))
     names(indiffs) <- NULL
     return(indiffs)
     
@@ -145,8 +145,8 @@ print.td_gnlm <- function(mod) {
 }
 
 #' @export
-coef.td_gnlm <- function(mod, rescaled = T) {
-  if (rescaled) {
+coef.td_gnlm <- function(mod, bounded = T) {
+  if (bounded) {
     # For viewing
     cf <- untransform(mod$optim$par)
   } else {
