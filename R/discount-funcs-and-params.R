@@ -12,8 +12,9 @@ all_discount_functions <- list(
 )
 
 none_func <- function(D, p) {
-  p <- logistic(p[grep('\\d', names(p))])
-  a <- approx(x = as.numeric(names(p)), y = p, xout = D)
+  p <- p[grep('del_', names(p))]
+  dels <- as.numeric(gsub('del_', '', names(p)))
+  a <- approx(x = dels, y = logistic(p), xout = D)
   return(a$y)
 }
 

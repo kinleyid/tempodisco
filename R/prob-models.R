@@ -215,7 +215,7 @@ dd_prob_model <- function(data,
     if (config$discount_function == 'none') {
       unique_delays <- unique(data$del)
       curr_param_ranges <- as.list(rep(0.5, length(unique_delays)))
-      names(curr_param_ranges) <- sprintf('%s', unique_delays)
+      names(curr_param_ranges) <- sprintf('del_%s', unique_delays)
     } else {
       curr_param_ranges <- param_ranges[[config$discount_function]]
     }
