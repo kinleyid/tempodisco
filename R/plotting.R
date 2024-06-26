@@ -24,6 +24,17 @@ plot.td_gnlm <- function(mod, type = 'summary', ...) {
   }
 }
 
+#' @export
+plot.td_glm <- function(mod, type = 'summary', ...) {
+  if (type == 'summary') {
+    plot_summary(mod, ...)
+  } else if (type == 'endpoints') {
+    plot_endpoints(mod, ...)
+  } else if (type == 'scores') {
+    plot_scores(mod, ...)
+  }
+}
+
 plot_summary <- function(mod, p_range = c(0.4, 0.6)) {
   max_del <- max(mod$data$del)
   plotting_delays <- seq(0, max_del, length.out = 1000)

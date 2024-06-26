@@ -3,6 +3,7 @@ p2o <- function(p) (1 / (1/p - 1)) # proportion/probability to odds
 o2p <- function(o) (1 / (1/o + 1)) # odds to proportion/probability
 logit <- function(x) log(1 / (1/x - 1))
 clog <- function(x) -log(1 - x)
+varphi <- function(x) -log(-log(x))
 logistic <- function(x) 1 / (1 + exp(-x))
 ll <- function(p, x) { # log-likelihood
   x*log(p) + (1 - x)*log(1 - p)
@@ -116,6 +117,26 @@ predict.td_gnlm <- function(mod, newdata = NULL, type = 'link') {
 }
 
 #' @export
+predict.td_glm <- function(mod, newdata = NULL, type = 'link') {
+  if (is.null(newdata)) {
+    newdata <- mod$glm$data
+  }
+  
+  newdata <- newvars(newdata, discount_function = mod$config$discount_function)
+  
+  if (type == 'indiff') {
+    
+    indiff_func <- get_discount_function(mod$config$discount_function)
+    indiffs <- indiff_func(newdata$del, coef(mod, bounded = F))
+    names(indiffs) <- NULL
+    return(indiffs)
+    
+  } else {
+    return(predict.glm(mod$glm, newdata = newdata, type = type))
+  }
+}
+
+#' @export
 AIC.td_gnlm <- function(mod, k = 2) {
   return(-2*as.numeric(logLik(mod)) + k*length(coef(mod)))
 }
@@ -152,6 +173,38 @@ coef.td_gnlm <- function(mod, bounded = T) {
   } else {
     # For using in internal functions
     cf <- mod$optim$par
+  }
+  return(cf)
+}
+
+#' @export
+coef.td_glm <- function(mod, df_par = T) {
+  if (df_par) {
+    # In terms of discount function parameters
+    p <- mod$glm$coefficients
+    B <- unname(c(p['B1'], p['B2'], p['B3']))
+    d <- mod$config$discount_function
+    if (d == 'hyperbolic.1') {
+      cf <- c('k' = B[2]/B[1])
+    } else if (d == 'hyperbolic.2') {
+      cf <- c('k' = exp(B[2]/B[1]))
+    } else if (d == 'exponential.1') {
+      cf <- c('k' = B[2]/B[1])
+    } else if (d == 'exponential.2') {
+      cf <- c('k' = exp(B[2]/B[1]))
+    } else if (d == 'scaled-exponential.1') {
+      cf <- c('k' = B[2]/B[1],
+              'w' = exp(-B[3]/B[1]))
+    } else if (d == 'nonlinear-time-hyperbolic.2') {
+      cf <- c('k' = exp(B[3]/B[1]),
+              's' = B[2]/B[1])
+    } else if (d == 'nonlinear-time-exponential.2') {
+      cf <- c('k' = exp(B[3]/B[1]),
+              's' = B[2]/B[1])
+    }
+  } else {
+    # For using in internal functions
+    cf <- mod$coefficients
   }
   return(cf)
 }

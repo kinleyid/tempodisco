@@ -258,3 +258,48 @@ dd_prob_model <- function(data,
   
   return(best_output)
 }
+
+#' @export
+td_glm <- function(data, discount_function = 'hyperbolic.1') {
+  data <- newvars(data, discount_function)
+  if ('B3' %in% names(data)) {
+    fml <- imm_chosen ~ B1 + B2 + B3 + 0
+  } else {
+    fml <- imm_chosen ~ B1 + B2 + 0
+  }
+  mod <- list(
+    glm = glm(formula = fml, data = data, family = binomial(link = 'logit')),
+    config = list(discount_function = discount_function)
+  )
+  class(mod) <- 'td_glm'
+  return(mod)
+}
+
+newvars <- function(data, discount_function) {
+  if (discount_function == 'hyperbolic.1') {
+    data$B1 <- 1 - data$val_del / data$val_imm
+    data$B2 <- data$del
+  } else if (discount_function == 'hyperbolic.2') {
+    data$B1 <- qlogis(data$val_imm / data$val_del) + log(data$del)
+    data$B2 <- 1
+  } else if (discount_function == 'exponential.1') {
+    data$B1 <- log(data$val_imm / data$val_del)
+    data$B2 <- data$del
+  } else if (discount_function == 'exponential.2') {
+    data$B1 <- varphi(data$val_imm / data$val_del) + data$del
+    data$B2 <- 1
+  } else if (discount_function == 'scaled-exponential.1') {
+    data$B1 <- log(data$val_imm / data$val_del)
+    data$B2 <- data$del
+    data$B3 <- 1
+  } else if (discount_function == 'nonlinear-time-hyperbolic.2') {
+    data$B1 <- log(data$val_imm / data$val_del)
+    data$B2 <- log(data$del)
+    data$B3 <- 1
+  } else if (discount_function == 'nonlinear-time-exponential.2') {
+    data$B1 <- varphi(data$val_imm / data$val_del)
+    data$B2 <- log(data$del)
+    data$B3 <- 1
+  }
+  return(data)
+}
