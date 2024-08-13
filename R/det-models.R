@@ -10,9 +10,9 @@ get_rss_fn <- function(data, discount_function) {
   return(rss_fn)
 }
 
-#' Deterministic delay discounting model
+#' Indifference point model
 #'
-#' Compute a deterministic model for a single subject's delay discounting
+#' Compute a model of a single subject's indifference points
 #' @param data A data frame with columns `indiff` for the pre-computed indifference points and `del` for the delay
 #' @param discount_function A vector of strings specifying the name of the discount functions to use. Options are `'hyperbolic'`, `'exponential'`, `'inverse-q-exponential'`, `'nonlinear-time-hyperbolic'`, `'scaled-exponential'`, `'dual-systems-exponential'`, and `'nonlinear-time-exponential'`. Default is `'all'`, meaning every discount function is tested and the one with the best AIC is selected.
 #' @param param_ranges A list containing the starting values to try for each parameter. Defaults to `c(-5, 0, 5)` for most parameters
@@ -26,7 +26,20 @@ get_rss_fn <- function(data, discount_function) {
 #' mod <- dd_det_model(df)
 #' print(mod$discount_function)
 #' @export
-dd_det_model <- function(data, discount_function = 'all', param_ranges = NULL, silent = T) {
+td_ipm <- function(
+    data,
+    discount_function = c('all',
+                          'hyperbolic',
+                          'exponential',
+                          'inverse-q-exponential',
+                          'nonlinear-time-hyperbolic',
+                          'scaled-exponential',
+                          'dual-systems-exponential',
+                          'nonlinear-time-exponential',
+                          'model-free',
+                          'noise'),
+    param_ranges = NULL,
+    silent = T) {
   
   # Set parameter ranges
   tmp <- default_param_ranges

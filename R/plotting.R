@@ -2,6 +2,7 @@
 #'
 #' Plot delay discounting models
 #' @param mod A delay discounting model. See `dd_prob_model` and `dd_det_model`
+#' @param type Type of plot to generate
 #' @param p_range In addition to the indifference points (where the probability of choosing the immediate reward is 0.5), other "preference points" can also be plotted (e.g., points where the probability of choosing the immediate reward is 0.8). This allows visualization of how stochastic decision making is. Defaults to `c(0.4, 0.6)`
 #' @examples
 #' # Generate data
@@ -14,7 +15,8 @@
 #' mod <- dd_prob_model(df)
 #' plot_dd(mod)
 #' @export
-plot.td_gnlm <- function(mod, type = 'summary', ...) {
+plot.td_gnlm <- function(mod, type = c('summary', 'endpoints', 'scores'), ...) {
+  type <- match.arg(type)
   if (type == 'summary') {
     plot_summary(mod, ...)
   } else if (type == 'endpoints') {
@@ -36,7 +38,8 @@ plot.td_glm <- function(mod, type = 'summary', ...) {
 }
 
 plot_summary <- function(mod, p_range = c(0.4, 0.6)) {
-  max_del <- max(mod$data$del)
+  data <- mod$data
+  max_del <- max(data$del)
   plotting_delays <- seq(0, max_del, length.out = 1000)
   pred_indiffs <- predict(mod, newdata = data.frame(del = plotting_delays), type = 'indiff')
   # Plot probabilistic model
@@ -53,11 +56,11 @@ plot_summary <- function(mod, p_range = c(0.4, 0.6)) {
     lines(lower ~ plotting_delays, lty = 'dashed')
     lines(upper ~ plotting_delays, lty = 'dashed')
   }
-  mod$data$rel_val <- mod$data$val_imm / mod$data$val_del
+  data$rel_val <- data$val_imm / data$val_del
   points(rel_val ~ del, col = 'red',
-         data = subset(mod$data, imm_chosen))
+         data = subset(data, imm_chosen))
   points(rel_val ~ del, col = 'blue',
-         data = subset(mod$data, !imm_chosen))
+         data = subset(data, !imm_chosen))
   title(mod$config$discount_function)
 }
 
@@ -93,31 +96,50 @@ plot_scores <- function(mod, outlier.idx = NULL) {
   lines(p ~ score_range)
 }
 
-plot_endpoints <- function(mod, del=NULL) {
-  if (mod$config$gamma_scale != 'none') {
-    warning('In reality there would be a different value of gamma for each delayed reward value')
+plot_endpoints <- function(mod, del=NULL, val_del=NULL) {
+  if (is.null(val_del)) {
+    val_del <- mean(mod$data$val_del)
+    if (mod$config$gamma_scale != 'none') {
+      warning(sprintf('
+        Gamma (steepness of curve) is scaled by val_del
+        Thus, the curve will have different steepness for a different value of val_del
+        Defaulting to val_del = %s (mean of val_del from data used to fit model)
+        Use the `val_del` argument to specify a custom value
+      ', val_del))
+    }
   }
   if (is.null(del)) {
-    del <- get_ED50(mod)
-    if (is.na(del)) {
-      if (mod$config$discount_function == 'none') {
-        del <- mean(c(min(mod$data$del), max(c(mod$data$del))))
-        warning(sprintf('No ED50 for this discount function. Setting del=%s (halfway between min delay and max delay). Consider setting this manually.', del))
-      } else {
-        del <- 1
-      }
+    if (mod$config$discount_function == 'none') {
+      del <- mean(c(min(mod$data$del), max(c(mod$data$del))))
+      warning(sprintf('
+        No ED50 for the "none" discount function.
+        Setting del=%s (halfway between min delay and max delay).
+        Consider setting this manually.
+      ', del))
+    } else if (mod$config$discount_function == 'noise') {
+      del <- 1
+      warning(sprintf('
+        No ED50 for the "noise" discount function.
+        Setting del=%s.
+      ', del))
+    } else {
+      del <- ED50(mod)
+      cat(sprintf('
+        Detting del = %s (ED50) to center the curve.
+        This can be changed using the `del` argument.
+      ', del))
     }
   }
   plotting_rs <- seq(0, 1, length.out = 1000)
   newdata <- data.frame(
     del = del,
-    val_del = 1,
-    val_imm = plotting_rs
+    val_del = val_del,
+    val_imm = plotting_rs*val_del
   )
   p <- predict(mod, newdata = newdata, type = 'response')
   plot(p ~ plotting_rs, type = 'l',
        ylim = c(0, 1),
-       xlab = 'R',
+       xlab = 'val_imm/val_del',
        ylab = 'Prob. Imm')
   if (del %in% mod$data$del) {
     sdf <- mod$data[mod$data$del == del, ]

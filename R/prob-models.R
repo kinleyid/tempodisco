@@ -89,16 +89,14 @@ get_rob_fn <- function(data, prob_mod_frame) {
   return(rob_fn)
 }
 
-#' Probabilistic delay discounting model
+#' Probabilistic temporal discounting model
 #'
-#' Compute a probabilistic model for a single subject's delay discounting
+#' Compute a probabilistic model for a single subject's temporal discounting
 #' @param data A data frame with columns `val_imm` and `val_del` for the values of the immediate and delayed rewards, `del` for the delay, and `imm_chosen` (Boolean) for whether the immediate reward was chosen
-#' @param discount_function A vector of strings specifying the name of the discount functions to use. Options are `'hyperbolic'`, `'exponential'`, `'inverse-q-exponential'`, `'nonlinear-time-hyperbolic'`, `'scaled-exponential'`, `'dual-systems-exponential'`, `'nonlinear-time-exponential'`, and `'none'`. Default is `'all'`, meaning every discount function is tested and the one with the best AIC is selected. When `'none'` is used, each indifference point is estimated as a separate parameter, and these indifference points can be accessed through the `untransformed_parameters` component of the output.
-#' @param choice.rule A string specifying whether the `'exponential'` (default) or `'power'` choice rule should be used.
-#' @param absval A string specifying how the absolute value of the delayed reward should be accounted for when the choice rule is `'exponential'`. Ignored when the choice rule is `'power'`. Defaults to `'none'`. Other options are `'linear'` (linear scaling) and `'nonlinear'` (flexible nonlinear scaling)
-#' @param fixed.ends A Boolean specifying whether the model should satisfy the desiderata that subjects should always prefer something over nothing (i.e., nonzero delayed reward over nothing) and the same reward sooner rather than later
+#' @param discount_function A vector of strings specifying the name of the discount functions to use.
+#' @param choice_rule A string specifying whether the `'exponential'` (default) or `'power'` choice rule should be used.
+#' @param fixed_ends A Boolean specifying whether the model should satisfy the desiderata that subjects should always prefer something over nothing (i.e., nonzero delayed reward over nothing) and the same reward sooner rather than later
 #' @param param_ranges A list containing the starting values to try for each parameter. Defaults to `c(-5, 0, 5)` for most parameters
-#' @param silent A Boolean specifying whether the call to `optim` (which occurs in a `try` block) should be silent on error
 #' @return A list from `optim` with additional components specifying the AIC, the ED50, the discount function, and the probabilistic model
 #' @note The `par` component of the output list is for internal use. For statistical analyses, use the `untransformed_parameters`. `par` contains the parameters after various transformations intended to keep them within certain bounds (e.g., k parameters should never be negative)
 #' @examples 
@@ -112,15 +110,66 @@ get_rob_fn <- function(data, prob_mod_frame) {
 #' mod <- dd_prob_model(df)
 #' print(mod$discount_function)
 #' @export
-dd_prob_model <- function(data,
-                          discount_function = 'all',
-                          fixed_ends = 'none',
-                          gamma_scale = 'none', # or val_del
-                          noise_dist = 'logis',
-                          fit_err_rate = F,
-                          robust = F,
-                          param_ranges = NULL) {
+dd_prob_model <- td_gnlm <- function(
+    data,
+    discount_function = c('all',
+                          'hyperbolic',
+                          'exponential',
+                          'inverse-q-exponential',
+                          'nonlinear-time-hyperbolic',
+                          'scaled-exponential',
+                          'dual-systems-exponential',
+                          'nonlinear-time-exponential',
+                          'model-free',
+                          'noise'),
+    choice_rule = c('logistic', 'probit', 'power'),
+    fixed_ends = F,
+    fit_err_rate = F,
+    config = NULL,
+    robust = F,
+    param_ranges = NULL,
+    silent = T) {
   
+  # From a user's POV, it's easier to specify `choice_rule` and `fixed_ends`
+  # Internally, it makes more sense to use `noise_dist`, `gamma_scale`, and `transform`
+  # The user can control the latter through the `config` argument
+  if (is.null(config)) {
+    choice_rule = match.arg(choice_rule)
+    config <- list()
+    # From `choice_rule` and `fixed_ends`, get `noise_dist`, `gamma_scale`, and `transform`
+    if (choice_rule == 'logistic') {
+      config$noise_dist <- 'logis'
+      config$gamma_scale <- 'linear'
+      if (fixed_ends) {
+        config$transform <- 'noise_dist_quantile'
+      } else {
+        config$transform <- 'identity'
+      }
+    } else if (choice_rule == 'probit') {
+      config$noise_dist <- 'norm'
+      config$gamma_scale <- 'linear'
+      if (fixed_ends) {
+        config$transform <- 'noise_dist_quantile'
+      } else {
+        config$transform <- 'identity'
+      }
+    } else if (choice_rule == 'power') {
+      config$noise_dist = 'logis'
+      config$gamma_scale = 'none'
+      if (fixed_ends) {
+        config$transform = 'noise_dist_quantile'
+      } else {
+        config$transform = 'log'
+      }
+    } else {
+      stop(sprintf('choice_rule must be one of "logistic", "probit", or "power" (currently "%s")', choice_rule))
+    }
+  } else {
+    req_args <- c('noise_dist', 'gamma_scale', 'transform')
+    if (!setequal(req_args, names(config))) {
+      stop(sprintf('config must be a list with the following slots:\n%s', paste('- ', req_args, collapse = '\n')))
+    }
+  }
   # Set parameter ranges
   tmp <- default_param_ranges
   if (!is.null(param_ranges)) {
@@ -134,7 +183,9 @@ dd_prob_model <- function(data,
     }
   }
   param_ranges <- tmp
+  
   # Set discount functions
+  discount_function <- match.arg(discount_function)
   if (discount_function == 'all') {
     discount_function <- names(all_discount_functions)
   }
@@ -158,51 +209,49 @@ dd_prob_model <- function(data,
   # Ensure imm_chosen is logical
   data$imm_chosen <- as.logical(data$imm_chosen)
   
-  
-  # Endpoints
-  
-  # if (fixed.ends != 'neither') {
-  #   R0 <- subset(data, val_imm == 0)
-  #   if (any(R0$imm_chosen)) {
-  #     stop('Participant chose an immediate reward with a value of 0. For fixed-endpoint models, this makes the negative log likelihood function impossible to optimize.')
-  #   }
-  #   R1 <- subset(data, val_imm == val_del)
-  #   if (any(!R1$imm_chosen)) {
-  #     stop('Participant chose a delayed reward of equal value to an immediate reward. When desid=True, this makes the negative log likelihood function impossible to optimize.')
-  #   }
-  # }
-  # While we're at it
+  # Attention checks
+  endpoint_warning_boilerplate <- 'For fixed-endpoint models, this makes the negative log likelihood function impossible to optimize (it also suggests inattention from the participant).'
+  R0 <- subset(data, val_imm == 0)
+  if (any(R0$imm_chosen)) {
+    warning(sprintf('Participant chose an immediate reward with a value of 0. %s', endpoint_warning_boilerplate))
+  }
+  R1 <- subset(data, val_imm == val_del)
+  if (any(!R1$imm_chosen)) {
+    warning(sprintf('Participant chose a delayed reward of equal value to an immediate reward. %s', endpoint_warning_boilerplate))
+  }
+  # While we're at it, more validation
   if (any(data$val_imm > data$val_del)) {
     stop('The data contains cases where val_imm exceeds val_del')
   }
   # Valid discount function
   for (d_f in discount_function) {
-    if (!(d_f %in% c(names(all_discount_functions), 'none'))) {
+    if (!(d_f %in% c(names(all_discount_functions)))) {
       valid_opts <- paste(sprintf('\n- "%s"', names(all_discount_functions)), collapse = '')
       stop(sprintf('"%s" is not a recognized discount function. Valid options are: %s', d_f, valid_opts))
     }
   }
-  # if (!(choice.rule %in% c('exponential', 'power', 'probit'))) {
-  #   stop(sprintf('choice.rule must be either "exponential", "power", or "probit" (currently %s)', choice.rule))
-  # }
   
-  # Get a table of permutations of model configurations
-  args <- as.list(environment())
-  args <- args[names(formals(dd_prob_model))]
-  args[c('data', 'param_ranges')] <- NULL
+  # Get arguments as a list
+  args <- c(
+    config,
+    list(
+      discount_function = discount_function,
+      fit_err_rate = fit_err_rate
+    )
+  )
   
   # Run optimization for each discount function
   best_crit <- Inf
-  best_output <- list()
-  cand_output <- list(
+  best_mod <- list()
+  cand_mod <- list( # Initialize 
     data = data
   )
-  class(cand_output) <- 'td_gnlm'
+  class(cand_mod) <- 'td_gnlm'
   for (curr_discount_function in args$discount_function) {
     config <- args
     config$discount_function <- curr_discount_function
     
-    cand_output$config <- config
+    cand_mod$config <- config
     
     # Get prob. model with the given settings but parameter values unspecified
     prob_mod_frame <- do.call(get_prob_mod_frame, config)
@@ -212,10 +261,12 @@ dd_prob_model <- function(data,
       nll_fn <- get_nll_fn(data, prob_mod_frame)
     }
     # Get parameter ranges
-    if (config$discount_function == 'none') {
+    if (config$discount_function == 'model-free') {
+      # Each indifference point will be a different parameter
       unique_delays <- unique(data$del)
       curr_param_ranges <- as.list(rep(0.5, length(unique_delays)))
-      names(curr_param_ranges) <- sprintf('del_%s', unique_delays)
+      # Round to 10 decimal points to be able to align delay values 
+      names(curr_param_ranges) <- sprintf('del_%.10f', unique_delays)
     } else {
       curr_param_ranges <- param_ranges[[config$discount_function]]
     }
@@ -230,12 +281,12 @@ dd_prob_model <- function(data,
       stop('Optimization failed; optim() returned an error for every choice of initial parameter values')
     }
     
-    cand_output$optim <- optimized
+    cand_mod$optim <- optimized
     
     if (robust) {
       curr_crit <- optimized$value
     } else {
-      curr_crit <- BIC(cand_output)
+      curr_crit <- BIC(cand_mod)
     }
     if (curr_crit < best_crit) {
       best_crit <- curr_crit
@@ -248,34 +299,37 @@ dd_prob_model <- function(data,
           optimized$par['w'] <- -optimized$par['w']
         }
       }
-      best_output <- cand_output
+      best_mod <- cand_mod
     }
   }
-  best_output$data <- data
+  best_mod$data <- data
   
-  # Compute ED50
-  best_output$ED50 <- get_ED50(best_output)
-  
-  return(best_output)
+  return(best_mod)
 }
 
 #' @export
-td_glm <- function(data, discount_function = 'hyperbolic.1') {
-  data <- newvars(data, discount_function)
+td_glm <- function(data,
+                   discount_function = c('hyperbolic.1',
+                                         'hyperbolic.2',
+                                         'exponential.1',
+                                         'exponential.2',
+                                         'scaled-exponential.1',
+                                         'nonlinear-time-hyperbolic.2',
+                                         'nonlinear-time-exponential.2')) {
+  discount_function <- match.arg(discount_function)
+  data <- add_beta_terms(data, discount_function)
   if ('B3' %in% names(data)) {
     fml <- imm_chosen ~ B1 + B2 + B3 + 0
   } else {
     fml <- imm_chosen ~ B1 + B2 + 0
   }
-  mod <- list(
-    glm = glm(formula = fml, data = data, family = binomial(link = 'logit')),
-    config = list(discount_function = discount_function)
-  )
-  class(mod) <- 'td_glm'
+  mod <- glm(formula = fml, data = data, family = binomial(link = 'logit'))
+  mod$discount_function <- discount_function
+  class(mod) <- c('td_glm', 'glm', 'lm')
   return(mod)
 }
 
-newvars <- function(data, discount_function) {
+add_beta_terms <- function(data, discount_function) {
   if (discount_function == 'hyperbolic.1') {
     data$B1 <- 1 - data$val_del / data$val_imm
     data$B2 <- data$del

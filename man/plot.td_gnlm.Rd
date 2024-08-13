@@ -4,10 +4,12 @@
 \alias{plot.td_gnlm}
 \title{Plot models}
 \usage{
-\method{plot}{td_gnlm}(mod, type = "summary", ...)
+\method{plot}{td_gnlm}(mod, type = c("summary", "endpoints", "scores"), ...)
 }
 \arguments{
 \item{mod}{A delay discounting model. See `dd_prob_model` and `dd_det_model`}
+
+\item{type}{Type of plot to generate}
 
 \item{p_range}{In addition to the indifference points (where the probability of choosing the immediate reward is 0.5), other "preference points" can also be plotted (e.g., points where the probability of choosing the immediate reward is 0.8). This allows visualization of how stochastic decision making is. Defaults to `c(0.4, 0.6)`}
 }

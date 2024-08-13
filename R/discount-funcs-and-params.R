@@ -8,23 +8,18 @@ all_discount_functions <- list(
   'nonlinear-time-hyperbolic' = function(D, p) 1 / (1 + exp(p['k'])*D**exp(p['s'])),
   'scaled-exponential' = function(D, p) logistic(p['w'])*exp(-exp(p['k'])*D),
   'dual-systems-exponential' = function(D, p) logistic(p['w'])*exp(-exp(p['k1'])*D) + (1 - logistic(p['w']))*exp(-(exp(p['k2']) + exp(p['k1']))*D),
-  'nonlinear-time-exponential' = function(D, p) exp(-exp(p['k'])*D**exp(p['s']))
+  'nonlinear-time-exponential' = function(D, p) exp(-exp(p['k'])*D**exp(p['s'])),
+  'model-free' = function(D, p) {
+    p <- p[grep('del_', names(p))]
+    # Round parameters and delays to 10 decimal points for comparison
+    dels <- round(as.numeric(gsub('del_', '', names(p))), 10)
+    a <- approx(x = dels, y = logistic(p), xout = round(D, 10))
+    return(a$y)
+  }
 )
 
-none_func <- function(D, p) {
-  p <- p[grep('del_', names(p))]
-  dels <- as.numeric(gsub('del_', '', names(p)))
-  a <- approx(x = dels, y = logistic(p), xout = D)
-  return(a$y)
-}
-
 get_discount_function <- function(func_name) {
-  if (func_name == 'none') {
-    func <- none_func
-  } else {
-    func <- all_discount_functions[[func_name]]
-  }
-  return(func)
+  all_discount_functions[[func_name]]
 }
 
 # Plausible parameter ranges
@@ -69,7 +64,7 @@ default_param_ranges <- list(
     alpha = seq(-5, 5, length.out = 3),
     lambda = seq(-1, 1, length.out = 3)
   ),
-  'none' = NA
+  'model-free' = NA
 )
 
 untransform <- function(par) {
@@ -87,9 +82,17 @@ untransform <- function(par) {
   return(u_p)
 }
 
-get_ED50 <- function(mod) {
+#' Effective delay 50
+#'
+#' Generate predictions from a temporal discounting model
+#' @param mod A temporal discounting model. See `td_gnlm`
+#' @param newdata Optionally, a data frame to use for prediction. If omitted, the data used to fit the model will be used for prediction.
+#' @param type The type of prediction required. As in predict.glm, `"link"` (default) and `"response"` give predictions on the scales of the linear predictors and response variable, respectively. `"indiff"` gives predicted indifference points. In this case, `newdata` needs only a `del` column.
+#' @return A vector of predictions
+#' @export
+ED50 <- function(mod) {
   u_p <- coef(mod) # untransformed parameters
-  ED50 <- switch(
+  out <- switch(
     mod$config$discount_function,
     "noise" = NA,
     "hyperbolic"= 1/u_p['k'],
@@ -109,9 +112,37 @@ get_ED50 <- function(mod) {
       ((f_t(exp(t))) - 0.5)**2
     }
     optimized <- optim(fn = optim_func, par = 0, method = 'BFGS')
-    ED50 <- exp(optimized$par)
+    out <- exp(optimized$par)
   }
-  names(ED50) <- NULL
+  names(out) <- NULL
   
-  return(ED50)
+  return(out)
+}
+
+#' Area under the curve (AUC)
+#'
+#' Compute the area under the curve using numerical integration
+#' @param mod A temporal discounting model. See `td_gnlm`
+#' @param min_del Lower limit to use for integration
+#' @param max_del Upper limit to use for integration
+#' @param ... Further arguments passed to `integrate()`
+#' @return AUC value
+#' @export
+AUC <- function(mod, min_del = 0, max_del = NULL, verbose = T, ...) {
+  if (is.null(max_del)) {
+    max_del <- max(mod$data$del)
+    if (verbose) {
+      cat(sprintf('Defaulting to max_del = %s\n', max_del))
+    }
+  }
+  disc_func <- get_discount_function(mod$config$discount_function)
+  p <- coef(mod, bounded = F)
+  if (mod$config$discount_function == 'model-free') {
+    cat(sprintf('Assuming an indifference point of 1 at delay 0\n'))
+    p <- c(c('del_0' = Inf), p)
+  }
+  integrate(function(t) disc_func(t, p),
+            lower = min_del,
+            upper = max_del,
+            ...)
 }

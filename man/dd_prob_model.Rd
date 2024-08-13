@@ -2,15 +2,17 @@
 % Please edit documentation in R/prob-models.R
 \name{dd_prob_model}
 \alias{dd_prob_model}
-\title{Probabilistic delay discounting model}
+\title{Probabilistic temporal discounting model}
 \usage{
 dd_prob_model(
   data,
-  discount_function = "all",
-  fixed_ends = "none",
-  gamma_scale = "none",
-  noise_dist = "logis",
+  discount_function = c("all", "hyperbolic", "exponential", "inverse-q-exponential",
+    "nonlinear-time-hyperbolic", "scaled-exponential", "dual-systems-exponential",
+    "nonlinear-time-exponential", "model-free", "noise"),
+  choice_rule = c("logistic", "probit", "power"),
+  fixed_ends = F,
   fit_err_rate = F,
+  config = NULL,
   robust = F,
   param_ranges = NULL
 )
@@ -18,23 +20,19 @@ dd_prob_model(
 \arguments{
 \item{data}{A data frame with columns `val_imm` and `val_del` for the values of the immediate and delayed rewards, `del` for the delay, and `imm_chosen` (Boolean) for whether the immediate reward was chosen}
 
-\item{discount_function}{A vector of strings specifying the name of the discount functions to use. Options are `'hyperbolic'`, `'exponential'`, `'inverse-q-exponential'`, `'nonlinear-time-hyperbolic'`, `'scaled-exponential'`, `'dual-systems-exponential'`, `'nonlinear-time-exponential'`, and `'none'`. Default is `'all'`, meaning every discount function is tested and the one with the best AIC is selected. When `'none'` is used, each indifference point is estimated as a separate parameter, and these indifference points can be accessed through the `untransformed_parameters` component of the output.}
+\item{discount_function}{A vector of strings specifying the name of the discount functions to use.}
+
+\item{choice_rule}{A string specifying whether the `'exponential'` (default) or `'power'` choice rule should be used.}
+
+\item{fixed_ends}{A Boolean specifying whether the model should satisfy the desiderata that subjects should always prefer something over nothing (i.e., nonzero delayed reward over nothing) and the same reward sooner rather than later}
 
 \item{param_ranges}{A list containing the starting values to try for each parameter. Defaults to `c(-5, 0, 5)` for most parameters}
-
-\item{choice.rule}{A string specifying whether the `'exponential'` (default) or `'power'` choice rule should be used.}
-
-\item{absval}{A string specifying how the absolute value of the delayed reward should be accounted for when the choice rule is `'exponential'`. Ignored when the choice rule is `'power'`. Defaults to `'none'`. Other options are `'linear'` (linear scaling) and `'nonlinear'` (flexible nonlinear scaling)}
-
-\item{fixed.ends}{A Boolean specifying whether the model should satisfy the desiderata that subjects should always prefer something over nothing (i.e., nonzero delayed reward over nothing) and the same reward sooner rather than later}
-
-\item{silent}{A Boolean specifying whether the call to `optim` (which occurs in a `try` block) should be silent on error}
 }
 \value{
 A list from `optim` with additional components specifying the AIC, the ED50, the discount function, and the probabilistic model
 }
 \description{
-Compute a probabilistic model for a single subject's delay discounting
+Compute a probabilistic model for a single subject's temporal discounting
 }
 \note{
 The `par` component of the output list is for internal use. For statistical analyses, use the `untransformed_parameters`. `par` contains the parameters after various transformations intended to keep them within certain bounds (e.g., k parameters should never be negative)
