@@ -1,22 +1,23 @@
 
 lib_path <- 'C:/Users/isaac/Projects/ddDesidModels'
 roxygen2::roxygenise(lib_path)
-devtools::load_all(lib_path)
 
 # Generate data
 df <- data.frame(val_imm = seq(1, 99, length.out = 10), val_del = 100, del = rep(exp(1:10), each=10))
-indiffs <- function(x) 1 / (1 + 0.01*x)
+indiffs <- function(x) 1 / (1 + 0.001*x)
 prob <- plogis(qlogis(df$val_imm / df$val_del) - qlogis(indiffs(df$del)))
 df$imm_chosen <- runif(nrow(df)) < prob
 
 # Default, simple call
-mod <- td_gnlm(df, discount_function = 'hyperbolic')
+devtools::load_all(lib_path)
+mod <- dd_prob_model(df, discount_function = 'hyperbolic')
 print(mod)
 ED50(mod)
 AUC(mod)
 
 plot(mod)
 plot(mod, type = 'summary')
+plot(mod, type = 'endpoints')
 plot(mod, type = 'endpoints', del = 100, val_del = 50)
 
 mod <- td_gnlm(df, discount_function = 'hyperbolic', choice_rule = 'probit', fixed_ends = T)
@@ -53,3 +54,5 @@ curr_discount_function <- "dual-systems-exponential"
 
 # Residuals of each kind
 # Plots of each kind
+
+# Test custom discount function

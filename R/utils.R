@@ -127,13 +127,13 @@ predict.td_gnlm <- function(mod, newdata = NULL, type = c('link', 'response', 'i
   } else if (type == 'response') {
     
     prob_mod <- do.call(get_prob_mod_frame, mod$config)
-    probs <- prob_mod(newdata, coef(mod, bounded = F))
+    probs <- prob_mod(newdata, coef(mod))
     return(probs)
     
   } else if (type == 'indiff') {
     
-    indiff_func <- get_discount_function(mod$config$discount_function)
-    indiffs <- indiff_func(newdata$del, coef(mod, bounded = F))
+    indiff_func <- mod$config$discount_function$fn
+    indiffs <- indiff_func(newdata$del, coef(mod))
     names(indiffs) <- NULL
     return(indiffs)
     
@@ -208,7 +208,7 @@ logLik.td_gnlm <- function(mod) {
 #' @export
 print.td_gnlm <- function(mod) {
   cat(sprintf('\nProbabilistic temporal discounting model\n\n'))
-  cat(sprintf('Discount function: %s, with coefficients:\n\n', mod$config$discount_function))
+  cat(sprintf('Discount function: %s, with coefficients:\n\n', mod$config$discount_function$name))
   print(coef(mod))
   cat(sprintf('\nConfig:\n'))
   for (comp_name in c('noise_dist', 'gamma_scale', 'transform')) {
@@ -226,9 +226,10 @@ print.td_gnlm <- function(mod) {
 #' @return A names vector of coefficients
 #' @export
 coef.td_gnlm <- function(mod, bounded = T) {
+  unbounded_par <- mod$optim$par
   if (bounded) {
     # For viewing
-    cf <- untransform(mod$optim$par)
+    cf = mod$config$discount_function$par_trf(unbounded_par)
   } else {
     # For using in internal functions
     cf <- mod$optim$par

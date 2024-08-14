@@ -4,7 +4,7 @@
 \alias{AUC}
 \title{Area under the curve (AUC)}
 \usage{
-AUC(mod, min_del = 0, max_del = NULL)
+AUC(mod, min_del = 0, max_del = NULL, verbose = T, ...)
 }
 \arguments{
 \item{mod}{A temporal discounting model. See `td_gnlm`}
@@ -12,6 +12,8 @@ AUC(mod, min_del = 0, max_del = NULL)
 \item{min_del}{Lower limit to use for integration}
 
 \item{max_del}{Upper limit to use for integration}
+
+\item{...}{Further arguments passed to `integrate()`}
 }
 \value{
 AUC value

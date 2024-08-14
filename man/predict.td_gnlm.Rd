@@ -7,7 +7,7 @@
 \method{predict}{td_gnlm}(mod, newdata = NULL, type = c("link", "response", "indiff"))
 }
 \arguments{
-\item{mod}{A temporal discounting model. See `td_gnlm`}
+\item{mod}{A temporal discounting model. See `td_gnlm`.}
 
 \item{newdata}{Optionally, a data frame to use for prediction. If omitted, the data used to fit the model will be used for prediction.}
 

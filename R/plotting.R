@@ -1,3 +1,4 @@
+
 #' Plot models
 #'
 #' Plot delay discounting models
@@ -50,7 +51,7 @@ plot_summary <- function(mod, p_range = c(0.4, 0.6)) {
   plot(NA, NA,
        xlim = c(0, max_del), ylim = c(0, 1),
        xlab = 'Delay',
-       ylab = 'Rel. val. imm. rew.')
+       ylab = 'val_imm / val_del')
   lines(pred_indiffs ~ plotting_delays)
   if (mod$config$gamma_scale == 'none') {
     lines(lower ~ plotting_delays, lty = 'dashed')
@@ -61,7 +62,7 @@ plot_summary <- function(mod, p_range = c(0.4, 0.6)) {
          data = subset(data, imm_chosen))
   points(rel_val ~ del, col = 'blue',
          data = subset(data, !imm_chosen))
-  title(mod$config$discount_function)
+  title(mod$config$discount_function$name)
 }
 
 # else {
@@ -109,16 +110,16 @@ plot_endpoints <- function(mod, del=NULL, val_del=NULL) {
     }
   }
   if (is.null(del)) {
-    if (mod$config$discount_function == 'none') {
+    if (mod$config$discount_function$name == 'model-free') {
       del <- mean(c(min(mod$data$del), max(c(mod$data$del))))
       warning(sprintf('
-        No ED50 for the "none" discount function.
+        No ED50 for the "model-free" discount function.
         Setting del=%s (halfway between min delay and max delay).
         Consider setting this manually.
       ', del))
-    } else if (mod$config$discount_function == 'noise') {
+    } else if (mod$config$discount_function$name == 'noise') {
       del <- 1
-      warning(sprintf('
+      cat(sprintf('
         No ED50 for the "noise" discount function.
         Setting del=%s.
       ', del))

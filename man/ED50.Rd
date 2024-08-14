@@ -17,5 +17,5 @@ ED50(mod)
 A vector of predictions
 }
 \description{
-Generate predictions from a temporal discounting model
+Compute the effective delay 50
 }

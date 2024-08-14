@@ -7,11 +7,12 @@ get_score_func_frame <- function(...) {
   args <- list(...)
   
   # What is the discount function?
-  discount_func <- get_discount_function(args$discount_function)
+  discount_function <- args$discount_function$fn
+  par_trf <- args$discount_function$par_trf
   
   # Get the transform applied to v_i/v_d and f(t)
   transform <- get_transform(args)
-  delta <- function(data, par) transform(data$val_imm/data$val_del) - transform(discount_func(data$del, par))
+  delta <- function(data, par) transform(data$val_imm/data$val_del) - transform(discount_function(data$del, par_trf(par)))
 
   # Get the factor by which gamma is scaled
   gamma_scale <- switch(args$gamma_scale,
@@ -110,7 +111,7 @@ get_rob_fn <- function(data, prob_mod_frame) {
 #' mod <- dd_prob_model(df)
 #' print(mod$discount_function)
 #' @export
-dd_prob_model <- td_gnlm <- function(
+dd_prob_model <- tdbcm <- function(
     data,
     discount_function = c('all',
                           'hyperbolic',
@@ -125,15 +126,16 @@ dd_prob_model <- td_gnlm <- function(
     choice_rule = c('logistic', 'probit', 'power'),
     fixed_ends = F,
     fit_err_rate = F,
-    config = NULL,
     robust = F,
     param_ranges = NULL,
-    silent = T) {
+    silent = T,
+    ...) {
   
   # From a user's POV, it's easier to specify `choice_rule` and `fixed_ends`
   # Internally, it makes more sense to use `noise_dist`, `gamma_scale`, and `transform`
-  # The user can control the latter through the `config` argument
-  if (is.null(config)) {
+  # The user can control the latter through the `...` argument
+  config <- list(...)
+  if (length(config) == 0) {
     choice_rule = match.arg(choice_rule)
     config <- list()
     # From `choice_rule` and `fixed_ends`, get `noise_dist`, `gamma_scale`, and `transform`
@@ -167,7 +169,7 @@ dd_prob_model <- td_gnlm <- function(
   } else {
     req_args <- c('noise_dist', 'gamma_scale', 'transform')
     if (!setequal(req_args, names(config))) {
-      stop(sprintf('config must be a list with the following slots:\n%s', paste('- ', req_args, collapse = '\n')))
+      stop(sprintf('The following must all be specified:\n%s', paste('- ', req_args, collapse = '\n')))
     }
   }
   # Set parameter ranges
@@ -184,10 +186,10 @@ dd_prob_model <- td_gnlm <- function(
   }
   param_ranges <- tmp
   
-  # Set discount functions
-  discount_function <- match.arg(discount_function)
-  if (discount_function == 'all') {
-    discount_function <- names(all_discount_functions)
+  # Set discount function(s)
+  if ((discount_function %||% 'all') == 'all') {
+    discount_function <- eval(formals(dd_prob_model)$discount_function)
+    discount_function[discount_function != 'all']
   }
   
   # Check args
@@ -235,10 +237,19 @@ dd_prob_model <- td_gnlm <- function(
   args <- c(
     config,
     list(
-      discount_function = discount_function,
       fit_err_rate = fit_err_rate
     )
   )
+  
+  # Get a list of discount functions to test
+  if (is.list(discount_function)) {
+    cand_fns <- list(discount_function)
+  } else {
+    cand_fns <- list()
+    for (fn_name in discount_function) {
+      cand_fns <- c(cand_fns, list(tdfn(fn_name)))
+    }
+  }
   
   # Run optimization for each discount function
   best_crit <- Inf
@@ -247,9 +258,9 @@ dd_prob_model <- td_gnlm <- function(
     data = data
   )
   class(cand_mod) <- 'td_gnlm'
-  for (curr_discount_function in args$discount_function) {
+  for (cand_fn in cand_fns) {
     config <- args
-    config$discount_function <- curr_discount_function
+    config$discount_function <- cand_fn
     
     cand_mod$config <- config
     
@@ -261,22 +272,30 @@ dd_prob_model <- td_gnlm <- function(
       nll_fn <- get_nll_fn(data, prob_mod_frame)
     }
     # Get parameter ranges
-    if (config$discount_function == 'model-free') {
-      # Each indifference point will be a different parameter
-      unique_delays <- unique(data$del)
-      curr_param_ranges <- as.list(rep(0.5, length(unique_delays)))
-      # Round to 10 decimal points to be able to align delay values 
-      names(curr_param_ranges) <- sprintf('del_%.10f', unique_delays)
+    if (is.function(config$discount_function$par)) {
+      par_starts <- config$discount_function$par()
     } else {
-      curr_param_ranges <- param_ranges[[config$discount_function]]
+      par_starts <- config$discount_function$par
     }
-    curr_param_ranges <- c(curr_param_ranges, param_ranges$gamma)
+    # Add gamma start values
+    par_starts <- c(
+      par_starts,
+      list(
+        gamma = seq(-5, 5, length.out = 3)
+      )
+    )
+    # Add epsilon start values, if fitting error rate
     if (config$fit_err_rate) {
-      curr_param_ranges <- c(curr_param_ranges, param_ranges$err.rate)
+      par_starts <- c(
+        par_starts,
+        list(
+          eps = c(-5, 0)
+        )
+      )
     }
     
     # Run optimization
-    optimized <- run_optimization(nll_fn, curr_param_ranges, silent = F)
+    optimized <- run_optimization(nll_fn, par_starts, silent = F)
     if (length(optimized) == 0) {
       stop('Optimization failed; optim() returned an error for every choice of initial parameter values')
     }
@@ -290,14 +309,8 @@ dd_prob_model <- td_gnlm <- function(
     }
     if (curr_crit < best_crit) {
       best_crit <- curr_crit
-      if (config$discount_function == 'dual-systems-exponential') {
-        # Ensure k1 < k2
-        if (optimized$par['k1'] > optimized$par['k2']) {
-          tmp <- optimized$par['k1']
-          optimized$par['k1'] <- optimized$par['k2']
-          optimized$par['k2'] <- tmp
-          optimized$par['w'] <- -optimized$par['w']
-        }
+      if ('par_chk' %in% names(config$discount_function)) {
+        optimized$par <- config$discount_function$par_chk(optimized$par)
       }
       best_mod <- cand_mod
     }
