@@ -4,7 +4,7 @@
 \alias{coef.td_gnlm}
 \title{Extract coefficients}
 \usage{
-\method{coef}{td_gnlm}(mod, bounded = T)
+\method{coef}{td_gnlm}(mod, bounded = T, par = NULL)
 }
 \arguments{
 \item{bounded}{Boolean specifying whether parameters should be bounded (e.g., k > 0) or should be unbounded. Boended and unbounded coefficients are related by some transform. Bounded coefficients can be plugged directly into discount functions; optimization is performed on unbounded coefficients.}

@@ -74,23 +74,37 @@ invert_decision_function <- function(mod, prob, del) {
   return(R)
 }
 
-run_optimization <- function(fn, param_ranges, silent) {
+run_optimization <- function(fn, par_starts, par_lims, silent) {
   # Get the best-fitting optim() object
-  # Convert to a table of all possible combinations
-  param_vals <- as.matrix(do.call(expand.grid, param_ranges))
-  # Try each combination
+ 
+  # Get a table of possible combinations of parameter starting values
+  par_start_combos <- as.matrix(do.call(expand.grid, par_starts))
+  
+  # Get the bounds on each parameter
+  # This is a belt-and-suspenders way of ensuring the `par`, `lower`, and `upper` args to `optim` are all in the same, right order
+  n_par <- length(par_starts)
+  par_names <- colnames(par_start_combos)
+  lower <- numeric(n_par)
+  upper <- numeric(n_par)
+  for (par_idx in 1:n_par) {
+    lower[par_idx] <- par_lims[[par_names[par_idx]]][1]
+    upper[par_idx] <- par_lims[[par_names[par_idx]]][2]
+  }
+  names(lower) <- par_names
+  names(upper) <- par_names
+  
+  # Try each combination of parameter starting values
   best_value <- Inf
   best_optimized <- list()
-  for (val_idx in 1:nrow(param_vals)) {
+  for (combo_idx in 1:nrow(par_start_combos)) {
     try( # Optimization may fail
       {
         optimized <- optim(
           fn = fn,
-          par = param_vals[val_idx, ],
-          control = list(
-            'warn.1d.NelderMead' = F, # For finding ED50 with dual-systems exponential discount function
-            maxit = 5000 # For when discount function is "model-free"; this can take a long time to converge
-          )
+          par = par_start_combos[combo_idx, ],
+          method = 'L-BFGS-B',
+          lower = lower,
+          upper = upper
         )
         if (optimized$value < best_value) {
           best_value <- optimized$value
@@ -225,14 +239,19 @@ print.td_gnlm <- function(mod) {
 #' @param bounded Boolean specifying whether parameters should be bounded (e.g., k > 0) or should be unbounded. Boended and unbounded coefficients are related by some transform. Bounded coefficients can be plugged directly into discount functions; optimization is performed on unbounded coefficients.
 #' @return A names vector of coefficients
 #' @export
-coef.td_gnlm <- function(mod, bounded = T) {
-  unbounded_par <- mod$optim$par
+coef.td_gnlm <- function(mod, bounded = T, par = NULL) {
+  if (is.null(par)) {
+    par <- mod$optim$par
+  }
+  return(par)
   if (bounded) {
     # For viewing
-    cf = mod$config$discount_function$par_trf(unbounded_par)
+    cf <- mod$config$discount_function$par_trf(par)
+    cf['gamma'] <- exp(cf['gamma'])
+    cf['eps'] <- 0.5*plogis(cf['eps'])
   } else {
-    # For using in internal functions
-    cf <- mod$optim$par
+    # For optimization
+    cf <- par
   }
   return(cf)
 }

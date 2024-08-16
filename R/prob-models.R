@@ -8,11 +8,10 @@ get_score_func_frame <- function(...) {
   
   # What is the discount function?
   discount_function <- args$discount_function$fn
-  par_trf <- args$discount_function$par_trf
   
   # Get the transform applied to v_i/v_d and f(t)
   transform <- get_transform(args)
-  delta <- function(data, par) transform(data$val_imm/data$val_del) - transform(discount_function(data$del, par_trf(par)))
+  delta <- function(data, par) transform(data$val_imm/data$val_del) - transform(discount_function(data$del, par))
 
   # Get the factor by which gamma is scaled
   gamma_scale <- switch(args$gamma_scale,
@@ -21,7 +20,7 @@ get_score_func_frame <- function(...) {
   
   # Get the final frame
   frame <- function(data, par) {
-    exp(par['gamma']) * gamma_scale(data, par) * delta(data, par)}
+    par['gamma'] * gamma_scale(data, par) * delta(data, par)}
   
   return(frame)
   
@@ -266,22 +265,24 @@ dd_prob_model <- tdbcm <- function(
     
     # Get prob. model with the given settings but parameter values unspecified
     prob_mod_frame <- do.call(get_prob_mod_frame, config)
+    # Get function to compute negative log likelihood
     if (robust) {
       nll_fn <- get_rob_fn(data, prob_mod_frame)
     } else {
       nll_fn <- get_nll_fn(data, prob_mod_frame)
     }
-    # Get parameter ranges
-    if (is.function(config$discount_function$par)) {
-      par_starts <- config$discount_function$par()
+    
+    # Get parameter starting values
+    if (is.function(config$discount_function$par_starts)) {
+      par_starts <- config$discount_function$par_starts(data)
     } else {
-      par_starts <- config$discount_function$par
+      par_starts <- config$discount_function$par_starts
     }
     # Add gamma start values
     par_starts <- c(
       par_starts,
       list(
-        gamma = seq(-5, 5, length.out = 3)
+        gamma = exp(seq(-5, 5, length.out = 3))
       )
     )
     # Add epsilon start values, if fitting error rate
@@ -289,13 +290,42 @@ dd_prob_model <- tdbcm <- function(
       par_starts <- c(
         par_starts,
         list(
-          eps = c(-5, 0)
+          eps = exp(c(-5, 0))
+        )
+      )
+    }
+    
+    # Get function to transform parameters so they're bounded
+    par_trf <- function(par) coef(cand_mod, bounded = T, par = par)
+    
+    # Get parameter starting values
+    if (is.function(config$discount_function$par_lims)) {
+      par_lims <- config$discount_function$par_lims(data)
+    } else {
+      par_lims <- config$discount_function$par_lims
+    }
+    # Add gamma limits
+    par_lims <- c(
+      par_lims,
+      list(
+        gamma = c(0, Inf)
+      )
+    )
+    # Add epsilon limits
+    if (config$fit_err_rate) {
+      par_kims <- c(
+        par_lims,
+        list(
+          eps = c(0, 0.5)
         )
       )
     }
     
     # Run optimization
-    optimized <- run_optimization(nll_fn, par_starts, silent = F)
+    optimized <- run_optimization(nll_fn,
+                                  par_starts,
+                                  par_lims,
+                                  silent = silent)
     if (length(optimized) == 0) {
       stop('Optimization failed; optim() returned an error for every choice of initial parameter values')
     }
@@ -305,7 +335,7 @@ dd_prob_model <- tdbcm <- function(
     if (robust) {
       curr_crit <- optimized$value
     } else {
-      curr_crit <- BIC(cand_mod)
+      curr_crit <- logLik(cand_mod)
     }
     if (curr_crit < best_crit) {
       best_crit <- curr_crit
@@ -318,6 +348,12 @@ dd_prob_model <- tdbcm <- function(
   best_mod$data <- data
   
   return(best_mod)
+}
+
+default_par_trf <- function(par) {
+  par['gamma'] <- exp(par['gamma'])
+  par['eps'] <- 0.5*plogis(par['eps'])
+  return(par)
 }
 
 #' @export

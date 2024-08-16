@@ -2,9 +2,8 @@
 get_rss_fn <- function(data, discount_function) {
   # Get residual sum of squares function
   
-  discount_func <- all_discount_functions[[discount_function]]
   rss_fn <- function(par) {
-    pred <- discount_func(data$del, par)
+    pred <- discount_function(data$del, par)
     return(sum((data$indiff - pred)**2))
   }
   return(rss_fn)
@@ -47,9 +46,10 @@ td_ipm <- function(
     tmp[names(param_ranges)] <- param_ranges
   }
   param_ranges <- tmp
-  # Set discount functions
-  if (discount_function == 'all') {
-    discount_function <- names(all_discount_functions)
+  # Set discount function(s)
+  if ((discount_function %||% 'all') == 'all') {
+    discount_function <- eval(formals(td_ipm)$discount_function)
+    discount_function[discount_function != 'all']
   }
   
   # Check args
@@ -79,42 +79,47 @@ td_ipm <- function(
   # Terms for computing AIC
   N <- nrow(data)
   
+  # Get a list of discount functions to test
+  if (is.list(discount_function)) {
+    cand_fns <- list(discount_function)
+  } else {
+    cand_fns <- list()
+    for (fn_name in discount_function) {
+      cand_fns <- c(cand_fns, list(tdfn(fn_name)))
+    }
+  }
+  
   # Run optimization on each candidate discount function
   args <- data.frame(discount_function = discount_function)
   best_crit <- Inf
   best_output <- list()
-  for (arg_idx in 1:nrow(args)) {
-    discount_function <- args$discount_function[arg_idx]
+  for (cand_fn in cand_fns) {
+   
     # Get residual sum of squares function
-    rss_fn <- get_rss_fn(data, discount_function)
-    # Get parameter ranges
-    curr_param_ranges <- param_ranges[[discount_function]]
+    rss_fn <- get_rss_fn(data, cand_fn$fn)
+    # Get parameter starting values
+    if (is.function(cand_fn$par)) {
+      par_starts <- cand_fn$par()
+    } else {
+      par_starts <- cand_fn$par
+    }
+    
     # Run optimization
-    optimized <- run_optimization(rss_fn, curr_param_ranges, silent)
+    optimized <- run_optimization(rss_fn, par_starts, cand_fn$par_trf, silent)
     # Compute AIC
-    crit <- N*log(optimized$value/N) + 2*(length(optimized$par) + 1)
+    # crit <- N*log(optimized$value/N) + 2*(length(optimized$par) + 1)
+    # Use RSS
+    crit <- optimized$value
     if (crit < best_crit) {
       best_crit <- crit
-      if (discount_function == 'dual-systems-exponential') {
-        # Ensure k1 < k2
-        if (optimized$par['k1'] > optimized$par['k2']) {
-          tmp <- optimized$par['k1']
-          optimized$par['k1'] <- optimized$par['k2']
-          optimized$par['k2'] <- tmp
-          optimized$par['w'] <- -optimized$par['w']
-        }
+      if ('par_chk' %in% names(cand_fn)) {
+        optimized$par <- cand_fn$par_chk(optimized$par)
       }
       optimized$discount_function <- discount_function
       best_output <- optimized
     }
   }
   best_output$data <- data
-  
-  # Get untransformed parameters
-  best_output$untransformed_parameters <- untransform(best_output$par)
-  
-  # Compute ED50
-  best_output$ED50 <- get_ED50(best_output)
   
   return(best_output)
 }

@@ -13,64 +13,94 @@ tdfn <- function(fn_name) {
                   p <- p[grep('del_', names(p))]
                   # Round parameters and delays to 10 decimal points for comparison
                   dels <- round(as.numeric(gsub('del_', '', names(p))), 10)
-                  a <- approx(x = dels, y = logistic(p), xout = round(D, 10))
+                  a <- approx(x = dels, y = p, xout = round(D, 10))
                   return(a$y)
                 }
   )
-  par <- switch (fn_name,
-                 'noise' = list(
-                   k = seq(-5, 5, length.out = 3)
-                 ),
-                 'hyperbolic' = list(
-                   k = seq(-5, 5, length.out = 3)
-                 ),
-                 'exponential' = list(
-                   k = seq(-5, 5, length.out = 3)
-                 ),
-                 'inverse-q-exponential' = list(
-                   k = seq(-5, 5, length.out = 3),
-                   s = seq(-5, 5, length.out = 3)
-                 ),
-                 'nonlinear-time-hyperbolic' = list(
-                   k = seq(-5, 5, length.out = 3),
-                   s = seq(-5, 5, length.out = 3)
-                 ),
-                 'scaled-exponential' = list(
-                   w = seq(-5, 5, length.out = 3),
-                   k = seq(-5, 5, length.out = 3)
-                 ),
-                 'dual-systems-exponential' = list(
-                   w = seq(-5, 5, length.out = 3),
-                   k1 = seq(-5, 5, length.out = 3),
-                   k2 = seq(-5, 5, length.out = 3)
-                 ),
-                 'nonlinear-time-exponential' = list(
-                   k = seq(-5, 5, length.out = 3),
-                   s = seq(-5, 5, length.out = 3)
-                 ),
-                 'gamma' = list(
-                   gamma = seq(-5, 5, length.out = 3)
-                 ),
-                 'err.rate' = list(
-                   eps = c(-5, 0)
-                 ),
-                 'varsigma' = list(
-                   alpha = seq(-5, 5, length.out = 3),
-                   lambda = seq(-1, 1, length.out = 3)
-                 ),
-                 'model-free' = function(data) {
-                   unique_delays <- unique(data$del)
-                   curr_param_ranges <- as.list(rep(0.5, length(unique_delays)))
-                   # Round to 10 decimal points to be able to align delay values 
-                   names(curr_param_ranges) <- sprintf('del_%.10f', unique_delays)
-                 }
+  par_starts <- switch (fn_name,
+                        'noise' = list(
+                          k = exp(seq(-8, 0, length.out = 3))
+                        ),
+                        'hyperbolic' = list(
+                          k = exp(seq(-8, 0, length.out = 3))
+                        ),
+                        'exponential' = list(
+                          k = exp(seq(-8, 0, length.out = 3))
+                        ),
+                        'inverse-q-exponential' = list(
+                          k = exp(seq(-8, 0, length.out = 3)),
+                          s = exp(seq(-8, 0, length.out = 3))
+                        ),
+                        'nonlinear-time-hyperbolic' = list(
+                          k = exp(seq(-8, 0, length.out = 3)),
+                          s = exp(seq(-8, 0, length.out = 3))
+                        ),
+                        'scaled-exponential' = list(
+                          w = exp(seq(-8, 0, length.out = 3)),
+                          k = exp(seq(-8, 0, length.out = 3))
+                        ),
+                        'dual-systems-exponential' = list(
+                          w = exp(seq(-8, 0, length.out = 3)),
+                          k1 = exp(seq(-8, 0, length.out = 3)),
+                          k2 = exp(seq(-8, 0, length.out = 3))
+                        ),
+                        'nonlinear-time-exponential' = list(
+                          k = exp(seq(-8, 0, length.out = 3)),
+                          s = exp(seq(-8, 0, length.out = 3))
+                        ),
+                        'model-free' = function(data) {
+                          unique_delays <- unique(data$del)
+                          out <- as.list(rep(0.5, length(unique_delays)))
+                          # Round to 10 decimal points to be able to align delay values 
+                          names(out) <- sprintf('del_%.10f', unique_delays)
+                          return(out)
+                        }
+  )
+  par_lims <- switch (fn_name,
+                      'noise' = list(
+                        k = c(0, Inf)
+                      ),
+                      'hyperbolic' = list(
+                        k = c(0, Inf)
+                      ),
+                      'exponential' = list(
+                        k = c(0, Inf)
+                      ),
+                      'inverse-q-exponential' = list(
+                        k = c(0, Inf),
+                        s = c(0, Inf)
+                      ),
+                      'nonlinear-time-hyperbolic' = list(
+                        k = c(0, Inf),
+                        s = c(0, Inf)
+                      ),
+                      'scaled-exponential' = list(
+                        w = c(0, 1),
+                        k = c(0, Inf)
+                      ),
+                      'dual-systems-exponential' = list(
+                        w = c(0, 1),
+                        k1 = c(0, Inf),
+                        k2 = c(0, Inf)
+                      ),
+                      'nonlinear-time-exponential' = list(
+                        k = c(0, Inf),
+                        s = c(0, Inf)
+                      ),
+                      'model-free' = function(data) {
+                        unique_delays <- unique(data$del)
+                        out <- rep(list(c(0, Inf)), length(unique_delays))
+                        # Round to 10 decimal points to be able to align delay values 
+                        names(out) <- sprintf('del_%.10f', unique_delays)
+                        return(out)
+                      }
   )
   par_trf <- function(par) {
     # Function to transform the parameters so they're bounded
     b_p <- par
-
+    
     # p > 0 -> exp(p)
-    idx <- names(b_p) %in% c('k', 's', 'gamma', 'alpha')
+    idx <- names(b_p) %in% c('k', 's')
     b_p[idx] <- exp(b_p[idx])
     
     # 0 < p < 1 -> plogis(p)
@@ -81,21 +111,22 @@ tdfn <- function(fn_name) {
   }
   
   ED50 <- switch (fn_name,
-                  "noise" = function(p)  NA,
-                  "hyperbolic" = function(p)  1/p['k'],
-                  "exponential" = function(p)  log(2)/p['k'],
-                  "inverse-q-exponential" = function(p)  (2^(1/p['s']) - 1) / p['k'],
-                  "nonlinear-time-hyperbolic" = function(p)  (1/p['k']) ^ (1/p['s']),
-                  "nonlinear-time-exponential" = function(p)  (log(2)/p['k'])^(1/p['s']),
-                  "scaled-exponential" = function(p)  log(2*p['w'])/p['k'],
-                  "dual-systems-exponential" = function(p)  'non-analytic',
-                  "model-free" = function(p)  NA
+                  "noise" = function(p) 'none',
+                  "hyperbolic" = function(p) 1/p['k'],
+                  "exponential" = function(p) log(2)/p['k'],
+                  "inverse-q-exponential" = function(p) (2^(1/p['s']) - 1) / p['k'],
+                  "nonlinear-time-hyperbolic" = function(p) (1/p['k']) ^ (1/p['s']),
+                  "nonlinear-time-exponential" = function(p) (log(2)/p['k'])^(1/p['s']),
+                  "scaled-exponential" = function(p) log(2*p['w'])/p['k'],
+                  "dual-systems-exponential" = function(p) 'non-analytic',
+                  "model-free" = function(p) 'none'
   )
-
+  
   out <- list(
-    name = fn_name,
-    fn = fn,
-    par = par,
+    name = fn_name, # Function name
+    fn = fn, # Actual function to evaluate
+    par_starts = par_starts,
+    par_lims = par_lims,
     par_trf = par_trf,
     ED50 = ED50
   )
@@ -140,43 +171,43 @@ all_discount_functions <- list(
 # Plausible parameter ranges
 default_param_ranges <- list(
   'noise' = list(
-    k = seq(-5, 5, length.out = 3)
+    k = exp(seq(-8, 0, length.out = 3))
   ),
   'hyperbolic' = list(
-    k = seq(-5, 5, length.out = 3)
+    k = exp(seq(-8, 0, length.out = 3))
   ),
   'exponential' = list(
-    k = seq(-5, 5, length.out = 3)
+    k = exp(seq(-8, 0, length.out = 3))
   ),
   'inverse-q-exponential' = list(
-    k = seq(-5, 5, length.out = 3),
-    s = seq(-5, 5, length.out = 3)
+    k = exp(seq(-8, 0, length.out = 3)),
+    s = exp(seq(-8, 0, length.out = 3))
   ),
   'nonlinear-time-hyperbolic' = list(
-    k = seq(-5, 5, length.out = 3),
-    s = seq(-5, 5, length.out = 3)
+    k = exp(seq(-8, 0, length.out = 3)),
+    s = exp(seq(-8, 0, length.out = 3))
   ),
   'scaled-exponential' = list(
-    w = seq(-5, 5, length.out = 3),
-    k = seq(-5, 5, length.out = 3)
+    w = exp(seq(-8, 0, length.out = 3)),
+    k = exp(seq(-8, 0, length.out = 3))
   ),
   'dual-systems-exponential' = list(
-    w = seq(-5, 5, length.out = 3),
-    k1 = seq(-5, 5, length.out = 3),
-    k2 = seq(-5, 5, length.out = 3)
+    w = exp(seq(-8, 0, length.out = 3)),
+    k1 = exp(seq(-8, 0, length.out = 3)),
+    k2 = exp(seq(-8, 0, length.out = 3))
   ),
   'nonlinear-time-exponential' = list(
-    k = seq(-5, 5, length.out = 3),
-    s = seq(-5, 5, length.out = 3)
+    k = exp(seq(-8, 0, length.out = 3)),
+    s = exp(seq(-8, 0, length.out = 3))
   ),
   'gamma' = list(
-    gamma = seq(-5, 5, length.out = 3)
+    gamma = exp(seq(-8, 0, length.out = 3))
   ),
   'err.rate' = list(
     eps = c(-5, 0)
   ),
   'varsigma' = list(
-    alpha = seq(-5, 5, length.out = 3),
+    alpha = exp(seq(-8, 0, length.out = 3)),
     lambda = seq(-1, 1, length.out = 3)
   ),
   'model-free' = NA
@@ -241,7 +272,7 @@ AUC <- function(mod, min_del = 0, max_del = NULL, verbose = T, ...) {
   p <- coef(mod)
   if (mod$config$discount_function$name == 'model-free') {
     cat(sprintf('Assuming an indifference point of 1 at delay 0\n'))
-    p <- c(c('del_0' = Inf), p)
+    p <- c(c('del_0' = 1), p)
   }
   integrate(function(t) disc_func(t, p),
             lower = min_del,

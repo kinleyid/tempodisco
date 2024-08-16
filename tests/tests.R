@@ -4,13 +4,18 @@ roxygen2::roxygenise(lib_path)
 
 # Generate data
 df <- data.frame(val_imm = seq(1, 99, length.out = 10), val_del = 100, del = rep(exp(1:10), each=10))
-indiffs <- function(x) 1 / (1 + 0.001*x)
+indiffs <- function(x) 1 / (1 + 0.0001*x)
 prob <- plogis(qlogis(df$val_imm / df$val_del) - qlogis(indiffs(df$del)))
+prob <- plogis(50*((df$val_imm / df$val_del) - (indiffs(df$del))))
+prob <- plogis( 2*( df$val_imm - df$val_del*indiffs(df$del) ) )
 df$imm_chosen <- runif(nrow(df)) < prob
 
 # Default, simple call
 devtools::load_all(lib_path)
-mod <- dd_prob_model(df, discount_function = 'hyperbolic')
+mod <- dd_prob_model(df, discount_function = 'hyperbolic', choice_rule = 'power', fixed_ends = T)
+mod <- dd_prob_model(df, discount_function = 'hyperbolic', choice_rule = 'logistic')
+mod <- dd_prob_model(df, discount_function = 'hyperbolic', choice_rule = 'probit')
+mod <- dd_prob_model(df, discount_function = 'model-free', choice_rule = 'probit')
 print(mod)
 ED50(mod)
 AUC(mod)

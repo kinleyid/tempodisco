@@ -87,8 +87,8 @@ plot_scores <- function(mod, outlier.idx = NULL) {
   plot(mod$data$imm_chosen[!outlier.idx] ~ scores[!outlier.idx],
        ylim = c(0, 1),
        xlim = c(-lim, lim),
-       ylab = 'Prob. imm.',
-       xlab = 'Score')
+       ylab = 'imm_chosen',
+       xlab = 'Linear predictor')
   points(mod$data$imm_chosen[outlier.idx] ~ scores[outlier.idx], col = 'red')
   # Plot probabilities
   prob_func <- do.call(get_prob_func_frame, mod$config)
@@ -112,23 +112,18 @@ plot_endpoints <- function(mod, del=NULL, val_del=NULL) {
   if (is.null(del)) {
     if (mod$config$discount_function$name == 'model-free') {
       del <- mean(c(min(mod$data$del), max(c(mod$data$del))))
-      warning(sprintf('
-        No ED50 for the "model-free" discount function.
-        Setting del=%s (halfway between min delay and max delay).
-        Consider setting this manually.
-      ', del))
+      warning(sprintf(
+      'No ED50 for the "model-free" discount function.
+       Setting del=%s (halfway between min delay and max delay).
+       Consider setting this manually.', del))
     } else if (mod$config$discount_function$name == 'noise') {
       del <- 1
-      cat(sprintf('
-        No ED50 for the "noise" discount function.
-        Setting del=%s.
-      ', del))
+      cat(sprintf('No ED50 for the "noise" discount function.
+        Setting del=%s.', del))
     } else {
       del <- ED50(mod)
-      cat(sprintf('
-        Detting del = %s (ED50) to center the curve.
-        This can be changed using the `del` argument.
-      ', del))
+      cat(sprintf('Setting del = %s (ED50) to center the curve.
+        This can be changed using the `del` argument.', del))
     }
   }
   plotting_rs <- seq(0, 1, length.out = 1000)
