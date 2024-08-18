@@ -130,7 +130,9 @@ dd_prob_model <- tdbcm <- function(
     fixed_ends = F,
     fit_err_rate = F,
     # robust = F,
-    param_ranges = NULL,
+    # param_ranges = NULL,
+    gamma_par_starts = c(0.01, 1, 100),
+    eps_par_starts = c(0.01, 0.25)
     silent = T,
     ...) {
   
@@ -299,7 +301,7 @@ dd_prob_model <- tdbcm <- function(
     par_starts <- c(
       par_starts,
       list(
-        gamma = exp(seq(-5, 5, length.out = 3))
+        gamma = gamma_par_starts
       )
     )
     # Add epsilon start values, if fitting error rate
@@ -307,13 +309,10 @@ dd_prob_model <- tdbcm <- function(
       par_starts <- c(
         par_starts,
         list(
-          eps = exp(c(-5, 0))
+          eps = eps_par_starts
         )
       )
     }
-    
-    # Get function to transform parameters so they're bounded
-    par_trf <- function(par) coef(cand_mod, bounded = T, par = par)
     
     # Get parameter starting values
     if (is.function(config$discount_function$par_lims)) {
@@ -325,7 +324,7 @@ dd_prob_model <- tdbcm <- function(
     par_lims <- c(
       par_lims,
       list(
-        gamma = c(0, Inf)
+        gamma = gamma_par_lims
       )
     )
     # Add epsilon limits, if fitting error rate

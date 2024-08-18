@@ -37,15 +37,8 @@ td_ipm <- function(
                           'nonlinear-time-exponential',
                           'model-free',
                           'noise'),
-    param_ranges = NULL,
     silent = T) {
   
-  # Set parameter ranges
-  tmp <- default_param_ranges
-  if (!is.null(param_ranges)) {
-    tmp[names(param_ranges)] <- param_ranges
-  }
-  param_ranges <- tmp
   # Set discount function(s)
   if ((discount_function %||% 'all') == 'all') {
     discount_function <- eval(formals(td_ipm)$discount_function)
