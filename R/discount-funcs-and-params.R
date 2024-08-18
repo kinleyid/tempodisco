@@ -1,25 +1,25 @@
 
 tdfn <- function(fn_name) {
   fn <- switch (fn_name,
-                'noise' = function(D, p) rep(p['k'], length(D)),
-                'hyperbolic' = function(D, p) 1 / (1 + p['k']*D),
-                'exponential' = function(D, p) exp(-p['k']*D),
-                'inverse-q-exponential' = function(D, p) 1 / (1 + p['k']*D)**p['s'],
-                'nonlinear-time-hyperbolic' = function(D, p) 1 / (1 + p['k']*D**p['s']),
-                'scaled-exponential' = function(D, p) p['w']*exp(-p['k']*D),
-                'dual-systems-exponential' = function(D, p) p['w']*exp(-exp(p['k1'])*D) + (1 - p['w'])*exp(-(exp(p['k2']) + exp(p['k1']))*D),
-                'nonlinear-time-exponential' = function(D, p) exp(-p['k']*D**p['s']),
-                'model-free' = function(D, p) {
+                'noise' = function(data, p) rep(p['i'], length(data$del)),
+                'hyperbolic' = function(data, p) 1 / (1 + p['k']*data$del),
+                'exponential' = function(data, p) exp(-p['k']*data$del),
+                'inverse-q-exponential' = function(data, p) 1 / (1 + p['k']*data$del)**p['s'],
+                'nonlinear-time-hyperbolic' = function(data, p) 1 / (1 + p['k']*data$del**p['s']),
+                'scaled-exponential' = function(data, p) p['w']*exp(-p['k']*data$del),
+                'dual-systems-exponential' = function(data, p) p['w']*exp(-p['k1']*data$del) + (1 - p['w'])*exp(-p['k2']*data$del),
+                'nonlinear-time-exponential' = function(data, p) exp(-p['k']*data$del**p['s']),
+                'model-free' = function(data, p) {
                   p <- p[grep('del_', names(p))]
                   # Round parameters and delays to 10 decimal points for comparison
                   dels <- round(as.numeric(gsub('del_', '', names(p))), 10)
-                  a <- approx(x = dels, y = p, xout = round(D, 10))
+                  a <- approx(x = dels, y = p, xout = round(data$del, 10))
                   return(a$y)
                 }
   )
   par_starts <- switch (fn_name,
                         'noise' = list(
-                          k = exp(seq(-8, 0, length.out = 3))
+                          i = exp(seq(-8, 0, length.out = 3))
                         ),
                         'hyperbolic' = list(
                           k = exp(seq(-8, 0, length.out = 3))
@@ -58,7 +58,7 @@ tdfn <- function(fn_name) {
   )
   par_lims <- switch (fn_name,
                       'noise' = list(
-                        k = c(0, Inf)
+                        i = c(0, 1)
                       ),
                       'hyperbolic' = list(
                         k = c(0, Inf)
@@ -89,7 +89,7 @@ tdfn <- function(fn_name) {
                       ),
                       'model-free' = function(data) {
                         unique_delays <- unique(data$del)
-                        out <- rep(list(c(0, Inf)), length(unique_delays))
+                        out <- rep(list(c(0, 1)), length(unique_delays))
                         # Round to 10 decimal points to be able to align delay values 
                         names(out) <- sprintf('del_%.10f', unique_delays)
                         return(out)
@@ -146,7 +146,6 @@ tdfn <- function(fn_name) {
   class(out) <- 'tdfn'
   return(out)
 }
-
 get_discount_function <- function(mod) mod$config$discount_function$fn
 
 # Discount functions
@@ -240,12 +239,12 @@ ED50 <- function(mod) {
   out <- mod$config$discount_function$ED50(coef(mod))
   if (out == 'non-analytic') {
     # No analytic solution, therefore optimize
-    f <- function(t) mod$config$discount_function$fn(t, coef(mod))
+    f <- function(t) predict(mod, newdata = data.frame(del = t), type = 'indiff')
     optim_func <- function(t) {
-      ((f(exp(t))) - 0.5)**2
+      ((f(t)) - 0.5)**2
     }
-    optimized <- optim(fn = optim_func, par = 0, method = 'BFGS')
-    out <- exp(optimized$par)
+    optimized <- optim(fn = optim_func, par = 0, lower = 0, method = 'L-BFGS-B')
+    out <- optimized$par
   }
   names(out) <- NULL
   
@@ -268,14 +267,21 @@ AUC <- function(mod, min_del = 0, max_del = NULL, verbose = T, ...) {
       cat(sprintf('Defaulting to max_del = %s\n', max_del))
     }
   }
-  disc_func <- mod$config$discount_function$fn
-  p <- coef(mod)
   if (mod$config$discount_function$name == 'model-free') {
     cat(sprintf('Assuming an indifference point of 1 at delay 0\n'))
-    p <- c(c('del_0' = 1), p)
+    mod$optim$par <- c(c('del_0' = 1), mod$optim$par)
   }
-  integrate(function(t) disc_func(t, p),
-            lower = min_del,
-            upper = max_del,
-            ...)
+  disc_func <- function(t) predict(mod, newdata = data.frame(del = t), type = 'indiff')
+  out <- tryCatch(
+    expr = {
+      integrate(function(t) disc_func(t),
+                lower = min_del,
+                upper = max_del,
+                ...)$value
+    },
+    error = function(e) {
+      return(sprintf('integrate() failed to compute AUC with error %s', e$message))
+    }
+  )
+  return(out)
 }

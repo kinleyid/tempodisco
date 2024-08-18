@@ -17,8 +17,7 @@ ln_lambda <- function(x, lambda) { # box-cox transform
   }
 }
 varsigma <- function(x, alpha, lambda) alpha*ln_lambda(x + 1, lambda) + 1
-eps <- .Machine$double.eps # For later use in Laplace smoothing
-laplace_smooth <- function(p) p <- eps + (1 - 2*eps)*p
+laplace_smooth <- function(p, eps = .Machine$double.eps) eps + (1 - 2*eps)*p
 
 get_transform <- function(config, inverse = F) {
   if (inverse) {
@@ -147,7 +146,7 @@ predict.td_gnlm <- function(mod, newdata = NULL, type = c('link', 'response', 'i
   } else if (type == 'indiff') {
     
     indiff_func <- mod$config$discount_function$fn
-    indiffs <- indiff_func(newdata$del, coef(mod))
+    indiffs <- indiff_func(newdata, coef(mod))
     names(indiffs) <- NULL
     return(indiffs)
     
@@ -229,7 +228,7 @@ print.td_gnlm <- function(mod) {
     cat(sprintf(' %s: %s\n', comp_name, mod$config[[comp_name]]))
   }
   cat(sprintf('\nED50: %s\n', ED50(mod)))
-  cat(sprintf('AUC: %s\n', AUC(mod, verbose = F)$value))
+  cat(sprintf('AUC: %s\n', AUC(mod, verbose = F)))
   cat(sprintf('BIC: %s', BIC(mod)))
 }
 
@@ -239,22 +238,7 @@ print.td_gnlm <- function(mod) {
 #' @param bounded Boolean specifying whether parameters should be bounded (e.g., k > 0) or should be unbounded. Boended and unbounded coefficients are related by some transform. Bounded coefficients can be plugged directly into discount functions; optimization is performed on unbounded coefficients.
 #' @return A names vector of coefficients
 #' @export
-coef.td_gnlm <- function(mod, bounded = T, par = NULL) {
-  if (is.null(par)) {
-    par <- mod$optim$par
-  }
-  return(par)
-  if (bounded) {
-    # For viewing
-    cf <- mod$config$discount_function$par_trf(par)
-    cf['gamma'] <- exp(cf['gamma'])
-    cf['eps'] <- 0.5*plogis(cf['eps'])
-  } else {
-    # For optimization
-    cf <- par
-  }
-  return(cf)
-}
+coef.td_gnlm <- function(mod, bounded = T, par = NULL) mod$optim$par
 
 #' @export
 coef.td_glm <- function(mod, df_par = T) {

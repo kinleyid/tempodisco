@@ -8,10 +8,11 @@ get_score_func_frame <- function(...) {
   
   # What is the discount function?
   discount_function <- args$discount_function$fn
-  
   # Get the transform applied to v_i/v_d and f(t)
   transform <- get_transform(args)
-  delta <- function(data, par) transform(data$val_imm/data$val_del) - transform(discount_function(data$del, par))
+  delta <- function(data, par) {
+    transform(data$val_imm/data$val_del) - transform(laplace_smooth(discount_function(data, par)))
+  }
 
   # Get the factor by which gamma is scaled
   gamma_scale <- switch(args$gamma_scale,
@@ -20,6 +21,9 @@ get_score_func_frame <- function(...) {
   
   # Get the final frame
   frame <- function(data, par) {
+    if (any(is.nan(delta(data, par)))) {
+      browser()
+    }
     par['gamma'] * gamma_scale(data, par) * delta(data, par)}
   
   return(frame)
@@ -34,10 +38,10 @@ get_prob_func_frame <- function(...) {
   
   # What is the cdf?
   cdf <- get(sprintf('p%s', args$noise_dist))
-  
+
   # Are we fitting error rate?
   if (args$fit_err_rate) {
-    err_rate <- function(e, p) 0.5*logistic(e) * (1 - 2*p) + p
+    err_rate <- function(e, p) e + (1 - 2*e)*p
   } else {
     err_rate <- function(e, p) p
   }
@@ -125,7 +129,7 @@ dd_prob_model <- tdbcm <- function(
     choice_rule = c('logistic', 'probit', 'power'),
     fixed_ends = F,
     fit_err_rate = F,
-    robust = F,
+    # robust = F,
     param_ranges = NULL,
     silent = T,
     ...) {
@@ -135,7 +139,7 @@ dd_prob_model <- tdbcm <- function(
   # The user can control the latter through the `...` argument
   config <- list(...)
   if (length(config) == 0) {
-    choice_rule = match.arg(choice_rule)
+    choice_rule <- match.arg(choice_rule)
     config <- list()
     # From `choice_rule` and `fixed_ends`, get `noise_dist`, `gamma_scale`, and `transform`
     if (choice_rule == 'logistic') {
@@ -186,9 +190,12 @@ dd_prob_model <- tdbcm <- function(
   param_ranges <- tmp
   
   # Set discount function(s)
-  if ((discount_function %||% 'all') == 'all') {
-    discount_function <- eval(formals(dd_prob_model)$discount_function)
-    discount_function[discount_function != 'all']
+  if (is.character(discount_function)) {
+    # If "all" is used, replace discount_function with a vector of all the options
+    if ((discount_function %||% 'all') == 'all') {
+      discount_function <- eval(formals(dd_prob_model)$discount_function)
+      discount_function <- discount_function[discount_function != 'all']
+    }
   }
   
   # Check args
@@ -220,15 +227,24 @@ dd_prob_model <- tdbcm <- function(
   if (any(!R1$imm_chosen)) {
     warning(sprintf('Participant chose a delayed reward of equal value to an immediate reward. %s', endpoint_warning_boilerplate))
   }
+  # All immediate chosen or all delayed chosen?
+  if (all(data$imm_chosen)) {
+    warning('Participant chose only immediate rewards')
+  }
+  if (all(!data$imm_chosen)) {
+    warning('Participant chose only delayed rewards')
+  }
   # While we're at it, more validation
   if (any(data$val_imm > data$val_del)) {
     stop('The data contains cases where val_imm exceeds val_del')
   }
-  # Valid discount function
-  for (d_f in discount_function) {
-    if (!(d_f %in% c(names(all_discount_functions)))) {
-      valid_opts <- paste(sprintf('\n- "%s"', names(all_discount_functions)), collapse = '')
-      stop(sprintf('"%s" is not a recognized discount function. Valid options are: %s', d_f, valid_opts))
+  # Valid discount function name
+  if (is.character(discount_function)) {
+    for (d_f in discount_function) {
+      if (!(d_f %in% c(names(all_discount_functions)))) {
+        valid_opts <- paste(sprintf('\n- "%s"', names(all_discount_functions)), collapse = '')
+        stop(sprintf('"%s" is not a recognized discount function. Valid options are: %s', d_f, valid_opts))
+      }
     }
   }
   
@@ -266,6 +282,7 @@ dd_prob_model <- tdbcm <- function(
     # Get prob. model with the given settings but parameter values unspecified
     prob_mod_frame <- do.call(get_prob_mod_frame, config)
     # Get function to compute negative log likelihood
+    robust <- F # Maybe in the future
     if (robust) {
       nll_fn <- get_rob_fn(data, prob_mod_frame)
     } else {
@@ -311,16 +328,15 @@ dd_prob_model <- tdbcm <- function(
         gamma = c(0, Inf)
       )
     )
-    # Add epsilon limits
+    # Add epsilon limits, if fitting error rate
     if (config$fit_err_rate) {
-      par_kims <- c(
+      par_lims <- c(
         par_lims,
         list(
           eps = c(0, 0.5)
         )
       )
     }
-    
     # Run optimization
     optimized <- run_optimization(nll_fn,
                                   par_starts,
@@ -348,12 +364,6 @@ dd_prob_model <- tdbcm <- function(
   best_mod$data <- data
   
   return(best_mod)
-}
-
-default_par_trf <- function(par) {
-  par['gamma'] <- exp(par['gamma'])
-  par['eps'] <- 0.5*plogis(par['eps'])
-  return(par)
 }
 
 #' @export
