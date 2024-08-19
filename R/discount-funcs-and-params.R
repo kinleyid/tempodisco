@@ -95,20 +95,6 @@ tdfn <- function(fn_name) {
                         return(out)
                       }
   )
-  par_trf <- function(par) {
-    # Function to transform the parameters so they're bounded
-    b_p <- par
-    
-    # p > 0 -> exp(p)
-    idx <- names(b_p) %in% c('k', 's')
-    b_p[idx] <- exp(b_p[idx])
-    
-    # 0 < p < 1 -> plogis(p)
-    idx <- grepl('del_', names(b_p)) | names(b_p) == 'w'
-    b_p[idx] <- plogis(b_p[idx])
-    
-    return(b_p)
-  }
   
   ED50 <- switch (fn_name,
                   "noise" = function(p) 'none',
@@ -127,7 +113,6 @@ tdfn <- function(fn_name) {
     fn = fn, # Actual function to evaluate
     par_starts = par_starts,
     par_lims = par_lims,
-    par_trf = par_trf,
     ED50 = ED50
   )
   
@@ -135,11 +120,15 @@ tdfn <- function(fn_name) {
     out$par_chk <- function(p) {
       # Ensure k1 < k2
       if (p['k1'] > p['k2']) {
-        tmp <- p['k1']
-        p['k1'] <- p['k2']
-        p['k2'] <- tmp
-        p['w'] <- -p['w']
+        # Switch k1 and k2
+        k2 <- p['k1']
+        k1 <- p['k2']
+        p['k1'] <- k1
+        p['k2'] <- k2
+        # Complement of 2
+        p['w'] <- 1 - p['w']
       }
+      return(p)
     }
   }
   
@@ -280,7 +269,7 @@ AUC <- function(mod, min_del = 0, max_del = NULL, verbose = T, ...) {
                 ...)$value
     },
     error = function(e) {
-      return(sprintf('integrate() failed to compute AUC with error %s', e$message))
+      return(sprintf('integrate() failed to compute AUC with error: "%s"', e$message))
     }
   )
   return(out)

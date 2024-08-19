@@ -132,7 +132,7 @@ dd_prob_model <- tdbcm <- function(
     # robust = F,
     # param_ranges = NULL,
     gamma_par_starts = c(0.01, 1, 100),
-    eps_par_starts = c(0.01, 0.25)
+    eps_par_starts = c(0.01, 0.25),
     silent = T,
     ...) {
   
@@ -177,19 +177,6 @@ dd_prob_model <- tdbcm <- function(
       stop(sprintf('The following must all be specified:\n%s', paste('- ', req_args, collapse = '\n')))
     }
   }
-  # Set parameter ranges
-  tmp <- default_param_ranges
-  if (!is.null(param_ranges)) {
-    # Overwrite defaults
-    for (group in names(default_param_ranges)) {
-      for (param_name in names(param_ranges)) {
-        if (param_name %in% names(tmp[[group]])) {
-          tmp[[group]][[param_name]] <- param_ranges[[param_name]]
-        }
-      }
-    }
-  }
-  param_ranges <- tmp
   
   # Set discount function(s)
   if (is.character(discount_function)) {
@@ -271,10 +258,8 @@ dd_prob_model <- tdbcm <- function(
   # Run optimization for each discount function
   best_crit <- Inf
   best_mod <- list()
-  cand_mod <- list( # Initialize 
-    data = data
-  )
-  class(cand_mod) <- 'td_gnlm'
+  cand_mod <- list(data = data)
+  class(cand_mod) <- c('td_gnlm', 'tdm')
   for (cand_fn in cand_fns) {
     config <- args
     config$discount_function <- cand_fn
@@ -314,7 +299,7 @@ dd_prob_model <- tdbcm <- function(
       )
     }
     
-    # Get parameter starting values
+    # Get parameter bounds
     if (is.function(config$discount_function$par_lims)) {
       par_lims <- config$discount_function$par_lims(data)
     } else {
@@ -347,11 +332,8 @@ dd_prob_model <- tdbcm <- function(
     
     cand_mod$optim <- optimized
     
-    if (robust) {
-      curr_crit <- optimized$value
-    } else {
-      curr_crit <- logLik(cand_mod)
-    }
+    curr_crit <- BIC(cand_mod)
+    
     if (curr_crit < best_crit) {
       best_crit <- curr_crit
       if ('par_chk' %in% names(config$discount_function)) {
@@ -366,7 +348,7 @@ dd_prob_model <- tdbcm <- function(
 }
 
 #' @export
-td_glm <- function(data,
+td_glm <- tdbclm <- function(data,
                    discount_function = c('hyperbolic.1',
                                          'hyperbolic.2',
                                          'exponential.1',
@@ -383,7 +365,7 @@ td_glm <- function(data,
   }
   mod <- glm(formula = fml, data = data, family = binomial(link = 'logit'))
   mod$discount_function <- discount_function
-  class(mod) <- c('td_glm', 'glm', 'lm')
+  class(mod) <- c('tdbclm', 'glm', 'lm')
   return(mod)
 }
 

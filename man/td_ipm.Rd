@@ -9,18 +9,17 @@ td_ipm(
   discount_function = c("all", "hyperbolic", "exponential", "inverse-q-exponential",
     "nonlinear-time-hyperbolic", "scaled-exponential", "dual-systems-exponential",
     "nonlinear-time-exponential", "model-free", "noise"),
-  param_ranges = NULL,
   silent = T
 )
 }
 \arguments{
 \item{data}{A data frame with columns `indiff` for the pre-computed indifference points and `del` for the delay}
 
-\item{discount_function}{A vector of strings specifying the name of the discount functions to use. Options are `'hyperbolic'`, `'exponential'`, `'inverse-q-exponential'`, `'nonlinear-time-hyperbolic'`, `'scaled-exponential'`, `'dual-systems-exponential'`, and `'nonlinear-time-exponential'`. Default is `'all'`, meaning every discount function is tested and the one with the best AIC is selected.}
-
-\item{param_ranges}{A list containing the starting values to try for each parameter. Defaults to `c(-5, 0, 5)` for most parameters}
+\item{discount_function}{A vector of strings specifying the name of the discount functions to use. Options are `'hyperbolic'`, `'exponential'`, `'inverse-q-exponential'`, `'nonlinear-time-hyperbolic'`, `'scaled-exponential'`, `'dual-systems-exponential'`, and `'nonlinear-time-exponential'`. Default is `'all'`, meaning every discount function is tested and the one with the best BIC is selected.}
 
 \item{silent}{A Boolean specifying whether the call to `optim` (which occurs in a `try` block) should be silent on error}
+
+\item{param_ranges}{A list containing the starting values to try for each parameter. Defaults to `c(-5, 0, 5)` for most parameters}
 }
 \value{
 A list from `optim` with additional components specifying the AIC, the ED50, the discount function, and the probabilistic model

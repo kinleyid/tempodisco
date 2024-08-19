@@ -34,19 +34,16 @@ arg_combos <- do.call(expand.grid, c(arg_vals, list(stringsAsFactors = F)))
 
 # Only need to test the "all" discount function once
 all_idx <- which(arg_combos$discount_function == 'all')
-# arg_combos <- arg_combos[-all_idx[-1], ]
-arg_combos <- arg_combos[-all_idx, ]
+arg_combos <- arg_combos[-all_idx[-1], ]
 
 for (ptpt in names(datasets)) {
   cat(sprintf('Dataset: %s\n', ptpt))
   df <- datasets[[ptpt]]
   
-  # arg_combo_idx <- 0
-  arg_combo_idx <- 110
-  # for (arg_combo_idx in 1:nrow(arg_combos)) {
-  while (arg_combo_idx < nrow(arg_combos)) {
-    arg_combo_idx <- arg_combo_idx + 1
+  arg_combo_idx <- 1
+  while (arg_combo_idx <= nrow(arg_combos)) {
     arg_combo <- arg_combos[arg_combo_idx, ]
+    arg_combo_idx <- arg_combo_idx + 1
     cat(sprintf('Arguments:\n'))
     print(arg_combo)
     

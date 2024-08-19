@@ -12,7 +12,8 @@ dd_prob_model(
   choice_rule = c("logistic", "probit", "power"),
   fixed_ends = F,
   fit_err_rate = F,
-  param_ranges = NULL,
+  gamma_par_starts = c(0.01, 1, 100),
+  eps_par_starts = c(0.01, 0.25),
   silent = T,
   ...
 )

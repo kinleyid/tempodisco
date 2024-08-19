@@ -3,7 +3,7 @@ get_rss_fn <- function(data, discount_function) {
   # Get residual sum of squares function
   
   rss_fn <- function(par) {
-    pred <- discount_function(data$del, par)
+    pred <- discount_function(data, par)
     return(sum((data$indiff - pred)**2))
   }
   return(rss_fn)
@@ -13,7 +13,7 @@ get_rss_fn <- function(data, discount_function) {
 #'
 #' Compute a model of a single subject's indifference points
 #' @param data A data frame with columns `indiff` for the pre-computed indifference points and `del` for the delay
-#' @param discount_function A vector of strings specifying the name of the discount functions to use. Options are `'hyperbolic'`, `'exponential'`, `'inverse-q-exponential'`, `'nonlinear-time-hyperbolic'`, `'scaled-exponential'`, `'dual-systems-exponential'`, and `'nonlinear-time-exponential'`. Default is `'all'`, meaning every discount function is tested and the one with the best AIC is selected.
+#' @param discount_function A vector of strings specifying the name of the discount functions to use. Options are `'hyperbolic'`, `'exponential'`, `'inverse-q-exponential'`, `'nonlinear-time-hyperbolic'`, `'scaled-exponential'`, `'dual-systems-exponential'`, and `'nonlinear-time-exponential'`. Default is `'all'`, meaning every discount function is tested and the one with the best BIC is selected.
 #' @param param_ranges A list containing the starting values to try for each parameter. Defaults to `c(-5, 0, 5)` for most parameters
 #' @param silent A Boolean specifying whether the call to `optim` (which occurs in a `try` block) should be silent on error
 #' @return A list from `optim` with additional components specifying the AIC, the ED50, the discount function, and the probabilistic model
@@ -25,7 +25,7 @@ get_rss_fn <- function(data, discount_function) {
 #' mod <- dd_det_model(df)
 #' print(mod$discount_function)
 #' @export
-td_ipm <- function(
+td_ipm <- tdipm <- function(
     data,
     discount_function = c('all',
                           'hyperbolic',
@@ -40,9 +40,12 @@ td_ipm <- function(
     silent = T) {
   
   # Set discount function(s)
-  if ((discount_function %||% 'all') == 'all') {
-    discount_function <- eval(formals(td_ipm)$discount_function)
-    discount_function[discount_function != 'all']
+  if (is.character(discount_function)) {
+    if ((discount_function %||% 'all') == 'all') {
+      discount_function <- eval(formals(tdipm)$discount_function)
+      discount_function <- discount_function[discount_function != 'all']
+      discount_function <- discount_function[discount_function != 'model-free']
+    }
   }
   
   # Check args
@@ -62,10 +65,12 @@ td_ipm <- function(
     stop(sprintf('Missing data column(s): %s', paste(missing_cols, collapse = ', ')))
   }
   # Valid discount function
-  for (d_f in discount_function) {
-    if (!(d_f %in% names(all_discount_functions))) {
-      valid_opts <- paste(sprintf('\n- "%s"', names(all_discount_functions)), collapse = '')
-      stop(sprintf('"%s" is not a recognized discount function. Valid options are: %s', d_f, valid_opts))
+  if (is.character(discount_function)) {
+    for (d_f in discount_function) {
+      if (!(d_f %in% names(all_discount_functions))) {
+        valid_opts <- paste(sprintf('\n- "%s"', names(all_discount_functions)), collapse = '')
+        stop(sprintf('"%s" is not a recognized discount function. Valid options are: %s', d_f, valid_opts))
+      }
     }
   }
   
@@ -83,36 +88,46 @@ td_ipm <- function(
   }
   
   # Run optimization on each candidate discount function
-  args <- data.frame(discount_function = discount_function)
   best_crit <- Inf
-  best_output <- list()
+  cand_output <- list(data = data, config = list(), optim = NULL)
+  class(cand_output) <- c('tdipm', 'tdm')
   for (cand_fn in cand_fns) {
    
     # Get residual sum of squares function
     rss_fn <- get_rss_fn(data, cand_fn$fn)
+    
     # Get parameter starting values
-    if (is.function(cand_fn$par)) {
-      par_starts <- cand_fn$par()
+    if (is.function(cand_fn$par_starts)) {
+      par_starts <- cand_fn$par_starts(data)
     } else {
-      par_starts <- cand_fn$par
+      par_starts <- cand_fn$par_starts
+    }
+    
+    # Get parameter bounds
+    if (is.function(cand_fn$par_lims)) {
+      par_lims <- cand_fn$par_lims(data)
+    } else {
+      par_lims <- cand_fn$par_lims
     }
     
     # Run optimization
-    optimized <- run_optimization(rss_fn, par_starts, cand_fn$par_trf, silent)
-    # Compute AIC
-    # crit <- N*log(optimized$value/N) + 2*(length(optimized$par) + 1)
-    # Use RSS
-    crit <- optimized$value
+    optimized <- run_optimization(rss_fn, par_starts, par_lims, silent)
+    if (length(optimized) == 0) {
+      stop('Optimization failed; optim() returned an error for every choice of initial parameter values')
+    }
+    if ('par_chk' %in% names(cand_fn)) {
+      optimized$par <- cand_fn$par_chk(optimized$par)
+    }
+    cand_output$optim <- optimized
+    cand_output$config$discount_function <- cand_fn
+    
+    # Compare by BIC
+    crit <- BIC(cand_output)
     if (crit < best_crit) {
       best_crit <- crit
-      if ('par_chk' %in% names(cand_fn)) {
-        optimized$par <- cand_fn$par_chk(optimized$par)
-      }
-      optimized$discount_function <- discount_function
-      best_output <- optimized
+      best_output <- cand_output
     }
+    
   }
-  best_output$data <- data
-  
   return(best_output)
 }

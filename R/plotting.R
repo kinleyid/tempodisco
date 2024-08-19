@@ -38,6 +38,29 @@ plot.td_glm <- function(mod, type = 'summary', ...) {
   }
 }
 
+#' @export
+plot.tdipm <- function(mod) {
+  
+  # Get indifference point predictions
+  data <- mod$data
+  max_del <- max(data$del)
+  plotting_delays <- seq(0, max_del, length.out = 1000)
+  pred_indiffs <- predict(mod, newdata = data.frame(del = plotting_delays), type = 'indiff')
+  
+  # Set up axes
+  plot(NA, NA,
+       xlim = c(0, max_del), ylim = c(0, 1),
+       xlab = 'Delay',
+       ylab = 'Indifference point',
+       main = mod$config$discount_function$name)
+  
+  # Display predictions
+  lines(pred_indiffs ~ plotting_delays)
+  
+  # Display data
+  points(indiff ~ del, data = data)
+}
+
 plot_summary <- function(mod, p_range = c(0.4, 0.6)) {
   data <- mod$data
   max_del <- max(data$del)

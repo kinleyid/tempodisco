@@ -118,7 +118,7 @@ run_optimization <- function(fn, par_starts, par_lims, silent) {
 
 #' Model Predictions
 #'
-#' Generate predictions from a temporal discounting model
+#' Generate predictions from a temporal discounting binary choice model
 #' @param mod A temporal discounting model. See `td_gnlm`.
 #' @param newdata Optionally, a data frame to use for prediction. If omitted, the data used to fit the model will be used for prediction.
 #' @param type The type of prediction required. As in predict.glm, `"link"` (default) and `"response"` give predictions on the scales of the linear predictors and response variable, respectively. `"indiff"` gives predicted indifference points. In this case, `newdata` needs only a `del` column.
@@ -153,6 +153,30 @@ predict.td_gnlm <- function(mod, newdata = NULL, type = c('link', 'response', 'i
   }
 }
 
+#' Model Predictions
+#'
+#' Generate predictions from a temporal discounting indifference point model
+#' @param mod A temporal discounting model. See `td_gnlm`.
+#' @param newdata Optionally, a data frame to use for prediction. If omitted, the data used to fit the model will be used for prediction.
+#' @param type The type of prediction required. As in predict.glm, `"link"` (default) and `"response"` give predictions on the scales of the linear predictors and response variable, respectively. `"indiff"` gives predicted indifference points. In this case, `newdata` needs only a `del` column.
+#' @return A vector of predictions
+#' @export
+predict.tdipm <- function(mod, del = NULL, newdata = NULL, type = 'indiff') {
+  if (is.null(del)) {
+    if (is.null(newdata)) {
+      newdata <- mod$data
+    }
+  } else {
+    newdata <- data.frame(del = del)
+  }
+  
+  indiff_func <- mod$config$discount_function$fn
+  indiffs <- indiff_func(newdata, coef(mod))
+  names(indiffs) <- NULL
+  return(indiffs)
+  
+}
+
 #' Residuals from temporal discounting model
 #'
 #' Get residuals from a temporal discounting model
@@ -174,8 +198,23 @@ residuals.td_gnlm <- function(mod,
   return(r)
 }
 
+#' Residuals from temporal discounting model
+#'
+#' Get residuals from a temporal discounting indifference point model
+#' @param mod A temporal discounting model. See `td_gnlm`.
+#' @param type The type of residuals to be returned. See `residuals.glm`.
+#' @return A vector of residuals
 #' @export
-fitted.td_gnlm <- function(mod) {predict(mod, type = 'response')}
+residuals.tdipm <- function(mod, type = 'response') {
+  y <- mod$data$indiff
+  yhat <- fitted(mod)
+  e <- y - yhat
+  
+  return(e)
+}
+
+#' @export
+fitted.tdm <- function(mod) {predict(mod, type = 'response')}
 
 #' @export
 predict.td_glm <- function(mod, newdata = NULL, type = 'link') {
@@ -198,12 +237,12 @@ predict.td_glm <- function(mod, newdata = NULL, type = 'link') {
 }
 
 #' @export
-AIC.td_gnlm <- function(mod, k = 2) {
+AIC.tdm <- function(mod, k = 2) {
   return(-2*as.numeric(logLik(mod)) + k*length(coef(mod)))
 }
 
 #' @export
-BIC.td_gnlm <- function(mod) {
+BIC.tdm <- function(mod) {
   return(AIC(mod, k = log(nrow(mod$data))))
 }
 
@@ -219,8 +258,26 @@ logLik.td_gnlm <- function(mod) {
 }
 
 #' @export
+logLik.tdipm <- function(mod) {
+  
+  # Copied from logLik.nls
+  
+  res <- residuals(mod)
+  N <- length(res)
+  w <- rep_len(1, N) # Always unweighted
+  ## Note the trick for zero weights
+  zw <- w == 0
+  val <-  -N * (log(2 * pi) + 1 - log(N) - sum(log(w + zw)) + log(sum(w*res^2)))/2
+  ## the formula here corresponds to estimating sigma^2.
+  attr(val, "df") <- 1L + length(coef(mod))
+  attr(val, "nobs") <- attr(val, "nall") <- sum(!zw)
+  class(val) <- "logLik"
+  return(val)
+}
+
+#' @export
 print.td_gnlm <- function(mod) {
-  cat(sprintf('\nProbabilistic temporal discounting model\n\n'))
+  cat(sprintf('\nTemporal discounting binary choice model\n\n'))
   cat(sprintf('Discount function: %s, with coefficients:\n\n', mod$config$discount_function$name))
   print(coef(mod))
   cat(sprintf('\nConfig:\n'))
@@ -232,13 +289,24 @@ print.td_gnlm <- function(mod) {
   cat(sprintf('BIC: %s', BIC(mod)))
 }
 
+#' @export
+print.tdipm <- function(mod) {
+  cat(sprintf('\nTemporal discounting indifference point model\n\n'))
+  cat(sprintf('Discount function: %s, with coefficients:\n\n', mod$config$discount_function$name))
+  print(coef(mod))
+  cat(sprintf('\nED50: %s\n', ED50(mod)))
+  cat(sprintf('AUC: %s\n', AUC(mod, verbose = F)))
+}
+
 #' Extract coefficients
 #' 
 #' Get coefficients of delay discounting function
 #' @param bounded Boolean specifying whether parameters should be bounded (e.g., k > 0) or should be unbounded. Boended and unbounded coefficients are related by some transform. Bounded coefficients can be plugged directly into discount functions; optimization is performed on unbounded coefficients.
 #' @return A names vector of coefficients
 #' @export
-coef.td_gnlm <- function(mod, bounded = T, par = NULL) mod$optim$par
+coef.tdm <- function(mod, bounded = T, par = NULL) {
+  mod$optim$par
+}
 
 #' @export
 coef.td_glm <- function(mod, df_par = T) {
