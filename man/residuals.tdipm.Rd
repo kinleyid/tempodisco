@@ -7,7 +7,7 @@
 \method{residuals}{tdipm}(mod, type = "response")
 }
 \arguments{
-\item{mod}{A temporal discounting model. See `td_gnlm`.}
+\item{mod}{A temporal discounting model. See `tdbcm`.}
 
 \item{type}{The type of residuals to be returned. See `residuals.glm`.}
 }

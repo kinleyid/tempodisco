@@ -16,7 +16,7 @@
 #' mod <- dd_prob_model(df)
 #' plot_dd(mod)
 #' @export
-plot.td_gnlm <- function(mod, type = c('summary', 'endpoints', 'scores'), ...) {
+plot.tdbcm <- function(mod, type = c('summary', 'endpoints', 'scores'), ...) {
   type <- match.arg(type)
   if (type == 'summary') {
     plot_summary(mod, ...)
@@ -28,7 +28,7 @@ plot.td_gnlm <- function(mod, type = c('summary', 'endpoints', 'scores'), ...) {
 }
 
 #' @export
-plot.td_glm <- function(mod, type = 'summary', ...) {
+plot.tdbclm <- function(mod, type = 'summary', ...) {
   if (type == 'summary') {
     plot_summary(mod, ...)
   } else if (type == 'endpoints') {
@@ -67,19 +67,19 @@ plot_summary <- function(mod, p_range = c(0.4, 0.6)) {
   plotting_delays <- seq(0, max_del, length.out = 1000)
   pred_indiffs <- predict(mod, newdata = data.frame(del = plotting_delays), type = 'indiff')
   # Plot probabilistic model
-  if (mod$config$gamma_scale == 'none') {
-    lower <- invert_decision_function(mod, prob = p_range[1], del = plotting_delays)
-    upper <- invert_decision_function(mod, prob = p_range[2], del = plotting_delays)
-  }
+  # if (mod$config$gamma_scale == 'none') {
+  #   lower <- invert_decision_function(mod, prob = p_range[1], del = plotting_delays)
+  #   upper <- invert_decision_function(mod, prob = p_range[2], del = plotting_delays)
+  # }
   plot(NA, NA,
        xlim = c(0, max_del), ylim = c(0, 1),
        xlab = 'Delay',
        ylab = 'val_imm / val_del')
   lines(pred_indiffs ~ plotting_delays)
-  if (mod$config$gamma_scale == 'none') {
-    lines(lower ~ plotting_delays, lty = 'dashed')
-    lines(upper ~ plotting_delays, lty = 'dashed')
-  }
+  # if (mod$config$gamma_scale == 'none') {
+  #   lines(lower ~ plotting_delays, lty = 'dashed')
+  #   lines(upper ~ plotting_delays, lty = 'dashed')
+  # }
   data$rel_val <- data$val_imm / data$val_del
   points(rel_val ~ del, col = 'red',
          data = subset(data, imm_chosen))
@@ -103,9 +103,13 @@ plot_scores <- function(mod, outlier.idx = NULL) {
   if (is.null(outlier.idx)) {
     outlier.idx <- rep(F, nrow(mod$data))
   }
-  # Plot scores
-  score_func <- do.call(get_score_func_frame, mod$config)
-  scores <- score_func(mod$data, coef(mod))
+  # Get score range
+  if (is(mod, 'tdbcm')) {
+    score_func <- do.call(get_score_func_frame, mod$config)
+    scores <- score_func(mod$data, coef(mod))
+  } else if (is(mod, 'tdbclm')) {
+    scores <- mod$linear.predictors
+  }
   lim <- max(abs(min(scores)), abs(max(scores)))
   plot(mod$data$imm_chosen[!outlier.idx] ~ scores[!outlier.idx],
        ylim = c(0, 1),
@@ -114,16 +118,20 @@ plot_scores <- function(mod, outlier.idx = NULL) {
        xlab = 'Linear predictor')
   points(mod$data$imm_chosen[outlier.idx] ~ scores[outlier.idx], col = 'red')
   # Plot probabilities
-  prob_func <- do.call(get_prob_func_frame, mod$config)
-  score_range <- seq(-lim, lim, length.out = 1000)
-  p <- prob_func(score_range, coef(mod))
-  lines(p ~ score_range)
+  plotting_scores <- seq(-lim, lim, length.out = 1000)
+  if (is(mod, 'tdbcm')) {
+    prob_func <- do.call(get_prob_func_frame, mod$config)
+    p <- prob_func(plotting_scores, coef(mod))
+  } else if (is(mod, 'tdbclm')) {
+    p <- mod$family$linkinv(plotting_scores)
+  }
+  lines(p ~ plotting_scores)
 }
 
 plot_endpoints <- function(mod, del=NULL, val_del=NULL) {
   if (is.null(val_del)) {
     val_del <- mean(mod$data$val_del)
-    if (mod$config$gamma_scale != 'none') {
+    if (mod$config$gamma_scale %||% 'none' != 'none') {
       warning(sprintf('
         Gamma (steepness of curve) is scaled by val_del
         Thus, the curve will have different steepness for a different value of val_del

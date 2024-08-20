@@ -4,10 +4,10 @@
 \alias{predict.tdipm}
 \title{Model Predictions}
 \usage{
-\method{predict}{tdipm}(mod, newdata = NULL, type = "indiff")
+\method{predict}{tdipm}(mod, del = NULL, newdata = NULL, type = "indiff")
 }
 \arguments{
-\item{mod}{A temporal discounting model. See `td_gnlm`.}
+\item{mod}{A temporal discounting model. See `tdbcm`.}
 
 \item{newdata}{Optionally, a data frame to use for prediction. If omitted, the data used to fit the model will be used for prediction.}
 

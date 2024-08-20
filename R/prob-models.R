@@ -259,7 +259,7 @@ dd_prob_model <- tdbcm <- function(
   best_crit <- Inf
   best_mod <- list()
   cand_mod <- list(data = data)
-  class(cand_mod) <- c('td_gnlm', 'tdm')
+  class(cand_mod) <- c('tdbcm', 'tdm')
   for (cand_fn in cand_fns) {
     config <- args
     config$discount_function <- cand_fn
@@ -309,7 +309,7 @@ dd_prob_model <- tdbcm <- function(
     par_lims <- c(
       par_lims,
       list(
-        gamma = gamma_par_lims
+        gamma = c(0, Inf)
       )
     )
     # Add epsilon limits, if fitting error rate
@@ -345,55 +345,4 @@ dd_prob_model <- tdbcm <- function(
   best_mod$data <- data
   
   return(best_mod)
-}
-
-#' @export
-td_glm <- tdbclm <- function(data,
-                   discount_function = c('hyperbolic.1',
-                                         'hyperbolic.2',
-                                         'exponential.1',
-                                         'exponential.2',
-                                         'scaled-exponential.1',
-                                         'nonlinear-time-hyperbolic.2',
-                                         'nonlinear-time-exponential.2')) {
-  discount_function <- match.arg(discount_function)
-  data <- add_beta_terms(data, discount_function)
-  if ('B3' %in% names(data)) {
-    fml <- imm_chosen ~ B1 + B2 + B3 + 0
-  } else {
-    fml <- imm_chosen ~ B1 + B2 + 0
-  }
-  mod <- glm(formula = fml, data = data, family = binomial(link = 'logit'))
-  mod$discount_function <- discount_function
-  class(mod) <- c('tdbclm', 'glm', 'lm')
-  return(mod)
-}
-
-add_beta_terms <- function(data, discount_function) {
-  if (discount_function == 'hyperbolic.1') {
-    data$B1 <- 1 - data$val_del / data$val_imm
-    data$B2 <- data$del
-  } else if (discount_function == 'hyperbolic.2') {
-    data$B1 <- qlogis(data$val_imm / data$val_del) + log(data$del)
-    data$B2 <- 1
-  } else if (discount_function == 'exponential.1') {
-    data$B1 <- log(data$val_imm / data$val_del)
-    data$B2 <- data$del
-  } else if (discount_function == 'exponential.2') {
-    data$B1 <- varphi(data$val_imm / data$val_del) + data$del
-    data$B2 <- 1
-  } else if (discount_function == 'scaled-exponential.1') {
-    data$B1 <- log(data$val_imm / data$val_del)
-    data$B2 <- data$del
-    data$B3 <- 1
-  } else if (discount_function == 'nonlinear-time-hyperbolic.2') {
-    data$B1 <- log(data$val_imm / data$val_del)
-    data$B2 <- log(data$del)
-    data$B3 <- 1
-  } else if (discount_function == 'nonlinear-time-exponential.2') {
-    data$B1 <- varphi(data$val_imm / data$val_del)
-    data$B2 <- log(data$del)
-    data$B3 <- 1
-  }
-  return(data)
 }
