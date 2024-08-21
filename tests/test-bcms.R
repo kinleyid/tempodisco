@@ -75,7 +75,7 @@ for (ptpt in names(datasets)) {
     plot(mod, type = 'summary')
     plot(mod, type = 'endpoints')
     plot(mod, type = 'endpoints', del = 100, val_del = 50)
-    plot(mod, type = 'scores')
+    plot(mod, type = 'link')
     
     # prediction
     fitted(mod)

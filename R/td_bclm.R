@@ -24,7 +24,7 @@ td_bclm <- function(data,
     model = model
   )
   
-  class(mod) <- c('td_bclm', 'td_um' class(mod))
+  class(mod) <- c('td_bclm', 'td_um', class(mod))
   
   return(mod)
 }

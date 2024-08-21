@@ -4,7 +4,7 @@
 \alias{predict.td_ipm}
 \title{Model Predictions}
 \usage{
-\method{predict}{td_ipm}(mod, del = NULL, newdata = NULL)
+\method{predict}{td_ipm}(mod, del = NULL, newdata = NULL, ...)
 }
 \arguments{
 \item{mod}{A temporal discounting indifference point model. See `td_ipm`.}

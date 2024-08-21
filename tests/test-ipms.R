@@ -16,7 +16,7 @@ for (ptpt in names(indiff_fns)) {
 }
 
 # Get all possible combinations of inputs
-arg_vals <- list(discount_function = eval(formals(tdbcm)[['discount_function']]))
+arg_vals <- list(discount_function = eval(formals(td_fn)[['predefined']]))
 custom_discount_function <- list(
   name = 'custom',
   fn = function(data, p) 1 / (1 + log(data$del*p['m'] + 1)),
@@ -42,7 +42,7 @@ for (ptpt in names(datasets)) {
     if (arg_combo$discount_function == 'custom') {
       arg_combo$discount_function <- custom_discount_function
     }
-    mod <- do.call(tdipm, c(list(data = df), arg_combo))
+    mod <- do.call(td_ipm, c(list(data = df), arg_combo))
     
     # random generics
     print(mod)
@@ -53,7 +53,6 @@ for (ptpt in names(datasets)) {
     AIC(mod, k = 5)
     logLik(mod)
     coef(mod)
-    residuals(mod, type = 'deviance')
     residuals(mod, type = 'pearson')
     residuals(mod, type = 'response')
     

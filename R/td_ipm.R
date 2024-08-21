@@ -13,8 +13,7 @@ get_rss_fn <- function(data, discount_function) {
 #'
 #' Compute a model of a single subject's indifference points
 #' @param data A data frame with columns `indiff` for the pre-computed indifference points and `del` for the delay
-#' @param discount_function A vector of strings specifying the name of the discount functions to use. Options are `'hyperbolic'`, `'exponential'`, `'inverse-q-exponential'`, `'nonlinear-time-hyperbolic'`, `'scaled-exponential'`, `'dual-systems-exponential'`, and `'nonlinear-time-exponential'`. Default is `'all'`, meaning every discount function is tested and the one with the best BIC is selected.
-#' @param param_ranges A list containing the starting values to try for each parameter. Defaults to `c(-5, 0, 5)` for most parameters
+#' @param discount_function A vector of strings specifying the name of the discount functions to use, or an object of class `td_fn`.
 #' @param silent A Boolean specifying whether the call to `optim` (which occurs in a `try` block) should be silent on error
 #' @return A list from `optim` with additional components specifying the AIC, the ED50, the discount function, and the probabilistic model
 #' @note The `par` component of the output list is for internal use. For statistical analyses, use the `untransformed_parameters`. `par` contains the parameters after various transformations intended to keep them within certain bounds (e.g., k parameters should never be negative)
@@ -37,15 +36,13 @@ td_ipm <- function(
                           'nonlinear-time-exponential',
                           'model-free',
                           'noise'),
+    optim_args = list(),
     silent = T) {
   
   # Set discount function(s)
-  if (is.character(discount_function)) {
-    if ((discount_function %||% 'all') == 'all') {
-      discount_function <- eval(formals(td_ipm)$discount_function)
-      discount_function <- discount_function[discount_function != 'all']
-      discount_function <- discount_function[discount_function != 'model-free']
-    }
+  if ('all' %in% discount_function) {
+    # If "all" is used, replace discount_function with a vector of all the options
+    discount_function <- eval(formals(td_fn)$predefined)
   }
   
   # Check args
@@ -64,12 +61,14 @@ td_ipm <- function(
   if (length(missing_cols) > 0) {
     stop(sprintf('Missing data column(s): %s', paste(missing_cols, collapse = ', ')))
   }
-  # Valid discount function
+  # Valid discount function name
   if (is.character(discount_function)) {
+    valid_discount_functions <- eval(formals(td_fn)$predefined)
     for (d_f in discount_function) {
-      if (!(d_f %in% names(all_discount_functions))) {
-        valid_opts <- paste(sprintf('\n- "%s"', names(all_discount_functions)), collapse = '')
-        stop(sprintf('"%s" is not a recognized discount function. Valid options are: %s', d_f, valid_opts))
+      if (!(d_f %in% valid_discount_functions)) {
+        stop(sprintf('"%s" is not a pre-defined discount function. Valid options are: %s',
+                     d_f,
+                     paste(sprintf('\n- "%s"', valid_discount_functions), collapse = '')))
       }
     }
   }
@@ -83,14 +82,14 @@ td_ipm <- function(
   } else {
     cand_fns <- list()
     for (fn_name in discount_function) {
-      cand_fns <- c(cand_fns, list(tdfn(fn_name)))
+      cand_fns <- c(cand_fns, list(td_fn(fn_name)))
     }
   }
   
   # Run optimization on each candidate discount function
   best_crit <- Inf
-  cand_output <- list(data = data, config = list(), optim = NULL)
-  class(cand_output) <- c('td_ipm', 'tdm')
+  cand_mod <- list(data = data, config = list(), optim = NULL)
+  class(cand_mod) <- c('td_ipm', 'td_um')
   for (cand_fn in cand_fns) {
    
     # Get residual sum of squares function
@@ -111,21 +110,20 @@ td_ipm <- function(
     }
     
     # Run optimization
-    optimized <- run_optimization(rss_fn, par_starts, par_lims, silent)
+    optimized <- run_optimization(rss_fn, par_starts, par_lims, optim_args = optim_args, silent = silent)
     if (length(optimized) == 0) {
       stop('Optimization failed; optim() returned an error for every choice of initial parameter values')
     }
     if ('par_chk' %in% names(cand_fn)) {
       optimized$par <- cand_fn$par_chk(optimized$par)
     }
-    cand_output$optim <- optimized
-    cand_output$config$discount_function <- cand_fn
-    
+    cand_mod$optim <- optimized
+    cand_mod$config$discount_function <- cand_fn
     # Compare by BIC
-    crit <- BIC(cand_output)
+    crit <- BIC(cand_mod)
     if (crit < best_crit) {
       best_crit <- crit
-      best_output <- cand_output
+      best_output <- cand_mod
     }
     
   }

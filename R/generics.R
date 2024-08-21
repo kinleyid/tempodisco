@@ -94,7 +94,7 @@ predict.tdbclm <- function(mod, newdata = NULL, type = 'indiff', ...) {
 #' @param type The type of prediction required. As in predict.glm, `"link"` (default) and `"response"` give predictions on the scales of the linear predictors and response variable, respectively. `"indiff"` gives predicted indifference points. In this case, `newdata` needs only a `del` column.
 #' @return A vector of predictions
 #' @export
-predict.td_ipm <- function(mod, del = NULL, newdata = NULL) {
+predict.td_ipm <- function(mod, del = NULL, newdata = NULL, ...) {
   if (is.null(newdata)) {
     if (is.null(del)) {
       newdata <- mod$data
@@ -122,7 +122,7 @@ fitted.td_bcm <- function(mod) {predict(mod, type = 'response')}
 #' Get fitted values of a temporal discounting indifference point model
 #' @return A named vector of fitted values
 #' @export
-fitted.td_bcm <- function(mod) {predict(mod)}
+fitted.td_ipm <- function(mod) {predict(mod)}
 
 #' Extract model coefficients
 #' 
@@ -130,6 +130,13 @@ fitted.td_bcm <- function(mod) {predict(mod)}
 #' @return A named vector of coefficients
 #' @export
 coef.td_bcm <- function(mod) {mod$optim$par}
+
+#' Extract model coefficients
+#' 
+#' Get coefficients of a temporal discounting indifference point model
+#' @return A named vector of coefficients
+#' @export
+coef.td_ipm <- function(mod) {mod$optim$par}
 
 #' Residuals from temporal discounting model
 #'
@@ -201,7 +208,6 @@ logLik.td_bcm <- function(mod) {
 #' @param mod An object of class `td_ipm`
 #' @export
 logLik.td_ipm <- function(mod) {
-  
   # Copied from logLik.nls
   
   res <- residuals(mod)
@@ -282,7 +288,7 @@ plot.td_um <- function(mod, type = c('summary', 'endpoints', 'link'), ...) {
         } else {
           val_del <- mean(mod$data$val_del)
           if (mod$config$gamma_scale %||% 'none' != 'none') {
-            warning(sprintf('gamma parameter (steepness of curve) is scaled by val_del.\nThus, the curve will have different steepness for a different value of val_del.\nDefaulting to val_del = %s (mean of val_del from data used to fit model).\nUse the `val_del` argument to specify a custom value.\n', val_del))
+            cat(sprintf('gamma parameter (steepness of curve) is scaled by val_del.\nThus, the curve will have different steepness for a different value of val_del.\nDefaulting to val_del = %s (mean of val_del from data used to fit model).\nUse the `val_del` argument to specify a custom value.\n\n', val_del))
           }
         }
         
@@ -292,9 +298,9 @@ plot.td_um <- function(mod, type = c('summary', 'endpoints', 'link'), ...) {
           del <- ED50(mod)
           if (del == 'none') {
             del <- mean(c(min(mod$data$del), max(c(mod$data$del))))
-            cat(sprintf('ED50 is undefined. Therefore setting del=%s (halfway between min. delay and max. delay from fitting data).\nThis can be specified manually with the `del` argument.\n', del))
+            cat(sprintf('ED50 is undefined. Therefore setting del=%s (halfway between min. delay and max. delay from fitting data).\nThis can be specified manually with the `del` argument.\n\n', del))
           } else {
-            cat(sprintf('Setting del = %s (ED50) to center the curve.\nThis can be changed using the `del` argument.\n', del))
+            cat(sprintf('Setting del = %s (ED50) to center the curve.\nThis can be changed using the `del` argument.\n\n', del))
           }
         }
         

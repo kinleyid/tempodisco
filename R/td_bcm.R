@@ -91,8 +91,7 @@ td_bcm <- function(
   # Set discount function(s)
   if ('all' %in% discount_function) {
     # If "all" is used, replace discount_function with a vector of all the options
-    discount_function <- eval(formals(td_bcm)$discount_function)
-    discount_function <- discount_function[discount_function != 'all']
+    discount_function <- eval(formals(td_fn)$predefined)
   }
   
   # Check args
@@ -137,10 +136,12 @@ td_bcm <- function(
   }
   # Valid discount function name
   if (is.character(discount_function)) {
+    valid_discount_functions <- eval(formals(td_fn)$predefined)
     for (d_f in discount_function) {
-      if (!(d_f %in% c(names(all_discount_functions)))) {
-        valid_opts <- paste(sprintf('\n- "%s"', names(all_discount_functions)), collapse = '')
-        stop(sprintf('"%s" is not a recognized discount function. Valid options are: %s', d_f, valid_opts))
+      if (!(d_f %in% valid_discount_functions)) {
+        stop(sprintf('"%s" is not a pre-defined discount function. Valid options are: %s',
+                     d_f,
+                     paste(sprintf('\n- "%s"', valid_discount_functions), collapse = '')))
       }
     }
   }
@@ -159,7 +160,7 @@ td_bcm <- function(
   } else {
     cand_fns <- list()
     for (fn_name in discount_function) {
-      cand_fns <- c(cand_fns, list(tdfn(fn_name)))
+      cand_fns <- c(cand_fns, list(td_fn(fn_name)))
     }
   }
   
@@ -279,9 +280,6 @@ get_score_func_frame <- function(...) {
   
   # Get the final frame
   frame <- function(data, par) {
-    if (any(is.nan(delta(data, par)))) {
-      browser()
-    }
     par['gamma'] * gamma_scale(data, par) * delta(data, par)}
   
   return(frame)

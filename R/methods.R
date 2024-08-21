@@ -8,7 +8,6 @@
 #' @return A vector of predictions
 #' @export
 ED50 <- function(mod) {
-  
   out <- mod$config$discount_function$ED50(coef(mod))
   if (out == 'non-analytic') {
     # No analytic solution, therefore optimize
