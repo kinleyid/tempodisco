@@ -25,7 +25,7 @@ get_rss_fn <- function(data, discount_function) {
 #' mod <- dd_det_model(df)
 #' print(mod$discount_function)
 #' @export
-td_ipm <- tdipm <- function(
+td_ipm <- function(
     data,
     discount_function = c('all',
                           'hyperbolic',
@@ -42,7 +42,7 @@ td_ipm <- tdipm <- function(
   # Set discount function(s)
   if (is.character(discount_function)) {
     if ((discount_function %||% 'all') == 'all') {
-      discount_function <- eval(formals(tdipm)$discount_function)
+      discount_function <- eval(formals(td_ipm)$discount_function)
       discount_function <- discount_function[discount_function != 'all']
       discount_function <- discount_function[discount_function != 'model-free']
     }
@@ -90,7 +90,7 @@ td_ipm <- tdipm <- function(
   # Run optimization on each candidate discount function
   best_crit <- Inf
   cand_output <- list(data = data, config = list(), optim = NULL)
-  class(cand_output) <- c('tdipm', 'tdm')
+  class(cand_output) <- c('td_ipm', 'tdm')
   for (cand_fn in cand_fns) {
    
     # Get residual sum of squares function

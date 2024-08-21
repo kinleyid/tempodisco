@@ -18,7 +18,7 @@ for (ptpt in names(p_imm)) {
 }
 
 # Get all possible combinations of inputs
-arg_vals <- list(model = eval(formals(tdbclm)[['model']]))
+arg_vals <- list(model = eval(formals(td_bclm)[['model']]))
 arg_combos <- do.call(expand.grid, c(arg_vals, list(stringsAsFactors = F)))
 
 for (ptpt in names(datasets)) {
@@ -34,7 +34,7 @@ for (ptpt in names(datasets)) {
     
     arg_combo <- as.list(unlist(arg_combo))
     
-    mod <- do.call(tdbclm, c(list(data = df), arg_combo))
+    mod <- do.call(td_bclm, c(list(data = df), arg_combo))
     
     # random generics
     print(mod)

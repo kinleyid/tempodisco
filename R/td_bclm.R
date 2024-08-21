@@ -1,6 +1,6 @@
 
 #' @export
-tdbclm <- function(data,
+td_bclm <- function(data,
                    model = c('hyperbolic.1',
                              'hyperbolic.2',
                              'exponential.1',
@@ -24,7 +24,7 @@ tdbclm <- function(data,
     model = model
   )
   
-  class(mod) <- c('tdbclm', 'glm', 'lm')
+  class(mod) <- c('td_bclm', 'td_um' class(mod))
   
   return(mod)
 }
@@ -59,7 +59,7 @@ add_beta_terms <- function(data, model) {
 }
 
 #' @export
-coef.tdbclm <- function(mod, df_par = T) {
+coef.td_bclm <- function(mod, df_par = T) {
   if (df_par) {
     # In terms of discount function parameters
     p <- mod$coefficients
@@ -87,22 +87,4 @@ coef.tdbclm <- function(mod, df_par = T) {
     cf <- coef.glm(mod)
   }
   return(cf)
-}
-
-#' @export
-predict.tdbclm <- function(mod, newdata = NULL, type = 'link', ...) {
-  if (is.null(newdata)) {
-    newdata <- mod$data
-  }
-  
-  if (type == 'indiff') {
-    
-    return(predict.tdbcm(mod, newdata = newdata, type = type))
-    
-  } else {
-    
-    newdata <- add_beta_terms(newdata, model = mod$config$model)
-    return(predict.glm(mod, newdata = newdata, type = type, ...))
-    
-  }
 }

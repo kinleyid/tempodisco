@@ -20,7 +20,7 @@ for (ptpt in names(p_imm)) {
 # Get all possible combinations of inputs
 arg_vals <- list(fixed_ends = c(T, F), fit_err_rate = c(T, F))
 for (arg in c('discount_function', 'choice_rule')) {
-  arg_vals[[arg]] <- eval(formals(tdbcm)[[arg]])
+  arg_vals[[arg]] <- eval(formals(td_bcm)[[arg]])
 }
 custom_discount_function <- list(
   name = 'custom',
@@ -40,6 +40,9 @@ for (ptpt in names(datasets)) {
   cat(sprintf('Dataset: %s\n', ptpt))
   df <- datasets[[ptpt]]
   
+  # Default call
+  td_bcm(df)
+  
   arg_combo_idx <- 1
   while (arg_combo_idx <= nrow(arg_combos)) {
     arg_combo <- arg_combos[arg_combo_idx, ]
@@ -52,7 +55,7 @@ for (ptpt in names(datasets)) {
       arg_combo$discount_function <- custom_discount_function
     }
     
-    mod <- do.call(tdbcm, c(list(data = df), arg_combo))
+    mod <- do.call(td_bcm, c(list(data = df), arg_combo))
     
     # random generics
     print(mod)
