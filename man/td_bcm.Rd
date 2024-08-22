@@ -42,16 +42,5 @@ td_bcm(
 An object of class `td_bcm` with components `data` (containing the data used for fitting), `config` (containing the internal configuration of the model, including the `discount_function`), and `optim` (the output of `optim()`).
 }
 \description{
-Compute a binary choice model for a single subject's temporal discounting
-}
-\examples{
-# Generate data
-df <- data.frame(val_imm = seq(1, 99, length.out = 10), val_del = 100, del = rep(exp(1:10), each=10))
-logistic <- function(x) 1 / (1 + exp(-x))
-logit <- function(x) log(x / (1 - x))
-prob <- logistic(logit(df$val_imm / df$val_del) - logit(1 / (1 + 0.001*df$del)))
-df$imm_chosen <- runif(nrow(df)) < prob
-# Fit model
-mod <- dd_prob_model(df)
-print(mod$discount_function)
+Compute a binary choice model for a single subject
 }

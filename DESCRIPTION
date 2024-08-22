@@ -1,6 +1,6 @@
-Package: ddDesidModels
+Package: tempodisco
 Type: Package
-Title: Probabilistic models of delay discounting
+Title: Temporal discounting models
 Version: 0.0.1
 RoxygenNote: 7.3.1
 Encoding: UTF-8

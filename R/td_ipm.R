@@ -14,15 +14,9 @@ get_rss_fn <- function(data, discount_function) {
 #' Compute a model of a single subject's indifference points
 #' @param data A data frame with columns `indiff` for the pre-computed indifference points and `del` for the delay
 #' @param discount_function A vector of strings specifying the name of the discount functions to use, or an object of class `td_fn`.
+#' @param optim_args A list of additional args to pass to `optim`
 #' @param silent A Boolean specifying whether the call to `optim` (which occurs in a `try` block) should be silent on error
 #' @return A list from `optim` with additional components specifying the AIC, the ED50, the discount function, and the probabilistic model
-#' @note The `par` component of the output list is for internal use. For statistical analyses, use the `untransformed_parameters`. `par` contains the parameters after various transformations intended to keep them within certain bounds (e.g., k parameters should never be negative)
-#' @examples 
-#' # Generate data
-#' df <- data.frame(del = exp(1:10), indiff = 1 / (1 + 0.001*exp(1:10)))
-#' # Fit model
-#' mod <- dd_det_model(df)
-#' print(mod$discount_function)
 #' @export
 td_ipm <- function(
     data,

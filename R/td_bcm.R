@@ -1,7 +1,7 @@
 
 #' Temporal discounting binary choice model
 #'
-#' Compute a binary choice model for a single subject's temporal discounting
+#' Compute a binary choice model for a single subject
 #' @param data A data frame with columns `val_imm` and `val_del` for the values of the immediate and delayed rewards, `del` for the delay, and `imm_chosen` (Boolean) for whether the immediate reward was chosen. Other columns can also be present but will be ignored.
 #' @param discount_function A string specifying the name of the discount functions to use, or an object of class `td_fn` (used for creating custom discount functions). See `td_fn()`.
 #' @param choice_rule A string specifying whether the `'logistic'` (default), `'probit'`, or `'power'` choice rule should be used.
@@ -12,16 +12,6 @@
 #' @param optim_args Additional arguments to pass to `optim()`. Default is `list(silent = T)`.
 #' @param silent Boolean (true by default). The call to `optim()` occurs within a `try()` wrapper. The value of `silent` is passed along to `try()`.
 #' @return An object of class `td_bcm` with components `data` (containing the data used for fitting), `config` (containing the internal configuration of the model, including the `discount_function`), and `optim` (the output of `optim()`).
-#' @examples 
-#' # Generate data
-#' df <- data.frame(val_imm = seq(1, 99, length.out = 10), val_del = 100, del = rep(exp(1:10), each=10))
-#' logistic <- function(x) 1 / (1 + exp(-x))
-#' logit <- function(x) log(x / (1 - x))
-#' prob <- logistic(logit(df$val_imm / df$val_del) - logit(1 / (1 + 0.001*df$del)))
-#' df$imm_chosen <- runif(nrow(df)) < prob
-#' # Fit model
-#' mod <- dd_prob_model(df)
-#' print(mod$discount_function)
 #' @export
 td_bcm <- function(
     data,

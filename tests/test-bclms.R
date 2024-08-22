@@ -1,6 +1,7 @@
 
-lib_path <- 'C:/Users/isaac/Projects/ddDesidModels'
+lib_path <- 'C:/Users/isaac/Projects/tempodisco'
 roxygen2::roxygenise(lib_path)
+devtools::document(lib_path)
 devtools::load_all(lib_path)
 
 # Generate data

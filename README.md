@@ -1,10 +1,10 @@
-# ddDesidModels
+# tempodisco
 An R package for fitting models of delay discounting, as described in the paper "[Probabilistic models of delay discounting: improving plausibility and performance](https://doi.org/10.31234/osf.io/y2fdh)."
 
 ## Installation
 ```
 require(devtools)
-install_github("kinleyid/ddDesidModels");
+install_github("kinleyid/tempodisco");
 ```
 
 ## Description
@@ -30,7 +30,7 @@ This package also allows you to fit probabilistic models that satisfy two deside
 `dd_prob_model` fits a probabilistic model of a given individual's delay discounting:
 
 ```R
-library(ddDesidModels)
+library(tempodisco)
 # Generate data
 df <- data.frame(val_imm = seq(1, 99, length.out = 10), val_del = 100, del = rep(exp(1:10), each=10))
 logistic <- function(x) 1 / (1 + exp(-x))
@@ -60,7 +60,7 @@ print(mod$discount_function_name)
 
 To double check that the results make sense, you can plot them using `plot_dd`. For a probabilistic model, this produces the following plot:
 
-<img src="https://github.com/kinleyid/ddDesidModels/assets/18541620/58efbe67-acc7-4993-81e0-2d896448fb5d" width="400">
+<img src="https://github.com/kinleyid/tempodisco/assets/18541620/58efbe67-acc7-4993-81e0-2d896448fb5d" width="400">
 
 It's not publication-ready, but it is a good way of quickly checking the model fit. On the x-axis is the delay and on the y-axis is the relative value of the immediate reward. Each point is a different decision. Red means the immediate reward was chosen and blue means the delayed reward was chosen. The bold line is the best fitting discount curve, and the plot's title tells you which type of discount function it's from. The dashed lines give a sense of how stochastic the decisions were: the wider apart they are, the more stochastic. Just as the discount curve shows all the points where the probability of selecting the immediate reward is 0.5, the dotted lines show where this probability would be 0.4 and 0.6 (these values can be adjusted using the `pr_range` argument to `plot_dd`).
 
@@ -100,22 +100,22 @@ prob_1 <- logistic(logit(df$val_imm / df$val_del) - logit(indiffs_1(df$del)))
 prob_2 <- logistic(logit(df$val_imm / df$val_del) - logit(indiffs_2(df$del)))
 df_1 <- df
 df_1$imm_chosen <- runif(nrow(df)) < prob_1
-mod_1 <- ddDesidModels::dd_prob_model(df_1, discount_function = 'hyperbolic')
+mod_1 <- tempodisco::dd_prob_model(df_1, discount_function = 'hyperbolic')
 df_2 <- df
 df_2$imm_chosen <- runif(nrow(df)) < prob_2
-mod_2 <- ddDesidModels::dd_prob_model(df_2, discount_function = 'exponential')
+mod_2 <- tempodisco::dd_prob_model(df_2, discount_function = 'exponential')
 
 # Plot discount functions with ED50 values
 plot(1, type = "n", xlab = "delay", ylab = "indifference",
      xlim = c(0, max(df$del)), ylim = c(0, 1))
 abline(h = 0.5, col = 'gray')
-lines(ddDesidModels::predict_indiffs(mod_1, dels) ~ dels)
+lines(tempodisco::predict_indiffs(mod_1, dels) ~ dels)
 abline(v = mod_1$ED50)
-lines(ddDesidModels::predict_indiffs(mod_2, dels) ~ dels, col = 'red')
+lines(tempodisco::predict_indiffs(mod_2, dels) ~ dels, col = 'red')
 abline(v = mod_2$ED50, col = 'red')
 ```
 This results in the following plot (where ED50 values are shown as vertical lines):
 
-![image](https://github.com/kinleyid/ddDesidModels/assets/18541620/e793b520-063e-4880-84c3-bc586e8530a4)
+![image](https://github.com/kinleyid/tempodisco/assets/18541620/e793b520-063e-4880-84c3-bc586e8530a4)
 
 
