@@ -68,14 +68,14 @@ predict.td_bcm <- function(mod, newdata = NULL, type = c('link', 'response', 'in
 #' @param ... Additional arguments passed to predict.glm
 #' @return A vector of predictions
 #' @export
-predict.tdbclm <- function(mod, newdata = NULL, type = 'indiff', ...) {
+predict.td_bclm <- function(mod, newdata = NULL, type = 'indiff', ...) {
   if (is.null(newdata)) {
     newdata <- mod$data
   }
   
   if (type == 'indiff') {
     
-    return(predict.tdbcm(mod, newdata = newdata, type = type))
+    return(predict.td_bcm(mod, newdata = newdata, type = type))
     
   } else {
     

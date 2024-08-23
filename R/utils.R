@@ -1,6 +1,11 @@
 
 # Utility functions
 
+# Gumbel quantile distribution
+qgumbel <- function(p, location = 0, scale = 1) {
+  location - scale*log(-log(p))
+}
+
 # Log-likelihood
 ll <- function(p, x) {
   x*log(p) + (1 - x)*log(1 - p)

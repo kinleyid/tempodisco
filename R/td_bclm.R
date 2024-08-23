@@ -34,7 +34,7 @@ td_bclm <- function(data,
   
   disc_func_name <- strsplit(model, '\\.')[[1]][1]
   mod$config <- list(
-    discount_function = tdfn(disc_func_name),
+    discount_function = td_fn(disc_func_name),
     model = model
   )
   
@@ -54,7 +54,7 @@ add_beta_terms <- function(data, model) {
     data$B1 <- log(data$val_imm / data$val_del)
     data$B2 <- data$del
   } else if (model == 'exponential.2') {
-    data$B1 <- varphi(data$val_imm / data$val_del) + data$del
+    data$B1 <- qgumbel(data$val_imm / data$val_del) + log(data$del)
     data$B2 <- 1
   } else if (model == 'scaled-exponential.1') {
     data$B1 <- log(data$val_imm / data$val_del)
@@ -65,7 +65,7 @@ add_beta_terms <- function(data, model) {
     data$B2 <- log(data$del)
     data$B3 <- 1
   } else if (model == 'nonlinear-time-exponential.2') {
-    data$B1 <- varphi(data$val_imm / data$val_del)
+    data$B1 <- qgumbel(data$val_imm / data$val_del)
     data$B2 <- log(data$del)
     data$B3 <- 1
   }
@@ -98,7 +98,7 @@ coef.td_bclm <- function(mod, df_par = T) {
               's' = B[2]/B[1])
     }
   } else {
-    cf <- coef.glm(mod)
+    cf <- mod$coefficients
   }
   return(cf)
 }

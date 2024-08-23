@@ -47,6 +47,7 @@ for (ptpt in names(datasets)) {
     logLik(mod)
     coef(mod)
     coef(mod, df_par = T)
+    coef(mod, df_par = F)
     residuals(mod, type = 'deviance')
     residuals(mod, type = 'pearson')
     residuals(mod, type = 'response')
@@ -54,7 +55,7 @@ for (ptpt in names(datasets)) {
     # plotting
     plot(mod, type = 'summary')
     plot(mod, type = 'endpoints')
-    plot(mod, type = 'scores')
+    plot(mod, type = 'link')
 
     # prediction
     fitted(mod)
