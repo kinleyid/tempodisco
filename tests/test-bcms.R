@@ -5,10 +5,10 @@ devtools::load_all(lib_path)
 
 # Generate data
 p_imm <- list(
-  'normal' = function(df) plogis( 2*( df$val_imm - df$val_del* 1 / (1 + 0.001*(df$del)) ) ), # Normal
-  'all-imm' = function(df) 1, # All immediate chosen
-  'all-del' = function(df) 0, # All delayed chosen
-  'random' = function(df) runif(nrow(df)) # Random
+  'normal' = function(df) plogis( 2*( df$val_imm - df$val_del* 1 / (1 + 0.001*(df$del)) ) ) # Normal
+  # 'all-imm' = function(df) 1, # All immediate chosen
+  # 'all-del' = function(df) 0, # All delayed chosen
+  # 'random' = function(df) runif(nrow(df)) # Random
 )
 datasets <- list()
 for (ptpt in names(p_imm)) {

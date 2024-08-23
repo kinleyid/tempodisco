@@ -20,11 +20,11 @@ td_bcm(
 )
 }
 \arguments{
-\item{data}{A data frame with columns `val_imm` and `val_del` for the values of the immediate and delayed rewards, `del` for the delay, and `imm_chosen` (Boolean) for whether the immediate reward was chosen. Other columns can also be present but will be ignored.}
+\item{data}{A data frame with columns \code{val_imm} and \code{val_del} for the values of the immediate and delayed rewards, \code{del} for the delay, and \code{imm_chosen} (Boolean) for whether the immediate reward was chosen. Other columns can also be present but will be ignored.}
 
-\item{discount_function}{A string specifying the name of the discount functions to use, or an object of class `td_fn` (used for creating custom discount functions). See `td_fn()`.}
+\item{discount_function}{A string specifying the name of the discount functions to use, or an object of class \code{td_fn} (used for creating custom discount functions). See \code{td_fn()}.}
 
-\item{choice_rule}{A string specifying whether the `'logistic'` (default), `'probit'`, or `'power'` choice rule should be used.}
+\item{choice_rule}{A string specifying whether the \code{'logistic'} (default), \code{'probit'}, or \code{'power'} choice rule should be used.}
 
 \item{fixed_ends}{A Boolean (false by default) specifying whether the model should satisfy the desiderata that subjects should always prefer something over nothing (i.e., nonzero delayed reward over nothing) and the same reward sooner rather than later.}
 
@@ -34,12 +34,12 @@ td_bcm(
 
 \item{eps_par_starts}{A vector of starting values to try for the "eps" parameter (which controls the error rate) during optimization. Ignored if `fit_err_rate = FALSE`.}
 
-\item{silent}{Boolean (true by default). The call to `optim()` occurs within a `try()` wrapper. The value of `silent` is passed along to `try()`.}
+\item{silent}{Boolean (true by default). The call to \code{optim()} occurs within a \code{try()} wrapper. The value of \code{silent} is passed along to \code{try()}.}
 
-\item{optim_args}{Additional arguments to pass to `optim()`. Default is `list(silent = T)`.}
+\item{optim_args}{Additional arguments to pass to \code{optim()}. Default is \code{list(silent = T)}.}
 }
 \value{
-An object of class `td_bcm` with components `data` (containing the data used for fitting), `config` (containing the internal configuration of the model, including the `discount_function`), and `optim` (the output of `optim()`).
+An object of class \code{td_bcm} with components \code{data} (containing the data used for fitting), \code{config} (containing the internal configuration of the model, including the \code{discount_function}), and \code{optim} (the output of \code{optim()}).
 }
 \description{
 Compute a binary choice model for a single subject

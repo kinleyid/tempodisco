@@ -12,11 +12,11 @@ get_rss_fn <- function(data, discount_function) {
 #' Indifference point model
 #'
 #' Compute a model of a single subject's indifference points
-#' @param data A data frame with columns `indiff` for the pre-computed indifference points and `del` for the delay
-#' @param discount_function A vector of strings specifying the name of the discount functions to use, or an object of class `td_fn`.
-#' @param optim_args A list of additional args to pass to `optim`
-#' @param silent A Boolean specifying whether the call to `optim` (which occurs in a `try` block) should be silent on error
-#' @return A list from `optim` with additional components specifying the AIC, the ED50, the discount function, and the probabilistic model
+#' @param data A data frame with columns \code{indiff} for the pre-computed indifference points and \code{del} for the delay
+#' @param discount_function A vector of strings specifying the name of the discount functions to use, or an object of class \code{td_fn}.
+#' @param optim_args A list of additional args to pass to \code{optim}
+#' @param silent A Boolean specifying whether the call to \code{optim} (which occurs in a \code{try} block) should be silent on error
+#' @return A list from \code{optim} with additional components specifying the AIC, the ED50, the discount function, and the probabilistic model
 #' @export
 td_ipm <- function(
     data,

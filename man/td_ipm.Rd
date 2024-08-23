@@ -14,16 +14,16 @@ td_ipm(
 )
 }
 \arguments{
-\item{data}{A data frame with columns `indiff` for the pre-computed indifference points and `del` for the delay}
+\item{data}{A data frame with columns \code{indiff} for the pre-computed indifference points and \code{del} for the delay}
 
-\item{discount_function}{A vector of strings specifying the name of the discount functions to use, or an object of class `td_fn`.}
+\item{discount_function}{A vector of strings specifying the name of the discount functions to use, or an object of class \code{td_fn}.}
 
-\item{optim_args}{A list of additional args to pass to `optim`}
+\item{optim_args}{A list of additional args to pass to \code{optim}}
 
-\item{silent}{A Boolean specifying whether the call to `optim` (which occurs in a `try` block) should be silent on error}
+\item{silent}{A Boolean specifying whether the call to \code{optim} (which occurs in a \code{try} block) should be silent on error}
 }
 \value{
-A list from `optim` with additional components specifying the AIC, the ED50, the discount function, and the probabilistic model
+A list from \code{optim} with additional components specifying the AIC, the ED50, the discount function, and the probabilistic model
 }
 \description{
 Compute a model of a single subject's indifference points

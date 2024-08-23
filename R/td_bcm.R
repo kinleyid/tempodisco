@@ -2,16 +2,16 @@
 #' Temporal discounting binary choice model
 #'
 #' Compute a binary choice model for a single subject
-#' @param data A data frame with columns `val_imm` and `val_del` for the values of the immediate and delayed rewards, `del` for the delay, and `imm_chosen` (Boolean) for whether the immediate reward was chosen. Other columns can also be present but will be ignored.
-#' @param discount_function A string specifying the name of the discount functions to use, or an object of class `td_fn` (used for creating custom discount functions). See `td_fn()`.
-#' @param choice_rule A string specifying whether the `'logistic'` (default), `'probit'`, or `'power'` choice rule should be used.
+#' @param data A data frame with columns \code{val_imm} and \code{val_del} for the values of the immediate and delayed rewards, \code{del} for the delay, and \code{imm_chosen} (Boolean) for whether the immediate reward was chosen. Other columns can also be present but will be ignored.
+#' @param discount_function A string specifying the name of the discount functions to use, or an object of class \code{td_fn} (used for creating custom discount functions). See \code{td_fn()}.
+#' @param choice_rule A string specifying whether the \code{'logistic'} (default), \code{'probit'}, or \code{'power'} choice rule should be used.
 #' @param fixed_ends A Boolean (false by default) specifying whether the model should satisfy the desiderata that subjects should always prefer something over nothing (i.e., nonzero delayed reward over nothing) and the same reward sooner rather than later.
 #' @param fit_err_rate A Boolean (false by default) specifying whether the model should include an error rate (parameterized by "eps"). See Eq. 5 here: https://doi.org/10.3758/s13428-015-0672-2
 #' @param gamma_par_starts A vector of starting values to try for the "gamma" parameter (which controls the steepness of the choice rule) during optimization.
 #' @param eps_par_starts A vector of starting values to try for the "eps" parameter (which controls the error rate) during optimization. Ignored if `fit_err_rate = FALSE`.
-#' @param optim_args Additional arguments to pass to `optim()`. Default is `list(silent = T)`.
-#' @param silent Boolean (true by default). The call to `optim()` occurs within a `try()` wrapper. The value of `silent` is passed along to `try()`.
-#' @return An object of class `td_bcm` with components `data` (containing the data used for fitting), `config` (containing the internal configuration of the model, including the `discount_function`), and `optim` (the output of `optim()`).
+#' @param optim_args Additional arguments to pass to \code{optim()}. Default is \code{list(silent = T)}.
+#' @param silent Boolean (true by default). The call to \code{optim()} occurs within a \code{try()} wrapper. The value of \code{silent} is passed along to \code{try()}.
+#' @return An object of class \code{td_bcm} with components \code{data} (containing the data used for fitting), \code{config} (containing the internal configuration of the model, including the \code{discount_function}), and \code{optim} (the output of \code{optim()}).
 #' @export
 td_bcm <- function(
     data,
