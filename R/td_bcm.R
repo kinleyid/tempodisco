@@ -12,6 +12,20 @@
 #' @param optim_args Additional arguments to pass to \code{optim()}. Default is \code{list(silent = T)}.
 #' @param silent Boolean (true by default). The call to \code{optim()} occurs within a \code{try()} wrapper. The value of \code{silent} is passed along to \code{try()}.
 #' @return An object of class \code{td_bcm} with components \code{data} (containing the data used for fitting), \code{config} (containing the internal configuration of the model, including the \code{discount_function}), and \code{optim} (the output of \code{optim()}).
+#' @examples
+#' \dontrun{
+#' data("td_bc_single_ptpt")
+#' mod <- td_bcm(td_bc_single_ptpt, discount_function = "hyperbolic", fixed_ends = T)
+#' # Custom discount function
+#' custom_discount_function <- td_fn(
+#'   name = 'custom',
+#'   fn = function(data, p) (1 - p['b'])*exp(-p['k']*data$del) + p['b'],
+#'   par_starts = list(k = c(0.001, 0.1), b = c(0.001, 0.1)),
+#'   par_lims = list(k = c(0, Inf), b = c(0, 1)),
+#'   ED50 = function(p) 'non-analytic'
+#' )
+#' mod <- td_bcm(td_bc_single_ptpt, discount_function = custom_discount_function, fit_err_rate = T)
+#' }
 #' @export
 td_bcm <- function(
     data,
@@ -74,7 +88,7 @@ td_bcm <- function(
   } else {
     req_args <- c('noise_dist', 'gamma_scale', 'transform')
     if (!setequal(req_args, names(config))) {
-      stop(sprintf('The following must all be specified:\n%s', paste('- ', req_args, collapse = '\n')))
+      stop(sprintf('If choice_rule is not specified, then the following must all be specified:\n%s', paste('- ', req_args, collapse = '\n')))
     }
   }
   

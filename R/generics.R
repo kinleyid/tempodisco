@@ -22,6 +22,16 @@ print.td_ipm <- function(mod) {
   cat(sprintf('AUC: %s\n', AUC(mod, verbose = F)))
 }
 
+#' @export
+print.td_fn <- function(obj) {
+  cat(sprintf('\nTemporal discounting function: "%s"\n\n', obj$name))
+  print(obj$fn)
+  cat(sprintf('\n'))
+  for (par in names(obj$par_lims)) {
+    cat(sprintf('%s < %s < %s\n', obj$par_lims[[par]][1], par, obj$par_lims[[par]][2]))
+  }
+}
+
 #' Model Predictions
 #'
 #' Generate predictions from a temporal discounting binary choice model
@@ -29,6 +39,12 @@ print.td_ipm <- function(mod) {
 #' @param newdata Optionally, a data frame to use for prediction. If omitted, the data used to fit the model will be used for prediction.
 #' @param type The type of prediction required. As in predict.glm, `"link"` (default) and `"response"` give predictions on the scales of the linear predictors and response variable, respectively. `"indiff"` gives predicted indifference points. In this case, `newdata` needs only a `del` column.
 #' @return A vector of predictions
+#' @examples
+#' \dontrun{
+#' data("td_bc_single_ptpt")
+#' mod <- td_bcm(td_bc_single_ptpt, discount_function = 'hyperbolic')
+#' indiffs <- predict(mod, newdata = data.frame(del = 1:100), type = 'indiff')
+#' }
 #' @export
 predict.td_bcm <- function(mod, newdata = NULL, type = c('link', 'response', 'indiff')) {
   if (is.null(newdata)) {
@@ -67,6 +83,12 @@ predict.td_bcm <- function(mod, newdata = NULL, type = c('link', 'response', 'in
 #' @param type The type of prediction required. For `"indiff"` (default) gives predicted indifference points. In this case, `newdata` needs only a `del` column. For all other values (e.g. `"link"`, `"response"`), this function is just a wrapper to `predict.glm()`
 #' @param ... Additional arguments passed to predict.glm
 #' @return A vector of predictions
+#' @examples
+#' \dontrun{
+#' data("td_bc_single_ptpt")
+#' mod <- td_bclm(td_bc_single_ptpt, model = 'hyperbolic.1')
+#' indiffs <- predict(mod, newdata = data.frame(del = 1:100), type = 'indiff')
+#' }
 #' @export
 predict.td_bclm <- function(mod, newdata = NULL, type = 'indiff', ...) {
   if (is.null(newdata)) {
@@ -93,6 +115,12 @@ predict.td_bclm <- function(mod, newdata = NULL, type = 'indiff', ...) {
 #' @param newdata Optionally, a data frame to use for prediction. This overrides the `del` argument.
 #' @param type The type of prediction required. As in predict.glm, `"link"` (default) and `"response"` give predictions on the scales of the linear predictors and response variable, respectively. `"indiff"` gives predicted indifference points. In this case, `newdata` needs only a `del` column.
 #' @return A vector of predictions
+#' @examples
+#' \dontrun{
+#' data("td_ip_simulated_ptpt")
+#' mod <- td_ipm(td_ip_simulated_ptpt, discount_function = 'hyperbolic')
+#' indiffs <- predict(mod, newdata = data.frame(del = 1:100), type = 'indiff')
+#' }
 #' @export
 predict.td_ipm <- function(mod, del = NULL, newdata = NULL, ...) {
   if (is.null(newdata)) {
@@ -178,7 +206,7 @@ residuals.td_ipm <- function(mod, type = c('response', 'pearson')) {
     yhat <- fitted(mod)
     val <- y - yhat
   } else if (type == 'pearson') {
-    # Same as residuals.nls
+    # From residuals.nls
     val <- residuals(mod, type = 'response')
     std <- sqrt(sum(val^2)/(length(val) - length(coef(mod))))
     val <- val/std
@@ -208,8 +236,7 @@ logLik.td_bcm <- function(mod) {
 #' @param mod An object of class `td_ipm`
 #' @export
 logLik.td_ipm <- function(mod) {
-  # Copied from logLik.nls
-  
+  # From logLik.nls
   res <- residuals(mod)
   N <- length(res)
   w <- rep_len(1, N) # Always unweighted
@@ -229,6 +256,13 @@ logLik.td_ipm <- function(mod) {
 #' Plot delay discounting models
 #' @param mod A delay discounting model. See `dd_prob_model` and `dd_det_model`
 #' @param type Type of plot to generate
+#' @examples
+#' \dontrun{
+#' data("td_bc_single_ptpt")
+#' mod <- td_bclm(td_bc_single_ptpt, model = 'hyperbolic.1')
+#' plot(mod, type = 'summary')
+#' plot(mod, type = 'endpoints')
+#' }
 #' @export
 plot.td_um <- function(mod, type = c('summary', 'endpoints', 'link'), ...) {
   
@@ -347,3 +381,4 @@ plot.td_um <- function(mod, type = c('summary', 'endpoints', 'link'), ...) {
     }
   }
 }
+

@@ -17,7 +17,7 @@ for (ptpt in names(indiff_fns)) {
 
 # Get all possible combinations of inputs
 arg_vals <- list(discount_function = eval(formals(td_fn)[['predefined']]))
-custom_discount_function <- list(
+custom_discount_function <- td_fn(
   name = 'custom',
   fn = function(data, p) 1 / (1 + log(data$del*p['m'] + 1)),
   par_starts = list(m = c(0.001, 0.1)),

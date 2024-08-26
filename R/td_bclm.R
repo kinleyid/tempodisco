@@ -12,7 +12,14 @@
 #' \code{'nonlinear-time-hyperbolic.2'}: \eqn{\beta_1(\sigma^{-1}[v_I/v_D]) + \beta_2\log t + \beta_3}; \eqn{k = \exp[\beta_3/\beta_1]}, \eqn{s = \beta_2/\beta_1} \cr
 #' \code{'nonlinear-time-hyperbolic.2'}: \eqn{\beta_1(G^{-1}[v_I/v_D]) + \beta_2\log t + \beta_3}; \eqn{k = \exp[\beta_3/\beta_1]}, \eqn{s = \beta_2/\beta_1} \cr
 #' where \eqn{\sigma^{-1}[\cdot]} is the quantile function of the standard logistic distribution \eqn{G^{-1}[\cdot]} is the quantile function of the standard Gumbel distribution
+#' @param ... Additional arguments passed to \code{glm}
 #' @return An object of class \code{td_bclm}, nearly identical to a \code{glm} but with an additional \code{config} component.
+#' @examples
+#' \dontrun{
+#' data("td_bc_single_ptpt")
+#' mod <- td_bclm(td_bc_single_ptpt, model = 'hyperbolic.1')
+#' print(coef(mod))
+#' }
 #' @export
 td_bclm <- function(data,
                     model = c('hyperbolic.1',

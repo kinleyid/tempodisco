@@ -21,3 +21,10 @@ A vector of predictions
 \description{
 Generate predictions from a temporal discounting indifference point model
 }
+\examples{
+\dontrun{
+data("td_ip_simulated_ptpt")
+mod <- td_ipm(td_ip_simulated_ptpt, discount_function = 'hyperbolic')
+indiffs <- predict(mod, newdata = data.frame(del = 1:100), type = 'indiff')
+}
+}

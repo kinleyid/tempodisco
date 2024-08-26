@@ -14,3 +14,11 @@
 \description{
 Plot delay discounting models
 }
+\examples{
+\dontrun{
+data("td_bc_single_ptpt")
+mod <- td_bclm(td_bc_single_ptpt, model = 'hyperbolic.1')
+plot(mod, type = 'summary')
+plot(mod, type = 'endpoints')
+}
+}

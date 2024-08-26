@@ -6,6 +6,12 @@
 #' @param newdata Optionally, a data frame to use for prediction. If omitted, the data used to fit the model will be used for prediction.
 #' @param type The type of prediction required. As in predict.glm, `"link"` (default) and `"response"` give predictions on the scales of the linear predictors and response variable, respectively. `"indiff"` gives predicted indifference points. In this case, `newdata` needs only a `del` column.
 #' @return A vector of predictions
+#' @examples
+#' \dontrun{
+#' data("td_bc_single_ptpt")
+#' mod <- td_bcm(td_bc_single_ptpt)
+#' print(ED50(mod))
+#' }
 #' @export
 ED50 <- function(mod) {
   out <- mod$config$discount_function$ED50(coef(mod))
@@ -31,6 +37,12 @@ ED50 <- function(mod) {
 #' @param max_del Upper limit to use for integration
 #' @param ... Further arguments passed to `integrate()`
 #' @return AUC value
+#' @examples
+#' \dontrun{
+#' data("td_bc_single_ptpt")
+#' mod <- td_bcm(td_bc_single_ptpt)
+#' print(AUC(mod))
+#' }
 #' @export
 AUC <- function(mod, min_del = 0, max_del = NULL, verbose = T, ...) {
   

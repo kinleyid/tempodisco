@@ -21,3 +21,10 @@ A vector of predictions
 \description{
 Generate predictions from a temporal discounting binary choice linear model
 }
+\examples{
+\dontrun{
+data("td_bc_single_ptpt")
+mod <- td_bclm(td_bc_single_ptpt, model = 'hyperbolic.1')
+indiffs <- predict(mod, newdata = data.frame(del = 1:100), type = 'indiff')
+}
+}

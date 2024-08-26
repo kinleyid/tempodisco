@@ -17,6 +17,21 @@ get_rss_fn <- function(data, discount_function) {
 #' @param optim_args A list of additional args to pass to \code{optim}
 #' @param silent A Boolean specifying whether the call to \code{optim} (which occurs in a \code{try} block) should be silent on error
 #' @return A list from \code{optim} with additional components specifying the AIC, the ED50, the discount function, and the probabilistic model
+#' @examples
+#' \dontrun{
+#' # Basic usage
+#' data("td_ip_simulated_ptpt")
+#' mod <- td_ipm(td_ip_simulated_ptpt, discount_function = "hyperbolic")
+#' # Custom discount function
+#' custom_discount_function <- td_fn(
+#'   name = 'custom',
+#'   fn = function(data, p) (1 - p['b'])*exp(-p['k']*data$del) + p['b'],
+#'   par_starts = list(k = c(0.001, 0.1), b = c(0.001, 0.1)),
+#'   par_lims = list(k = c(0, Inf), b = c(0, 1)),
+#'   ED50 = function(p) 'non-analytic'
+#' )
+#' mod <- td_ipm(td_ip_simulated_ptpt, discount_function = custom_discount_function)
+#' }
 #' @export
 td_ipm <- function(
     data,

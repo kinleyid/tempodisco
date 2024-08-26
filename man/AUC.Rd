@@ -21,3 +21,10 @@ AUC value
 \description{
 Compute the area under the curve using numerical integration
 }
+\examples{
+\dontrun{
+data("td_bc_single_ptpt")
+mod <- td_bcm(td_bc_single_ptpt)
+print(AUC(mod))
+}
+}
