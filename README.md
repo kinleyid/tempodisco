@@ -1,5 +1,5 @@
 # tempodisco
-An R package for fitting models of delay discounting, as described in the paper "[Probabilistic models of delay discounting: improving plausibility and performance](https://doi.org/10.31234/osf.io/y2fdh)."
+An R package for fitting models of temporal discounting, as described in the paper "[Probabilistic models of delay discounting: improving plausibility and performance](https://doi.org/10.31234/osf.io/y2fdh)."
 
 ## Installation
 ```
@@ -8,7 +8,7 @@ install_github("kinleyid/tempodisco");
 ```
 
 ## Description
-This package tests 7 candidate discount functions and identifies the best fit to an individual's data (the one yielding the lowest AIC):
+This package allows you to fit 2 types of models: **binary choice models**, which are probabilistic models of individual binary choices, and **indifference point models**, which are models of indifference points. In both cases, this package tests 7 candidate discount functions and identifies the best fit to an individual's data (the one yielding the lowest BIC):
 
 | Name | Functional form |
 |------|-----------------|
@@ -20,14 +20,46 @@ This package tests 7 candidate discount functions and identifies the best fit to
 | Hyperbolic (Mazur, 1987) | $f(t; k) = \frac{1}{1 + kt}$ |
 | Nonlinear-time hyperbolic (Rachlin, 2006) | $f(t; k, s) = \frac{1}{1 + k t^s}$ |
 
-
-This package also allows you to fit probabilistic models that satisfy two desiderata (hence dd**Desid**Models) specified in the above-mentioned paper: that individuals should always prefer something over nothing (i.e., should never choose \$0 over \$100 later) and should always prefer sooner rather than later for equal reward values (i.e., should never choose \$100 later over \$100 now). As shown in the paper, this improves the performance of these models. You can also fit conventional models that don't satisfy these desiderata.
+Additionally, 2 other discount functions are tested: a "model-free" function in which each indifference point is a different parameter, and a "noise" function that only specifies an intercept (i.e., $f(t; c) = c$).
 
 ## Example usage
 
-### Fitting probabilistic models: `dd_prob_model()`
+### Fitting binary choice models: `td_bcm` and `td_bclm`
 
-`dd_prob_model` fits a probabilistic model of a given individual's delay discounting:
+To fit a binary choice model, we need data from a single participant formatted as follows:
+
+```R
+data("td_bc_single_ptpt")
+```
+
+| val_imm | val_del | del | imm_chosen |
+|--|--|--|--|
+|112 |    187 |   30.4167 |      FALSE |
+|37 |     186 | 3652.5000  |      TRUE |
+| ... | ... | ... | ... |
+
+Here, each row corresponds to a difference decision. *val_imm* specifies the value of the immediate reward, *val_del* specifies the value of the delayed reward, *del* speifies the delay of the delayed reward, and *imm_chosen* specifies whether the participant selected the immediate reward. There can be additional columns (e.g., containing reaction times or a participant identifier), but at least these ones are required. From here, we can fit a binary choice model:
+
+```R
+mod <- td_bcm(td_bc_single_ptpt)
+```
+
+By default, all of the discount functions above are tested. If we are interested in only a subset of these, we can specify them as follows:
+
+```R
+mod <- td_bcm(td_bc_single_ptpt, discount_function = c('hyperbolic', 'exponential'))
+```
+
+From here, we can plot the model and get various useful pieces of information:
+
+```R
+plot(mod) # Plot a summary of the model
+coef(mod) # Extract coefficients
+AUC(mod) # Compute the area under the curve
+ED50(mod) # Compute the median effective delay
+```
+
+<img src="https://github.com/user-attachments/assets/bc50278e-6767-4a1c-9a60-4a8500b07273" width="400">
 
 ```R
 library(tempodisco)
