@@ -78,7 +78,7 @@ Alternatively, we can fit a generalized linear model with terms chosen so that w
 | `nonlinear-time-hyperbolic` | $\frac{1}{1 + k t^s}$ | $\beta_1 \sigma^{-1}\left[\frac{v_{I}}{v_{D}}\right] + \beta_2\log t + \beta_3$ | $k = e^\frac{\beta_3}{\beta_1}$, $s = \frac{\beta_2}{\beta_1}$ |
 | `nonlinear-time-exponential` | $e^{-kt^s}$ | $\beta_1 G\left[\frac{v_\mathcal{I}}{v_\mathcal{D}}\right] + \beta_2\log t + \beta_3$ | $k = e^\frac{\beta_3}{\beta_1}$, $s = \frac{\beta_2}{\beta_1}$ |
 
-`td_bclm` objects are essentially just `glm`s.
+where $\sigma^{-1}[\cdot]$ is the logit function, or the quantile function of a standard logistic distribution, and $G^{-1}[\cdot]$ is the quantile function of a standard Gumbel distribution. `td_bclm` objects are just `glm`s and all of the `glm`-specific generic functions will work.
 
 ### Fitting indifference point models: `td_ipm()`
 
