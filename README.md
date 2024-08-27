@@ -38,7 +38,9 @@ data("td_bc_single_ptpt")
 |37 |     186 | 3652.5000  |      TRUE |
 | ... | ... | ... | ... |
 
-Here, each row corresponds to a difference decision. *val_imm* specifies the value of the immediate reward, *val_del* specifies the value of the delayed reward, *del* speifies the delay of the delayed reward, and *imm_chosen* specifies whether the participant selected the immediate reward. There can be additional columns (e.g., containing reaction times or a participant identifier), but at least these ones are required. From here, we can fit a binary choice model:
+Here, each row corresponds to a difference decision. *val_imm* specifies the value of the immediate reward, *val_del* specifies the value of the delayed reward, *del* speifies the delay of the delayed reward, and *imm_chosen* specifies whether the participant selected the immediate reward. There can be additional columns (e.g., containing reaction times or a participant identifier), but at least these ones are required.
+
+From here, we can fit a binary choice model:
 
 ```R
 mod <- td_bcm(td_bc_single_ptpt)
@@ -53,101 +55,53 @@ mod <- td_bcm(td_bc_single_ptpt, discount_function = c('hyperbolic', 'exponentia
 From here, we can plot the model and get various useful pieces of information:
 
 ```R
-plot(mod) # Plot a summary of the model
+plot(mod, log = "x") # Plot a summary of the model
 coef(mod) # Extract coefficients
 AUC(mod) # Compute the area under the curve
-ED50(mod) # Compute the median effective delay
+ED50(mod) # Compute the median effective delay ([Yoon & Higgins, 2008](https://doi.org/10.1016/j.drugalcdep.2007.12.011))
+BIC(mod) # Bayesian information criterion
 ```
 
-<img src="https://github.com/user-attachments/assets/bc50278e-6767-4a1c-9a60-4a8500b07273" width="400">
+<img src="https://github.com/user-attachments/assets/bf997df2-b110-42c8-aaa2-7f8973bd9d18" width="400">
+
+In the above, red points are those where the individual chose the immediate reward, blue the later reward.
+
+Alternatively, we can fit a generalized linear model with terms chosen so that we can recover a discount function parameterized by the coefficients from max. likelihood estomation. This approach was introduced for the hyperbolic discount function by [Wileyto et al.](https://doi.org/10.3758/BF03195548) and we extended it to other discount [here](https://doi.org/10.31234/osf.io/y2fdh).
+
+| Name | Discount function | Linear predictor | Parameters |
+|--|--|--|--|
+| `hyperbolic.1` | $\frac{1}{1 + kt}$ | $\beta_1 \left(1 - \frac{v_D}{v_I} \right) + \beta_2 t$ | $k = \frac{\beta_2}{\beta_1}$ | 
+| `hyperbolic.2` | $\frac{1}{1 + kt}$ | $\beta_1\left( \sigma^{-1}\left[\frac{v_\mathcal{I}}{v_\mathcal{D}}\right] + \log t \right) + \beta_2$ | $k = e^\frac{\beta_2}{\beta_1}$ |
+| `exponential.1` | $e^{-kt}$ | $\beta_1 \log \frac{v_I}{v_D} + \beta_2 t$ | $k = \frac{\beta_2}{\beta_1}$ |
+| `exponential.2` | $e^{-kt}$ | $\beta_1\left( G^{-1}\left[\frac{v_\mathcal{I}}{v_\mathcal{D}}\right] + \log t \right) + \beta_2$ | $k = e^\frac{\beta_2}{\beta_1}$ |
+| `scaled.exponential` | $w e^{-kt}$ | $\beta_1\log\frac{v_{I}}{v_{D}} + \beta_2 t + \beta_3$ | $k = \frac{\beta_2}{\beta_1}$, $w = e^{-\frac{\beta_3}{\beta_1}}$ |
+| `nonlinear-time-hyperbolic` | $\frac{1}{1 + k t^s}$ | $\beta_1 \sigma^{-1}\left[\frac{v_{I}}{v_{D}}\right] + \beta_2\log t + \beta_3$ | $k = e^\frac{\beta_3}{\beta_1}$, $s = \frac{\beta_2}{\beta_1}$ |
+| `nonlinear-time-exponential` | $e^{-kt^s}$ | $\beta_1 G\left[\frac{v_\mathcal{I}}{v_\mathcal{D}}\right] + \beta_2\log t + \beta_3$ | $k = e^\frac{\beta_3}{\beta_1}$, $s = \frac{\beta_2}{\beta_1}$ |
+
+`td_bclm` objects are essentially just `glm`s.
+
+### Fitting indifference point models: `td_ipm()`
+
+If you have precomputed indifference points (e.g., from an adjusting amounts procedure), you can fit a discounting curve to these as long as they are formatted as a table with columns for the delay (`del`) and corresponding indifference point (`indiff`):
 
 ```R
-library(tempodisco)
-# Generate data
-df <- data.frame(val_imm = seq(1, 99, length.out = 10), val_del = 100, del = rep(exp(1:10), each=10))
-logistic <- function(x) 1 / (1 + exp(-x))
-logit <- function(x) log(x / (1 - x))
-gamma <- 2
-prob <- logistic(gamma*(logit(df$val_imm / df$val_del) - logit(1 / (1 + 0.001*df$del)))) # hyperbolic discounting
-df$imm_chosen <- runif(nrow(df)) < prob
-# Fit model
-mod <- dd_prob_model(df)
-print(mod$discount_function_name) # should usually be "hyperbolic"
+data("td_ip_simulated_ptpt")
 ```
 
-Use `?dd_prob_model` to read the full documentation
+| del | indiff |
+| -- | -- |
+| 3 | 0.99 |
+| 7 | 0.98 |
+| ... | ... |
 
-### Fitting deterministic models: `dd_det_model()`
-
-If you simply want to fit a discounting curve to a set of indifference points, you can use `dd_det_model` for this:
+From here, we can fit model the indifference points as follows:
 
 ```R
-df <- data.frame(del = exp(1:10), indiff = 1 / (1 + 0.001*exp(1:10)))
-# Fit model
-mod <- dd_det_model(df)
-print(mod$discount_function_name)
+mod <- td_ipm(td_ip_simulated_ptpt, discount_function = c('hyperbolic', 'exponential'))
+plot(mod, log = 'x')
+coef(mod) # Extract coefficients
 ```
 
-### Plotting models: `plot_dd()`
-
-To double check that the results make sense, you can plot them using `plot_dd`. For a probabilistic model, this produces the following plot:
-
-<img src="https://github.com/kinleyid/tempodisco/assets/18541620/58efbe67-acc7-4993-81e0-2d896448fb5d" width="400">
-
-It's not publication-ready, but it is a good way of quickly checking the model fit. On the x-axis is the delay and on the y-axis is the relative value of the immediate reward. Each point is a different decision. Red means the immediate reward was chosen and blue means the delayed reward was chosen. The bold line is the best fitting discount curve, and the plot's title tells you which type of discount function it's from. The dashed lines give a sense of how stochastic the decisions were: the wider apart they are, the more stochastic. Just as the discount curve shows all the points where the probability of selecting the immediate reward is 0.5, the dotted lines show where this probability would be 0.4 and 0.6 (these values can be adjusted using the `pr_range` argument to `plot_dd`).
-
-### Predicting indifference points and decision probabilities: `predict_indiffs()` and `predict_prob_imm()`
-
-Given the output of either of the above functions, you can use the function `predict_indiffs` to predict an individual's indifference points:
-
-```R
-predict_indiffs(mod) # Predict the indifference points for the data the model was fit on
-predict_indiffs(mod, del = 1:100) # Predict indifference points for a new set of delays (e.g., for plotting)
-```
-
-Given a probabilistic model (the output of `dd_prob_model`), you can also predict an individual's probability of selecting the immediate reward:
-
-```R
-predict_prob_imm(mod) # Predicted probabilities for the data the model was fit on
-predict_prob_imm(mod, data = data.frame(del = 1000, val_imm = 1:99, val_del = 100)) # Predicted probabilities for new data
-```
-
-### Using ED50 values to measure discounting between different discount functions
-
-To compare discounting between individuals with different discount curves, you can use the "ED50" measure (the delay at which a delayed reward's subjective value is reduced to 50% of its objective value; [Yoon & Higgins, 2008](https://doi.org/10.1016/j.drugalcdep.2007.12.011)). This can be done as follows:
-
-```R
-# Generate data
-df <- data.frame(val_imm = seq(1, 99, length.out = 10), val_del = 100, del = rep(exp(1:10), each=10))
-dels <- seq(0, max(df$del), length.out = 1000)
-logistic <- function(x) 1 / (1 + exp(-x))
-logit <- function(x) log(x / (1 - x))
-
-# Indifference points for 2 different discounters
-indiffs_1 <- function(x) 1 / (1 + 0.0005*x)
-indiffs_2 <- function(x) exp(-0.0001*x)
-
-# Fit a model for each discounter
-prob_1 <- logistic(logit(df$val_imm / df$val_del) - logit(indiffs_1(df$del)))
-prob_2 <- logistic(logit(df$val_imm / df$val_del) - logit(indiffs_2(df$del)))
-df_1 <- df
-df_1$imm_chosen <- runif(nrow(df)) < prob_1
-mod_1 <- tempodisco::dd_prob_model(df_1, discount_function = 'hyperbolic')
-df_2 <- df
-df_2$imm_chosen <- runif(nrow(df)) < prob_2
-mod_2 <- tempodisco::dd_prob_model(df_2, discount_function = 'exponential')
-
-# Plot discount functions with ED50 values
-plot(1, type = "n", xlab = "delay", ylab = "indifference",
-     xlim = c(0, max(df$del)), ylim = c(0, 1))
-abline(h = 0.5, col = 'gray')
-lines(tempodisco::predict_indiffs(mod_1, dels) ~ dels)
-abline(v = mod_1$ED50)
-lines(tempodisco::predict_indiffs(mod_2, dels) ~ dels, col = 'red')
-abline(v = mod_2$ED50, col = 'red')
-```
-This results in the following plot (where ED50 values are shown as vertical lines):
-
-![image](https://github.com/kinleyid/tempodisco/assets/18541620/e793b520-063e-4880-84c3-bc586e8530a4)
+<img src="https://github.com/user-attachments/assets/20b81461-48fa-40a5-990c-89808e3b8e6d" width="400">
 
 
