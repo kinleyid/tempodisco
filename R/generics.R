@@ -274,13 +274,15 @@ plot.td_um <- function(mod, type = c('summary', 'endpoints', 'link'), ...) {
     
     data <- mod$data
     max_del <- max(data$del)
-    plotting_delays <- seq(0, max_del, length.out = 1000)
+    min_del <- min(data$del)
+    plotting_delays <- seq(min_del, max_del, length.out = 1000)
     pred_indiffs <- predict(mod, newdata = data.frame(del = plotting_delays), type = 'indiff')
     # Set up axes
     plot(NA, NA,
-         xlim = c(0, max_del), ylim = c(0, 1),
+         xlim = c(min_del, max_del), ylim = c(0, 1),
          xlab = 'Delay',
-         ylab = 'val_imm / val_del')
+         ylab = 'val_imm / val_del',
+         ...)
     lines(pred_indiffs ~ plotting_delays)
     if ('indiff' %in% colnames(data)) {
       # Plot empirical indifference points

@@ -54,6 +54,7 @@ for (ptpt in names(datasets)) {
     
     # plotting
     plot(mod, type = 'summary')
+    plot(mod, type = 'summary', log = 'x')
     plot(mod, type = 'endpoints')
     plot(mod, type = 'link')
 

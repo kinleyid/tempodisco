@@ -7,8 +7,7 @@
 td_bclm(
   data,
   model = c("hyperbolic.1", "hyperbolic.2", "exponential.1", "exponential.2",
-    "scaled-exponential.1", "nonlinear-time-hyperbolic.2",
-    "nonlinear-time-exponential.2"),
+    "scaled-exponential", "nonlinear-time-hyperbolic", "nonlinear-time-exponential"),
   ...
 )
 }
@@ -18,9 +17,9 @@ td_bclm(
 \code{'hyperbolic.2'}: \eqn{\beta_1(\sigma^{-1}[v_I/v_D] + \log t) + \beta_2}; \eqn{k = \exp[\beta_2/\beta_1]} \cr
 \code{'exponential.1'}: \eqn{\beta_1 \log (v_I/v_D) + \beta_2 t}; \eqn{k = \beta_2/\beta_1} \cr
 \code{'exponential.2'}: \eqn{\beta_1(G^{-1}[v_I/v_D] + \log t) + \beta_2}; \eqn{k = \exp[\beta_2/\beta_1]} \cr
-\code{'scaled-exponential.1'}: \eqn{\beta_1 \log (v_I/v_D) + \beta_2 t + \beta_3}; \eqn{k = \beta_2/\beta_1}, \eqn{w = \exp[-\beta_3/\beta_1]}
-\code{'nonlinear-time-hyperbolic.2'}: \eqn{\beta_1(\sigma^{-1}[v_I/v_D]) + \beta_2\log t + \beta_3}; \eqn{k = \exp[\beta_3/\beta_1]}, \eqn{s = \beta_2/\beta_1} \cr
-\code{'nonlinear-time-hyperbolic.2'}: \eqn{\beta_1(G^{-1}[v_I/v_D]) + \beta_2\log t + \beta_3}; \eqn{k = \exp[\beta_3/\beta_1]}, \eqn{s = \beta_2/\beta_1} \cr
+\code{'scaled-exponential'}: \eqn{\beta_1 \log (v_I/v_D) + \beta_2 t + \beta_3}; \eqn{k = \beta_2/\beta_1}, \eqn{w = \exp[-\beta_3/\beta_1]}
+\code{'nonlinear-time-hyperbolic'}: \eqn{\beta_1(\sigma^{-1}[v_I/v_D]) + \beta_2\log t + \beta_3}; \eqn{k = \exp[\beta_3/\beta_1]}, \eqn{s = \beta_2/\beta_1} \cr
+\code{'nonlinear-time-hyperbolic'}: \eqn{\beta_1(G^{-1}[v_I/v_D]) + \beta_2\log t + \beta_3}; \eqn{k = \exp[\beta_3/\beta_1]}, \eqn{s = \beta_2/\beta_1} \cr
 where \eqn{\sigma^{-1}[\cdot]} is the quantile function of the standard logistic distribution \eqn{G^{-1}[\cdot]} is the quantile function of the standard Gumbel distribution}
 
 \item{...}{Additional arguments passed to \code{glm}}
