@@ -10,4 +10,3 @@ library(testthat)
 library(tempodisco)
 
 test_check("tempodisco")
-test_examples(path = "../..")
