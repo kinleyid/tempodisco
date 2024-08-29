@@ -2,9 +2,7 @@
 #' Median effective delay
 #'
 #' Compute the median effective delay
-#' @param mod A temporal discounting model. See `td_gnlm`
-#' @param newdata Optionally, a data frame to use for prediction. If omitted, the data used to fit the model will be used for prediction.
-#' @param type The type of prediction required. As in predict.glm, `"link"` (default) and `"response"` give predictions on the scales of the linear predictors and response variable, respectively. `"indiff"` gives predicted indifference points. In this case, `newdata` needs only a `del` column.
+#' @param mod A temporal discounting model.
 #' @return A vector of predictions
 #' @examples
 #' \dontrun{
@@ -35,6 +33,7 @@ ED50 <- function(mod) {
 #' @param mod A temporal discounting model. See `td_gnlm`
 #' @param min_del Lower limit to use for integration
 #' @param max_del Upper limit to use for integration
+#' @param verbose Specifies whether to provide extra detail, if applicable
 #' @param ... Further arguments passed to `integrate()`
 #' @return AUC value
 #' @examples
@@ -53,8 +52,10 @@ AUC <- function(mod, min_del = 0, max_del = NULL, verbose = T, ...) {
     }
   }
   if (mod$config$discount_function$name == 'model-free') {
-    cat(sprintf('Assuming an indifference point of 1 at delay 0\n'))
     mod$optim$par <- c(c('del_0' = 1), mod$optim$par)
+    if (verbose) {
+      cat(sprintf('Assuming an indifference point of 1 at delay 0\n'))
+    }
   }
   disc_func <- function(t) predict(mod, newdata = data.frame(del = t), type = 'indiff')
   out <- tryCatch(

@@ -1,0 +1,57 @@
+
+# Get data
+data("td_bc_single_ptpt")
+df <- td_bc_single_ptpt
+
+# Get all possible models
+models <- eval(formals(td_bclm)$model)
+
+model_idx <- 1
+while (model_idx <= length(models)) {
+  
+  mod <- td_bclm(df, model = models[model_idx])
+  model_idx <- model_idx + 1
+  
+  expect_s3_class(mod, 'td_bclm')
+  
+  test_that('generics', {
+    expect_output(print(mod))
+    expect_in(class(ED50(mod)), c('numeric', 'character')) # Might be "none"
+    expect_type(AUC(mod, verbose = F), 'double')
+    expect_output(AUC(mod, verbose = T))
+    expect_type(BIC(mod), 'double')
+    expect_type(AIC(mod), 'double')
+    expect_type(AIC(mod, k = 5), 'double')
+    expect_type(logLik(mod), 'double')
+    expect_named(coef(mod))
+    expect_named(coef(mod, df_par = F))
+    expect_vector(residuals(mod, type = 'deviance'), size = nrow(df))
+    expect_vector(residuals(mod, type = 'pearson'), size = nrow(df))
+    expect_vector(residuals(mod, type = 'response'), size = nrow(df))
+  })
+  
+  pdf(NULL) # Don't actually produce plots
+  test_that('plots', {
+    expect_no_error(plot(mod, type = 'summary'))
+    expect_no_error(plot(mod, type = 'summary', log = 'x'))
+    expect_no_error(plot(mod, type = 'endpoints', verbose = F))
+    expect_output(plot(mod, type = 'endpoints', verbose = T))
+    expect_no_error(plot(mod, type = 'endpoints', verbose = F, del = 100, val_del = 50))
+    expect_no_error(plot(mod, type = 'link'))
+  })
+  dev.off()
+  
+  # prediction
+  test_that('predictions', {
+    expect_vector(fitted(mod), ptype = numeric(0), size = nrow(df))
+    expect_vector(predict(mod, type = 'link'), ptype = numeric(0), size = nrow(df))
+    expect_vector(predict(mod, type = 'response'), ptype = numeric(0), size = nrow(df))
+    expect_vector(predict(mod, newdata = data.frame(del = 0:1000), type = 'indiff'), ptype = numeric(0), size = 1001)
+  })
+}
+
+test_that('errors', {
+  expect_error(td_bcm(df, model = 'random'))
+  expect_error(td_bcm())
+  expect_error(td_bcm(df[, 1:2]))
+})

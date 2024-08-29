@@ -20,16 +20,16 @@ get_transform <- function(config, inverse = F) {
   # Optionally, get the inverse of this transform
   
   if (inverse) {
-    if (config$transform == 'noise_dist_quantile') {
-      transform <- get(sprintf('p%s', config$noise_dist))
-    } else {
-      if (config$transform == 'log') {
-        transform <- exp
-      } else {
-        cat(sprintf('Do not know how to invert transform %s\n', config$transform))
-        transform <- NULL
-      }
-    }
+    # if (config$transform == 'noise_dist_quantile') {
+    #   transform <- get(sprintf('p%s', config$noise_dist))
+    # } else if (config$transform == 'log') {
+    #   transform <- exp
+    # } else if (config$transform == 'identity') {
+    #   transform <- identity
+    # } else {
+    #   cat(sprintf('Do not know how to invert transform "%s"\n', config$transform))
+    #   transform <- NULL
+    # }
   } else {
     if (config$transform == 'noise_dist_quantile') {
       transform <- get(sprintf('q%s', config$noise_dist))
@@ -39,23 +39,31 @@ get_transform <- function(config, inverse = F) {
   }
   return(transform)
 }
-
-invert_decision_function <- function(mod, prob, del) {
-  
-  # Given some model and some delay, get the relative value of the immediate 
-  # reward at which its probability of being chosen is some desired value
-  
-  indiffs <- predict(mod, newdata = data.frame(del = del), type = 'indiff')
-  
-  qfunc <- get(sprintf('q%s', mod$config$noise_dist))
-  
-  transform <- get_transform(mod$config, inverse = F)
-  inverse_transform <- get_transform(mod$config, inverse = T)
-  
-  R <- inverse_transform(qfunc(prob) / coef(mod)['gamma'] + transform(indiffs))
-  
-  return(R)
-}
+# 
+# invert_decision_function <- function(mod, data, prob) {
+#   
+#   # Given some model and some delay, get the relative value of the immediate 
+#   # reward at which its probability of being chosen is some desired value
+#   
+#   browser()
+#   
+#   indiffs <- predict(mod, newdata = data, type = 'indiff')
+#   
+#   qfunc <- get(sprintf('q%s', mod$config$noise_dist))
+#   
+#   transform <- get_transform(mod$config, inverse = F)
+#   inverse_transform <- get_transform(mod$config, inverse = T)
+#   
+#   gamma <- coef(mod)['gamma']
+#   if (mod$config$gamma_scale == 'linear') {
+#     val_del <- mean(mod$data$val_del)
+#     gamma <- gamma * val_del
+#   }
+#   
+#   R <- inverse_transform(qfunc(prob) / gamma + transform(indiffs))
+#   
+#   return(R)
+# }
 
 run_optimization <- function(fn, par_starts, par_lims, optim_args, silent) {
   

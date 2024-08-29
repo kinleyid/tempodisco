@@ -11,6 +11,7 @@
 #' @param eps_par_starts A vector of starting values to try for the "eps" parameter (which controls the error rate) during optimization. Ignored if `fit_err_rate = FALSE`.
 #' @param optim_args Additional arguments to pass to \code{optim()}. Default is \code{list(silent = T)}.
 #' @param silent Boolean (true by default). The call to \code{optim()} occurs within a \code{try()} wrapper. The value of \code{silent} is passed along to \code{try()}.
+#' @param ... Additional arguments to provide finer-grained control over the model configuration.
 #' @return An object of class \code{td_bcm} with components \code{data} (containing the data used for fitting), \code{config} (containing the internal configuration of the model, including the \code{discount_function}), and \code{optim} (the output of \code{optim()}).
 #' @examples
 #' \dontrun{
@@ -82,13 +83,14 @@ td_bcm <- function(
       } else {
         config$transform = 'log'
       }
-    } else {
-      stop(sprintf('choice_rule must be one of "logistic", "probit", or "power" (currently "%s")', choice_rule))
     }
+    
   } else {
+    
     req_args <- c('noise_dist', 'gamma_scale', 'transform')
     if (!setequal(req_args, names(config))) {
       stop(sprintf('If choice_rule is not specified, then the following must all be specified:\n%s', paste('- ', req_args, collapse = '\n')))
+    
     }
   }
   
@@ -334,21 +336,22 @@ get_nll_fn <- function(data, prob_mod_frame) {
   return(nll_fn)
 }
 
-huber <- function(t, c) {
-  idx <- t > c
-  t[idx] <- 2*sqrt(t[idx]*c) - c
-  # t[idx] <- c*log(c*t[idx]) - c*(2*log(c) - 1) # Same idea but with logarithm
-  return(t)
-}
-
-get_rob_fn <- function(data, prob_mod_frame) {
-  # Get robust loss function, given a set of data and a model
-  # "frame" with structural aspects specified but parameters unspecified
-  
-  rob_fn <- function(par) {
-    p <- laplace_smooth(prob_mod_frame(data, par))
-    nll <- -ll(p, data$imm_chosen)
-    return(sum(huber(nll, 1)))
-  }
-  return(rob_fn)
-}
+# Robust stuff---may incorporate later
+# huber <- function(t, c) {
+#   idx <- t > c
+#   t[idx] <- 2*sqrt(t[idx]*c) - c
+#   # t[idx] <- c*log(c*t[idx]) - c*(2*log(c) - 1) # Same idea but with logarithm
+#   return(t)
+# }
+# 
+# get_rob_fn <- function(data, prob_mod_frame) {
+#   # Get robust loss function, given a set of data and a model
+#   # "frame" with structural aspects specified but parameters unspecified
+#   
+#   rob_fn <- function(par) {
+#     p <- laplace_smooth(prob_mod_frame(data, par))
+#     nll <- -ll(p, data$imm_chosen)
+#     return(sum(huber(nll, 1)))
+#   }
+#   return(rob_fn)
+# }

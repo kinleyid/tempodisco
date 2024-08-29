@@ -12,6 +12,8 @@ td_bclm(
 )
 }
 \arguments{
+\item{data}{A data frame with columns \code{val_imm} and \code{val_del} for the values of the immediate and delayed rewards, \code{del} for the delay, and \code{imm_chosen} (Boolean) for whether the immediate reward was chosen. Other columns can also be present but will be ignored.}
+
 \item{model}{A string specifying which model to use. Below is a list of these models' linear predictors and the means by which we can recover discount function parameters. \cr
 \code{'hyperbolic.1'}: \eqn{\beta_1(1 - v_D/v_I) + \beta_2 t}; \eqn{k = \beta_2/\beta_1} \cr
 \code{'hyperbolic.2'}: \eqn{\beta_1(\sigma^{-1}[v_I/v_D] + \log t) + \beta_2}; \eqn{k = \exp[\beta_2/\beta_1]} \cr

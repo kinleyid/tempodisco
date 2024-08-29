@@ -7,7 +7,7 @@
 \method{logLik}{td_bcm}(mod)
 }
 \arguments{
-\item{mod}{An object of class `td_bcm`}
+\item{mod}{An object of class \code{td_bcm}}
 }
 \description{
 Compute log-likelihood for a temporal discounting binary choice model.

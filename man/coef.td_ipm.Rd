@@ -4,7 +4,12 @@
 \alias{coef.td_ipm}
 \title{Extract model coefficients}
 \usage{
-\method{coef}{td_ipm}(mod)
+\method{coef}{td_ipm}(object, ...)
+}
+\arguments{
+\item{...}{Additional arguments currently not used.}
+
+\item{mod}{An object of class \code{td_ipm}}
 }
 \value{
 A named vector of coefficients

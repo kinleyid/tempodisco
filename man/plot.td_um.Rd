@@ -4,10 +4,12 @@
 \alias{plot.td_um}
 \title{Plot models}
 \usage{
-\method{plot}{td_um}(mod, type = c("summary", "endpoints", "link"), ...)
+\method{plot}{td_um}(x, ...)
 }
 \arguments{
-\item{mod}{A delay discounting model. See `dd_prob_model` and `dd_det_model`}
+\item{x}{A delay discounting model. See \code{dd_prob_model} and \code{dd_det_model}}
+
+\item{...}{Additional arguments to \code{plot()}}
 
 \item{type}{Type of plot to generate}
 }

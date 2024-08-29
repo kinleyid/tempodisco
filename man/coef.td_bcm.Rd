@@ -4,7 +4,12 @@
 \alias{coef.td_bcm}
 \title{Extract model coefficients}
 \usage{
-\method{coef}{td_bcm}(mod)
+\method{coef}{td_bcm}(object, ...)
+}
+\arguments{
+\item{object}{An object of class \code{td_bcm}}
+
+\item{...}{Additional arguments currently not used.}
 }
 \value{
 A named vector of coefficients

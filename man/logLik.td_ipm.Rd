@@ -7,7 +7,7 @@
 \method{logLik}{td_ipm}(mod)
 }
 \arguments{
-\item{mod}{An object of class `td_ipm`}
+\item{mod}{An object of class \code{td_ipm}}
 }
 \description{
 Compute log-likelihood for a temporal discounting indifference point model.

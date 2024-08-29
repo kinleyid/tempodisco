@@ -12,6 +12,7 @@
 #' \code{'nonlinear-time-hyperbolic'}: \eqn{\beta_1(\sigma^{-1}[v_I/v_D]) + \beta_2\log t + \beta_3}; \eqn{k = \exp[\beta_3/\beta_1]}, \eqn{s = \beta_2/\beta_1} \cr
 #' \code{'nonlinear-time-hyperbolic'}: \eqn{\beta_1(G^{-1}[v_I/v_D]) + \beta_2\log t + \beta_3}; \eqn{k = \exp[\beta_3/\beta_1]}, \eqn{s = \beta_2/\beta_1} \cr
 #' where \eqn{\sigma^{-1}[\cdot]} is the quantile function of the standard logistic distribution \eqn{G^{-1}[\cdot]} is the quantile function of the standard Gumbel distribution
+#' @param data A data frame with columns \code{val_imm} and \code{val_del} for the values of the immediate and delayed rewards, \code{del} for the delay, and \code{imm_chosen} (Boolean) for whether the immediate reward was chosen. Other columns can also be present but will be ignored.
 #' @param ... Additional arguments passed to \code{glm}
 #' @return An object of class \code{td_bclm}, nearly identical to a \code{glm} but with an additional \code{config} component.
 #' @examples
@@ -77,35 +78,4 @@ add_beta_terms <- function(data, model) {
     data$B3 <- 1
   }
   return(data)
-}
-
-#' @export
-coef.td_bclm <- function(mod, df_par = T) {
-  if (df_par) {
-    # In terms of discount function parameters
-    p <- mod$coefficients
-    B <- unname(c(p['B1'], p['B2'], p['B3']))
-    d <- mod$config$model
-    if (d == 'hyperbolic.1') {
-      cf <- c('k' = B[2]/B[1])
-    } else if (d == 'hyperbolic.2') {
-      cf <- c('k' = exp(B[2]/B[1]))
-    } else if (d == 'exponential.1') {
-      cf <- c('k' = B[2]/B[1])
-    } else if (d == 'exponential.2') {
-      cf <- c('k' = exp(B[2]/B[1]))
-    } else if (d == 'scaled-exponential') {
-      cf <- c('k' = B[2]/B[1],
-              'w' = exp(-B[3]/B[1]))
-    } else if (d == 'nonlinear-time-hyperbolic') {
-      cf <- c('k' = exp(B[3]/B[1]),
-              's' = B[2]/B[1])
-    } else if (d == 'nonlinear-time-exponential') {
-      cf <- c('k' = exp(B[3]/B[1]),
-              's' = B[2]/B[1])
-    }
-  } else {
-    cf <- mod$coefficients
-  }
-  return(cf)
 }

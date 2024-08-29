@@ -174,7 +174,7 @@ td_fn <- function(predefined = c('hyperbolic',
           k1 <- p['k2']
           p['k1'] <- k1
           p['k2'] <- k2
-          # Complement of 2
+          # Complement of w
           p['w'] <- 1 - p['w']
         }
         return(p)

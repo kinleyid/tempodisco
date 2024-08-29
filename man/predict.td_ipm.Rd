@@ -4,16 +4,16 @@
 \alias{predict.td_ipm}
 \title{Model Predictions}
 \usage{
-\method{predict}{td_ipm}(mod, del = NULL, newdata = NULL, ...)
+\method{predict}{td_ipm}(object, ...)
 }
 \arguments{
-\item{mod}{A temporal discounting indifference point model. See `td_ipm`.}
+\item{object}{A temporal discounting indifference point model. See \code{td_ipm}.}
+
+\item{...}{Additional arguments currently not used.}
 
 \item{del}{Vector of delays for which to predict indifference points. If omitted, the data used to fit the model will be used for prediction.}
 
-\item{newdata}{Optionally, a data frame to use for prediction. This overrides the `del` argument.}
-
-\item{type}{The type of prediction required. As in predict.glm, `"link"` (default) and `"response"` give predictions on the scales of the linear predictors and response variable, respectively. `"indiff"` gives predicted indifference points. In this case, `newdata` needs only a `del` column.}
+\item{newdata}{Optionally, a data frame to use for prediction. This overrides the \code{del} argument.}
 }
 \value{
 A vector of predictions

@@ -4,7 +4,12 @@
 \alias{fitted.td_bcm}
 \title{Get fitted values}
 \usage{
-\method{fitted}{td_bcm}(mod)
+\method{fitted}{td_bcm}(object, ...)
+}
+\arguments{
+\item{object}{An object of class \code{td_bcm}}
+
+\item{...}{Additional arguments currently not used.}
 }
 \value{
 A named vector of fitted values

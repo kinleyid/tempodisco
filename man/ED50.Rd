@@ -7,11 +7,7 @@
 ED50(mod)
 }
 \arguments{
-\item{mod}{A temporal discounting model. See `td_gnlm`}
-
-\item{newdata}{Optionally, a data frame to use for prediction. If omitted, the data used to fit the model will be used for prediction.}
-
-\item{type}{The type of prediction required. As in predict.glm, `"link"` (default) and `"response"` give predictions on the scales of the linear predictors and response variable, respectively. `"indiff"` gives predicted indifference points. In this case, `newdata` needs only a `del` column.}
+\item{mod}{A temporal discounting model.}
 }
 \value{
 A vector of predictions

@@ -13,6 +13,8 @@ AUC(mod, min_del = 0, max_del = NULL, verbose = T, ...)
 
 \item{max_del}{Upper limit to use for integration}
 
+\item{verbose}{Specifies whether to provide extra detail, if applicable}
+
 \item{...}{Further arguments passed to `integrate()`}
 }
 \value{

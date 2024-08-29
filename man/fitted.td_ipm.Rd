@@ -4,7 +4,12 @@
 \alias{fitted.td_ipm}
 \title{Get fitted values}
 \usage{
-\method{fitted}{td_ipm}(mod)
+\method{fitted}{td_ipm}(object, ...)
+}
+\arguments{
+\item{object}{An object of class \code{td_ipm}}
+
+\item{...}{Additional arguments currently not used.}
 }
 \value{
 A named vector of fitted values
