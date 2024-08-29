@@ -1,3 +1,7 @@
+  <!-- badges: start -->
+  [![R-CMD-check](https://github.com/kinleyid/tempodisco/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/kinleyid/tempodisco/actions/workflows/R-CMD-check.yaml)
+  <!-- badges: end -->
+
 # tempodisco
 An R package for fitting models of temporal discounting, as described in the paper "[Probabilistic models of delay discounting: improving plausibility and performance](https://doi.org/10.31234/osf.io/y2fdh)."
 
