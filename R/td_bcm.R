@@ -186,7 +186,7 @@ td_bcm <- function(
     # Get function to compute negative log likelihood
     robust <- F # Maybe in the future
     if (robust) {
-      nll_fn <- get_rob_fn(data, prob_mod_frame)
+      # nll_fn <- get_rob_fn(data, prob_mod_frame)
     } else {
       nll_fn <- get_nll_fn(data, prob_mod_frame)
     }

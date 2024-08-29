@@ -1,6 +1,14 @@
 
 # Utility functions
 
+`%def%` <- function(x, y) { # To avoid importing rlang
+  if (is.null(x)) {
+    y
+  } else {
+    x
+  }
+}
+
 # Gumbel quantile distribution
 qgumbel <- function(p, location = 0, scale = 1) {
   location - scale*log(-log(p))

@@ -200,7 +200,7 @@ coef.td_bcm <- function(object, ...) {object$optim$par}
 #' @export
 coef.td_bclm <- function(object, ...) {
   args <- list(...)
-  df_par <- args$df_par %||% T
+  df_par <- args$df_par %def% T
   if (df_par) {
     # In terms of discount function parameters
     p <- object$coefficients
@@ -346,7 +346,7 @@ plot.td_um <- function(x, ...) {
   
   args <- list(...)
   type <- match.arg(args$type, choices = c('summary', 'endpoints', 'link'))
-  verbose <- args$verbose %||% T
+  verbose <- args$verbose %def% T
   # Remove args we used
   args[c('type', 'verbose')] <- NULL
   
@@ -381,7 +381,7 @@ plot.td_um <- function(x, ...) {
     #     cat(sprintf('gamma parameter (steepness of curve) is scaled by val_del.\nThus, the curve will have different steepness for a different value of val_del.\nDefaulting to val_del = %s (mean of val_del from data used to fit model).\nUse the `val_del` argument to specify a custom value.\n\n', val_del))
     #   }
     # }
-    # p_range <- args$p_range %||% c(0.4, 0.6)
+    # p_range <- args$p_range %def% c(0.4, 0.6)
     # lower <- invert_decision_function(x, prob = p_range[1], del = plotting_delays)
     # upper <- invert_decision_function(x, prob = p_range[2], del = plotting_delays)
     # lines(lower ~ plotting_delays, lty = 'dashed')
@@ -416,7 +416,7 @@ plot.td_um <- function(x, ...) {
           val_del <- args$val_del
         } else {
           val_del <- mean(x$data$val_del)
-          if (x$config$gamma_scale %||% 'none' != 'none') {
+          if (x$config$gamma_scale %def% 'none' != 'none') {
             if (verbose) {
               cat(sprintf('gamma parameter (steepness of curve) is scaled by val_del.\nThus, the curve will have different steepness for a different value of val_del.\nDefaulting to val_del = %s (mean of val_del from data used to fit model).\nUse the `val_del` argument to specify a custom value.\n\n', val_del))
             }
