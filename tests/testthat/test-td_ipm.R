@@ -24,7 +24,6 @@ test_that('printing discount functions', {
 df_idx <- 1
 while (df_idx <= length(discount_functions)) {
   discount_function <- discount_functions[df_idx]
-  print(discount_function)
   df_idx <- df_idx + 1
   # cat(sprintf('Arguments:\n'))
   # print(arg_combo)

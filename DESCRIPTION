@@ -4,7 +4,7 @@ Title: Temporal discounting models
 Description: Models of temporal discounting behaviour. Models can be fit to either binary choice data or directly fit to indifference points (e.g., determined using an adjusting amount procedure).
 Authors@R: person("Isaac", "Kinley", email = "isaac.kinley@gmail.com",
   role = c("aut", "cre"))
-License: GPL
+License: GPL-2
 Version: 0.0.1
 RoxygenNote: 7.3.1
 Encoding: UTF-8

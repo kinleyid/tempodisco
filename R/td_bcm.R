@@ -95,62 +95,26 @@ td_bcm <- function(
   }
   
   # Set discount function(s)
+  # This can't be as simple as match.arg because the user must also be able to provide a custom discount function
   if ('all' %in% discount_function) {
     # If "all" is used, replace discount_function with a vector of all the options
     discount_function <- eval(formals(td_fn)$predefined)
   }
   
-  # Check args
-  if (missing(data)) {
-    stop('data unspecified')
-  }
   # Required data columns
-  req_cols <- c('val_imm', 'val_del', 'del', 'imm_chosen')
-  cols <- names(data)
-  missing_cols <- c()
-  for (req_col in req_cols) {
-    if (!(req_col %in% cols)) {
-      missing_cols <- c(missing_cols, req_col)
-    }
-  }
-  if (length(missing_cols) > 0) {
-    stop(sprintf('Missing data column(s): %s', paste(missing_cols, collapse = ', ')))
-  }
+  require_columns(data, c('val_imm', 'val_del', 'del', 'imm_chosen'))
+  
   # Ensure imm_chosen is logical
   data$imm_chosen <- as.logical(data$imm_chosen)
   
   # Attention checks
-  endpoint_warning_boilerplate <- 'For fixed-endpoint models, this makes the negative log likelihood function impossible to optimize (it also suggests inattention from the participant).'
-  R0 <- data[data$val_imm == 0, ]
-  if (any(R0$imm_chosen)) {
-    warning(sprintf('Participant chose an immediate reward with a value of 0. %s', endpoint_warning_boilerplate))
-  }
-  R1 <- data[data$val_imm == data$val_del, ]
-  if (any(!R1$imm_chosen)) {
-    warning(sprintf('Participant chose a delayed reward of equal value to an immediate reward. %s', endpoint_warning_boilerplate))
-  }
+  attention_checks(data)
+  
   # All immediate chosen or all delayed chosen?
-  if (all(data$imm_chosen)) {
-    warning('Participant chose only immediate rewards')
-  }
-  if (all(!data$imm_chosen)) {
-    warning('Participant chose only delayed rewards')
-  }
-  # While we're at it, more validation
-  if (any(data$val_imm > data$val_del)) {
-    stop('The data contains cases where val_imm exceeds val_del')
-  }
+  invariance_checks(data)
+  
   # Valid discount function name
-  if (is.character(discount_function)) {
-    valid_discount_functions <- eval(formals(td_fn)$predefined)
-    for (d_f in discount_function) {
-      if (!(d_f %in% valid_discount_functions)) {
-        stop(sprintf('"%s" is not a pre-defined discount function. Valid options are: %s',
-                     d_f,
-                     paste(sprintf('\n- "%s"', valid_discount_functions), collapse = '')))
-      }
-    }
-  }
+  validate_discount_function(discount_function)
   
   # Get arguments as a list
   args <- c(

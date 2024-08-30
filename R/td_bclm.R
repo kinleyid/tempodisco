@@ -31,6 +31,13 @@ td_bclm <- function(data,
                               'nonlinear-time-hyperbolic',
                               'nonlinear-time-exponential'),
                     ...) {
+  
+  # Validate data
+  require_columns(data, c('val_imm', 'val_del', 'del', 'imm_chosen'))
+  data$imm_chosen <- as.logical(data$imm_chosen)
+  attention_checks(data)
+  invariance_checks(data)
+  
   model <- match.arg(model)
   data <- add_beta_terms(data, model)
   if ('B3' %in% names(data)) {
@@ -40,7 +47,7 @@ td_bclm <- function(data,
   }
   mod <- glm(formula = fml, data = data, family = binomial(link = 'logit'), ...)
   
-  disc_func_name <- strsplit(model, '\\.')[[1]][1]
+  disc_func_name <- strsplit(model, '\\.')[[1]][1] # Remove period, if necessary
   mod$config <- list(
     discount_function = td_fn(disc_func_name),
     model = model

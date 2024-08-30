@@ -71,3 +71,62 @@ AUC <- function(mod, min_del = 0, max_del = NULL, verbose = T, ...) {
   )
   return(out)
 }
+
+#' Check for non-systematic discounting
+#' 
+#' Check for non-systematic discounting, per the Johnson & Bickel (2008) criteria. These are:
+#' \itemize{
+#'  \item C1: No indifference point can exceed the previous by more than 0.2
+#'  \item C2: Last indifference point must be lower than first by at least 0.1
+#' }
+#' @param obj Either a \code{data.frame} with columns \code{indiff} and \code{del}, or a discounting model of class \code{td_bcm} or \code{td_ipm}, fit using the \code{"model-free"} discount function.
+#' @returns Named logical vector specifying whether nonsystematic discounting is exhibited according to C1/C2.
+#' @examples
+#' \dontrun{
+#' # On a model
+#' data("td_bc_single_ptpt")
+#' mod <- td_bcm(td_bc_single_ptpt, discount_function = 'model-free')
+#' any(nonsys(mod))
+#' 
+#' # On a dataframe
+#' data("td_ip_simulated_ptpt")
+#' any(nonsys(td_ip_simulated_ptpt))
+#' 
+#' # Artificial case of nonsystematic discounting
+#' nonsys(data.frame(del = 1:3, indiff = c(0.5, 0.8, 0.6))) # Both TRUE
+#' }
+#' @export
+nonsys <- function(obj) {
+  
+  if (is(obj, 'data.frame')) {
+    require_columns(obj, c('indiff', 'del'))
+    indiffs <- obj$indiff
+    delays <- obj$del
+  } else if (inherits(obj, c('td_bcm', 'td_ipm'))) {
+    if (obj$config$discount_function$name != 'model-free') {
+      stop('Discount function must be "model-free" to check for non-systematic discounting.')
+    } else {
+      cf <- coef(obj)
+      cf <- cf[grep('del_', names(cf))]
+      indiffs <- unname(cf)
+      delays <- as.numeric(gsub('del_', '', names(cf)))
+    }
+  } else {
+    stop('Input must be a data.frame or a model of class td_bcm or td_ipm.')
+  }
+  
+  idx <- order(delays)
+  indiffs <- indiffs[idx]
+  delays <- delays[idx]
+  
+  # Criterion 1: monotonicity
+  # No indifference point can exceed the previous by more than 0.2
+  C1 <- any(diff(indiffs) > 0.2)
+  
+  # Criterion 2: minimal discounting
+  # Last indifference point must be lower than first by at least 0.1
+  C2 <- (indiffs[1] - indiffs[length(indiffs)]) < 0.1
+  
+  return(c(C1 = C1, C2 = C2))
+  
+}

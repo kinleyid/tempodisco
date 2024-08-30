@@ -54,36 +54,11 @@ td_ipm <- function(
     discount_function <- eval(formals(td_fn)$predefined)
   }
   
-  # Check args
-  if (missing(data)) {
-    stop('data unspecified')
-  }
   # Required data columns
-  req_cols <- c('indiff', 'del')
-  cols <- names(data)
-  missing_cols <- c()
-  for (req_col in req_cols) {
-    if (!(req_col %in% cols)) {
-      missing_cols <- c(missing_cols, req_col)
-    }
-  }
-  if (length(missing_cols) > 0) {
-    stop(sprintf('Missing data column(s): %s', paste(missing_cols, collapse = ', ')))
-  }
-  # Valid discount function name
-  if (is.character(discount_function)) {
-    valid_discount_functions <- eval(formals(td_fn)$predefined)
-    for (d_f in discount_function) {
-      if (!(d_f %in% valid_discount_functions)) {
-        stop(sprintf('"%s" is not a pre-defined discount function. Valid options are: %s',
-                     d_f,
-                     paste(sprintf('\n- "%s"', valid_discount_functions), collapse = '')))
-      }
-    }
-  }
+  require_columns(data, c('indiff', 'del'))
   
-  # Terms for computing AIC
-  N <- nrow(data)
+  # Valid discount function name
+  validate_discount_function(discount_function)
   
   # Get a list of discount functions to test
   if (is.list(discount_function)) {
