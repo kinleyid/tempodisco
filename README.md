@@ -13,7 +13,7 @@ install_github("kinleyid/tempodisco");
 ```
 
 ## Description
-This package allows you to fit 2 types of models: **binary choice models**, which are probabilistic models of individual binary choices, and **indifference point models**, which are models of indifference points. In both cases, this package tests 7 candidate discount functions and identifies the best fit to an individual's data (the one yielding the lowest BIC):
+This package allows you to fit 2 types of models: **binary choice models** (BCMs), which are probabilistic models of individual binary choices, and **indifference point models** (IPMs), which are models of indifference points. In both cases, this package tests 7 candidate discount functions and identifies the best fit to an individual's data (the one yielding the lowest BIC):
 
 | Name | Functional form |
 |------|-----------------|
@@ -71,7 +71,7 @@ BIC(mod) # Bayesian information criterion
 
 In the above, red points are those where the individual chose the immediate reward, blue the later reward.
 
-Alternatively, we can fit a generalized linear model with terms chosen so that we can recover a discount function parameterized by the coefficients from max. likelihood estomation. This approach was introduced for the hyperbolic discount function by [Wileyto et al.](https://doi.org/10.3758/BF03195548) and we extended it to other discount [here](https://doi.org/10.31234/osf.io/y2fdh).
+Alternatively, we can fit a generalized linear model with terms chosen so that we can recover a discount function parameterized by the coefficients from max. likelihood estomation. This approach was introduced for the hyperbolic discount function by [Wileyto et al.](https://doi.org/10.3758/BF03195548) and we extended it to other discount functions [here](https://doi.org/10.31234/osf.io/y2fdh).
 
 | Name | Discount function | Linear predictor | Parameters |
 |--|--|--|--|
@@ -81,7 +81,7 @@ Alternatively, we can fit a generalized linear model with terms chosen so that w
 | `exponential.2` | $e^{-kt}$ | $\beta_1\left( G^{-1}\left[\frac{v_\mathcal{I}}{v_\mathcal{D}}\right] + \log t \right) + \beta_2$ | $k = e^\frac{\beta_2}{\beta_1}$ |
 | `scaled.exponential` | $w e^{-kt}$ | $\beta_1\log\frac{v_{I}}{v_{D}} + \beta_2 t + \beta_3$ | $k = \frac{\beta_2}{\beta_1}$, $w = e^{-\frac{\beta_3}{\beta_1}}$ |
 | `nonlinear-time-hyperbolic` | $\frac{1}{1 + k t^s}$ | $\beta_1 \sigma^{-1}\left[\frac{v_{I}}{v_{D}}\right] + \beta_2\log t + \beta_3$ | $k = e^\frac{\beta_3}{\beta_1}$, $s = \frac{\beta_2}{\beta_1}$ |
-| `nonlinear-time-exponential` | $e^{-kt^s}$ | $\beta_1 G\left[\frac{v_\mathcal{I}}{v_\mathcal{D}}\right] + \beta_2\log t + \beta_3$ | $k = e^\frac{\beta_3}{\beta_1}$, $s = \frac{\beta_2}{\beta_1}$ |
+| `nonlinear-time-exponential` | $e^{-kt^s}$ | $\beta_1 G^{-1}\left[\frac{v_\mathcal{I}}{v_\mathcal{D}}\right] + \beta_2\log t + \beta_3$ | $k = e^\frac{\beta_3}{\beta_1}$, $s = \frac{\beta_2}{\beta_1}$ |
 
 where $\sigma^{-1}[\cdot]$ is the logit function, or the quantile function of a standard logistic distribution, and $G^{-1}[\cdot]$ is the quantile function of a standard Gumbel distribution. `td_bclm` objects are just `glm`s and all of the `glm`-specific generic functions will work.
 
