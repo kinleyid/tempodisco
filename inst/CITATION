@@ -1,7 +1,8 @@
 bibentry(
-  title={"Probabilistic models of delay discounting: improving plausibility and performance"},
-  author={Kinley, Isaac and Oluwasola, Joseph and Becker, Suzanna},
-  year={2023},
-  journal={PsyArXiv},
-  doi={10.31234/osf.io/y2fdh}
+  bibtype="Article",
+  title="Probabilistic models of delay discounting: improving plausibility and performance",
+  author="Isaac Kinley, Joseph Oluwasola, Suzanna Becker",
+  year="2023",
+  journal="PsyArXiv",
+  doi="10.31234/osf.io/y2fdh"
 )

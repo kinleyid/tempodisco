@@ -4,14 +4,14 @@
 \alias{residuals.td_bcm}
 \title{Residuals from temporal discounting model}
 \usage{
-\method{residuals}{td_bcm}(object, ...)
+\method{residuals}{td_bcm}(object, type = c("deviance", "pearson", "response"), ...)
 }
 \arguments{
 \item{object}{A temporal discounting binary choice model. See \code{td_bcm}.}
 
-\item{...}{Additional arguments currently not used.}
-
 \item{type}{The type of residuals to be returned. See \code{residuals.glm}.}
+
+\item{...}{Additional arguments currently not used.}
 }
 \value{
 A vector of residuals

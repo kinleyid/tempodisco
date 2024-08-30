@@ -121,11 +121,11 @@ td_bcm <- function(
   
   # Attention checks
   endpoint_warning_boilerplate <- 'For fixed-endpoint models, this makes the negative log likelihood function impossible to optimize (it also suggests inattention from the participant).'
-  R0 <- subset(data, val_imm == 0)
+  R0 <- data[data$val_imm == 0, ]
   if (any(R0$imm_chosen)) {
     warning(sprintf('Participant chose an immediate reward with a value of 0. %s', endpoint_warning_boilerplate))
   }
-  R1 <- subset(data, val_imm == val_del)
+  R1 <- data[data$val_imm == data$val_del, ]
   if (any(!R1$imm_chosen)) {
     warning(sprintf('Participant chose a delayed reward of equal value to an immediate reward. %s', endpoint_warning_boilerplate))
   }

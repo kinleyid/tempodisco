@@ -48,15 +48,13 @@ print.td_fn <- function(x, ...) {
 #' indiffs <- predict(mod, newdata = data.frame(del = 1:100), type = 'indiff')
 #' }
 #' @export
-predict.td_bcm <- function(object, ...) {
+predict.td_bcm <- function(object, newdata = NULL, type = c('link', 'response', 'indiff'), ...) {
   
-  args <- list(...)
-  newdata <- args$newdata
   if (is.null(newdata)) {
     newdata <- object$data
   }
   
-  type <- match.arg(args$type, choices = c('link', 'response', 'indiff'))
+  type <- match.arg(type)
   
   if (type == 'link') {
     
@@ -95,34 +93,21 @@ predict.td_bcm <- function(object, ...) {
 #' indiffs <- predict(mod, newdata = data.frame(del = 1:100), type = 'indiff')
 #' }
 #' @export
-predict.td_bclm <- function(object, ...) {
-  args <- list(...)
-  newdata <- args$newdata
+predict.td_bclm <- function(object, newdata = NULL, type = c('indiff', 'link', 'response', 'terms'), ...) {
+
   if (is.null(newdata)) {
     newdata <- object$data
   }
   
-  type <- args$type
+  type <- match.arg(type)
   if (type == 'indiff') {
     
     return(predict.td_bcm(object, newdata = newdata, type = type))
     
   } else {
     
-    args <- list(...)
-    args[c('newdata', 'type')] <- NULL
     newdata <- add_beta_terms(newdata, model = object$config$model)
-    preds <- do.call(
-      predict.glm,
-      c(
-        list(
-          object,
-          newdata = newdata,
-          type = type
-        ),
-        args
-      )
-    )
+    preds <- predict.glm(object, newdata = newdata, type = type, ...)
     return(preds)
     
   }
@@ -140,14 +125,12 @@ predict.td_bclm <- function(object, ...) {
 #' \dontrun{
 #' data("td_ip_simulated_ptpt")
 #' mod <- td_ipm(td_ip_simulated_ptpt, discount_function = 'hyperbolic')
-#' indiffs <- predict(mod, newdata = data.frame(del = 1:100), type = 'indiff')
+#' indiffs <- predict(mod, del = 1:100)
+#' indiffs <- predict(mod, newdata = data.frame(del = 1:100))
 #' }
 #' @export
-predict.td_ipm <- function(object, ...) {
+predict.td_ipm <- function(object, del = NULL, newdata = NULL, ...) {
   
-  args <- list(...)
-  newdata <- args$newdata
-  del <- args$del
   if (is.null(newdata)) {
     if (is.null(del)) {
       newdata <- object$data
@@ -198,9 +181,7 @@ coef.td_bcm <- function(object, ...) {object$optim$par}
 #' @param ... Additional arguments currently not used.
 #' @return A named vector of coefficients
 #' @export
-coef.td_bclm <- function(object, ...) {
-  args <- list(...)
-  df_par <- args$df_par %def% T
+coef.td_bclm <- function(object, df_par = T, ...) {
   if (df_par) {
     # In terms of discount function parameters
     p <- object$coefficients
@@ -233,7 +214,7 @@ coef.td_bclm <- function(object, ...) {
 #' Extract model coefficients
 #' 
 #' Get coefficients of a temporal discounting indifference point model
-#' @param mod An object of class \code{td_ipm}
+#' @param object An object of class \code{td_ipm}
 #' @param ... Additional arguments currently not used.
 #' @return A named vector of coefficients
 #' @export
@@ -247,11 +228,12 @@ coef.td_ipm <- function(object, ...) {object$optim$par}
 #' @param ... Additional arguments currently not used.
 #' @return A vector of residuals
 #' @export
-residuals.td_bcm <- function(object, ...) {
+residuals.td_bcm <- function(object, type = c('deviance', 'pearson', 'response'), ...) {
   
-  args <- list(...)
-  type <- args$type
-  type <- match.arg(type, choices = c('deviance', 'pearson', 'response'))
+  # args <- list(...)
+  # type <- args$type
+  # type <- match.arg(type, choices = c('deviance', 'pearson', 'response'))
+  type <- match.arg(type)
   
   y <- object$data$imm_chosen
   yhat <- fitted(object)
@@ -273,10 +255,11 @@ residuals.td_bcm <- function(object, ...) {
 #' @param ... Additional arguments currently not used.
 #' @return A vector of residuals
 #' @export
-residuals.td_ipm <- function(object, ...) {
+residuals.td_ipm <- function(object, type = c('response', 'pearson'), ...) {
   
-  args <- list(...)
-  type <- match.arg(args$type, choices = c('response', 'pearson'))
+  # args <- list(...)
+  # type <- match.arg(args$type, choices = c('response', 'pearson'))
+  type <- match.arg(type)
   
   if (type == 'response') {
     y <- object$data$indiff
@@ -333,6 +316,7 @@ logLik.td_ipm <- function(mod) {
 #' Plot delay discounting models
 #' @param x A delay discounting model. See \code{dd_prob_model} and \code{dd_det_model}
 #' @param type Type of plot to generate
+#' @param verbose Whether to print info about, e.g., setting del = ED50 when type == 'endpoints'
 #' @param ... Additional arguments to \code{plot()}
 #' @examples
 #' \dontrun{
@@ -342,14 +326,10 @@ logLik.td_ipm <- function(mod) {
 #' plot(mod, type = 'endpoints')
 #' }
 #' @export
-plot.td_um <- function(x, ...) {
+plot.td_um <- function(x, type = c('summary', 'endpoints', 'link'), verbose = T, ...) {
   
-  args <- list(...)
-  type <- match.arg(args$type, choices = c('summary', 'endpoints', 'link'))
-  verbose <- args$verbose %def% T
-  # Remove args we used
-  args[c('type', 'verbose')] <- NULL
-  
+  type <- match.arg(type)
+
   if (type == 'summary') {
     
     # Plot of binary choices or indifference points overlaid with discount function
@@ -361,16 +341,11 @@ plot.td_um <- function(x, ...) {
     pred_indiffs <- predict(x, newdata = data.frame(del = plotting_delays), type = 'indiff')
     
     # Set up axes
-    do.call(
-      plot,
-      c(
-        list(NA, NA,
-             xlim = c(min_del, max_del), ylim = c(0, 1),
-             xlab = 'Delay',
-             ylab = 'val_imm / val_del'),
-        args
-      )
-    )
+    plot(NA, NA,
+         xlim = c(min_del, max_del), ylim = c(0, 1),
+         xlab = 'Delay',
+         ylab = 'val_imm / val_del',
+         ...)
     
     # Plot indifference curve
     lines(pred_indiffs ~ plotting_delays)
@@ -394,9 +369,9 @@ plot.td_um <- function(x, ...) {
       # Plot binary choices, immediate in red, delayed in blue
       data$rel_val <- data$val_imm / data$val_del
       points(rel_val ~ del, col = 'red',
-             data = subset(data, imm_chosen))
+             data = data[data$imm_chosen, ])
       points(rel_val ~ del, col = 'blue',
-             data = subset(data, !imm_chosen))
+             data = data[!data$imm_chosen, ])
     }
     title(x$config$discount_function$name)
     

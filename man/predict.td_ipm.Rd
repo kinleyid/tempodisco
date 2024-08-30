@@ -4,16 +4,16 @@
 \alias{predict.td_ipm}
 \title{Model Predictions}
 \usage{
-\method{predict}{td_ipm}(object, ...)
+\method{predict}{td_ipm}(object, del = NULL, newdata = NULL, ...)
 }
 \arguments{
 \item{object}{A temporal discounting indifference point model. See \code{td_ipm}.}
 
-\item{...}{Additional arguments currently not used.}
-
 \item{del}{Vector of delays for which to predict indifference points. If omitted, the data used to fit the model will be used for prediction.}
 
 \item{newdata}{Optionally, a data frame to use for prediction. This overrides the \code{del} argument.}
+
+\item{...}{Additional arguments currently not used.}
 }
 \value{
 A vector of predictions
@@ -25,6 +25,7 @@ Generate predictions from a temporal discounting indifference point model
 \dontrun{
 data("td_ip_simulated_ptpt")
 mod <- td_ipm(td_ip_simulated_ptpt, discount_function = 'hyperbolic')
-indiffs <- predict(mod, newdata = data.frame(del = 1:100), type = 'indiff')
+indiffs <- predict(mod, del = 1:100)
+indiffs <- predict(mod, newdata = data.frame(del = 1:100))
 }
 }

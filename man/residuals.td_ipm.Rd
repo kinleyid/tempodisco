@@ -4,14 +4,14 @@
 \alias{residuals.td_ipm}
 \title{Residuals from temporal discounting model}
 \usage{
-\method{residuals}{td_ipm}(object, ...)
+\method{residuals}{td_ipm}(object, type = c("response", "pearson"), ...)
 }
 \arguments{
 \item{object}{A temporal discounting model. See \code{td_bcm}.}
 
-\item{...}{Additional arguments currently not used.}
-
 \item{type}{The type of residuals to be returned. See \code{residuals.nls}.}
+
+\item{...}{Additional arguments currently not used.}
 }
 \value{
 A vector of residuals

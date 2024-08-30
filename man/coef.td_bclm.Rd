@@ -4,14 +4,14 @@
 \alias{coef.td_bclm}
 \title{Extract model coefficients}
 \usage{
-\method{coef}{td_bclm}(object, ...)
+\method{coef}{td_bclm}(object, df_par = T, ...)
 }
 \arguments{
 \item{object}{An object of class \code{td_bcm}}
 
-\item{...}{Additional arguments currently not used.}
-
 \item{df_par}{Boolean specifying whether the coefficients returned should be the parameters of a discount function (versus the beta parameters from the regression)}
+
+\item{...}{Additional arguments currently not used.}
 }
 \value{
 A named vector of coefficients

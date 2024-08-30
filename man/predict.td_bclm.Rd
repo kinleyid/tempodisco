@@ -4,16 +4,21 @@
 \alias{predict.td_bclm}
 \title{Model Predictions}
 \usage{
-\method{predict}{td_bclm}(object, ...)
+\method{predict}{td_bclm}(
+  object,
+  newdata = NULL,
+  type = c("indiff", "link", "response", "terms"),
+  ...
+)
 }
 \arguments{
 \item{object}{A temporal discounting binary choice linear model. See \code{td_bclm}.}
 
-\item{...}{Additional arguments passed to predict.glm if type != \code{'indiff'}}
-
 \item{newdata}{Optionally, a data frame to use for prediction. If omitted, the data used to fit the model will be used for prediction.}
 
 \item{type}{The type of prediction required. For \code{'indiff'} (default) gives predicted indifference points. In this case, \code{newdata} needs only a \code{del} column. For all other values (e.g. \code{"link"}, \code{"response"}), this function is just a wrapper to \code{predict.glm()}}
+
+\item{...}{Additional arguments passed to predict.glm if type != \code{'indiff'}}
 }
 \value{
 A vector of predictions
