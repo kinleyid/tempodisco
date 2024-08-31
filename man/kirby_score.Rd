@@ -12,10 +12,10 @@ kirby_score(data, discount_function = c("hyperbolic", "exponential"))
 \item{discount_function}{Should \eqn{k} values be computed according to the hyperbolic or exponential discount function? The original method uses the hyperbolic, but in principle the exponential is also possible.}
 }
 \value{
-An object of class \code{td_ipm}.
+An object of class \code{\link{td_ipm}}.
 }
 \description{
-Score a set of responses according to the method of Kirby et al. (1999). This is described in detail in \url{https://doi.org/10.1007/s40614-016-0070-9}{Kaplan et al. (2016)}.
+Score a set of responses according to the method of \href{https://doi.org/10.1037//0096-3445.128.1.78}{Kirby et al. (1999)}. This is described in detail in \href{https://doi.org/10.1007/s40614-016-0070-9}{Kaplan et al. (2016)}.
 }
 \examples{
 \dontrun{
