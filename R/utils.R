@@ -184,7 +184,7 @@ adj_amt_indiffs <- function(data, block_indic = 'del', order_indic = NULL) {
 
 #' Kirby score a questionnaire
 #'
-#' Score a set of responses according to the method of Kirby (1999). This is described in detail in \url{https://doi.org/10.1007/s40614-016-0070-9}{Kaplan et al. (2016)}.
+#' Score a set of responses according to the method of Kirby et al. (1999). This is described in detail in \url{https://doi.org/10.1007/s40614-016-0070-9}{Kaplan et al. (2016)}.
 #' @param data Responses to score.
 #' @param discount_function Should \eqn{k} values be computed according to the hyperbolic or exponential discount function? The original method uses the hyperbolic, but in principle the exponential is also possible.
 #' @return An object of class \code{td_ipm}.
@@ -235,6 +235,24 @@ kirby_score <- function(data, discount_function = c('hyperbolic', 'exponential')
   )
   class(mod) <- c('td_ipm', 'td_um')
   
+  return(mod)
+  
+}
+
+#' Wileyto score a questionnaire
+#' 
+#' Score a set of responses according to the method of \url{https://doi.org/10.3758/BF03195548}{Wileyto et al. (2004)}. This function is a thin wrapper to \code{td_bclm}.
+#' @param data Responses to score.
+#' @returns An object of class \code{td_bclm}.
+#' @examples
+#' \dontrun{
+#' data("td_bc_single_ptpt")
+#' mod <- wileyto_score(data)
+#' }
+#' @export
+wileyto_score <- function(data) {
+  
+  mod <- td_bclm(data, model = 'hyperbolic.1')
   return(mod)
   
 }

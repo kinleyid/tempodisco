@@ -3,6 +3,7 @@
 #'
 #' Compute the median effective delay
 #' @param mod A temporal discounting model.
+#' @param val_del Delayed value, if applicable (i.e., if magnitude effects are accounted for)
 #' @return A vector of predictions
 #' @examples
 #' \dontrun{

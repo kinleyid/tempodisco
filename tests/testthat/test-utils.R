@@ -50,3 +50,9 @@ test_that('inconsistent responses produce a warning', {
   td_bc_single_ptpt$imm_chosen <- round(runif(nrow(td_bc_single_ptpt)))
   expect_warning(kirby_score(td_bc_single_ptpt))
 })
+
+### wileyto_score
+data("td_bc_single_ptpt")
+test_that('wileyto scoring', {
+  expect_s3_class(wileyto_score(td_bc_single_ptpt), 'td_bclm')
+})

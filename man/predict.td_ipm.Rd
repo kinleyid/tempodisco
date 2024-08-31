@@ -4,14 +4,14 @@
 \alias{predict.td_ipm}
 \title{Model Predictions}
 \usage{
-\method{predict}{td_ipm}(object, del = NULL, newdata = NULL, ...)
+\method{predict}{td_ipm}(object, newdata = NULL, type = c("indiff", "response"), ...)
 }
 \arguments{
 \item{object}{A temporal discounting indifference point model. See \code{td_ipm}.}
 
-\item{del}{Vector of delays for which to predict indifference points. If omitted, the data used to fit the model will be used for prediction.}
+\item{newdata}{A data frame to use for prediction. If omitted, the data used to fit the model will be used for prediction.}
 
-\item{newdata}{Optionally, a data frame to use for prediction. This overrides the \code{del} argument.}
+\item{type}{Type of prediction, either \code{'indiff'} (indifference points) or \code{'response'} (whether the participants would is predicted to choose the immediate (1) or delayed reward (0))}
 
 \item{...}{Additional arguments currently not used.}
 }

@@ -74,16 +74,16 @@ td_bclm <- function(data,
                                 # By negative derivative
                                 derivative_1 <- 1/2*(p['.B_tA'] - (p['.B_tA']^2*data$del + 2*p['.B_tA']*p['.B_xA']*data$val_del + p['.B_I']*p['.B_tA'] - 2*p['.B_tA']*p['.B_xR'])/sqrt(p['.B_tA']^2*data$del^2 + 4*p['.B_xA']^2*data$val_del^2 + p['.B_I']^2 - 4*p['.B_I']*p['.B_xR'] + 4*p['.B_xR']^2 + 2*(p['.B_I']*p['.B_tA'] - 2*p['.B_tA']*p['.B_xR'])*data$del + 4*(p['.B_tA']*p['.B_xA']*data$del + p['.B_I']*p['.B_xA'] + 2*p['.B_xA']*p['.B_xR'])*data$val_del))/(p['.B_xA']*data$val_del)
                                 derivative_2 <- 1/2*(p['.B_tA'] + (p['.B_tA']^2*data$del + 2*p['.B_tA']*p['.B_xA']*data$val_del + p['.B_I']*p['.B_tA'] - 2*p['.B_tA']*p['.B_xR'])/sqrt(p['.B_tA']^2*data$del^2 + 4*p['.B_xA']^2*data$val_del^2 + p['.B_I']^2 - 4*p['.B_I']*p['.B_xR'] + 4*p['.B_xR']^2 + 2*(p['.B_I']*p['.B_tA'] - 2*p['.B_tA']*p['.B_xR'])*data$del + 4*(p['.B_tA']*p['.B_xA']*data$del + p['.B_I']*p['.B_xA'] + 2*p['.B_xA']*p['.B_xR'])*data$val_del))/(p['.B_xA']*data$val_del)
-                                if (derivative_1[1] < 0 & derivative_2[1] > 0) {
+                                
+                                derivative_1 <- mean(derivative_1, na.rm = T)
+                                derivative_2 <- mean(derivative_2, na.rm = T)
+                                if (derivative_1 < 0 & derivative_2 > 0) {
                                   out <- out_1
-                                } else if (derivative_1[1] > 0 & derivative_2[1] < 0) {
+                                } else if (derivative_1 > 0 & derivative_2 < 0) {
                                   out <- out_2
                                 } else {
-                                  # Which starts closest to 1?
-                                  first_val_1 <- 1/2*(p['.B_tA']*0 + p['.B_I'] - 2*p['.B_xR'] - sqrt(p['.B_tA']^2*0^2 + 4*p['.B_xA']^2*data$val_del^2 + p['.B_I']^2 - 4*p['.B_I']*p['.B_xR'] + 4*p['.B_xR']^2 + 2*(p['.B_I']*p['.B_tA'] - 2*p['.B_tA']*p['.B_xR'])*0 + 4*(p['.B_tA']*p['.B_xA']*0 + p['.B_I']*p['.B_xA'] + 2*p['.B_xA']*p['.B_xR'])*data$val_del))/(p['.B_xA']*data$val_del)
-                                  first_val_2 <- 1/2*(p['.B_tA']*0 + p['.B_I'] - 2*p['.B_xR'] + sqrt(p['.B_tA']^2*0^2 + 4*p['.B_xA']^2*data$val_del^2 + p['.B_I']^2 - 4*p['.B_I']*p['.B_xR'] + 4*p['.B_xR']^2 + 2*(p['.B_I']*p['.B_tA'] - 2*p['.B_tA']*p['.B_xR'])*0 + 4*(p['.B_tA']*p['.B_xA']*0 + p['.B_I']*p['.B_xA'] + 2*p['.B_xA']*p['.B_xR'])*data$val_del))/(p['.B_xA']*data$val_del)
-                                  
-                                  closest <- which.min(c(abs(first_val_1 - 1) - abs(first_val_2 - 1)))
+                                  # Which is within a reasonable range?
+                                  closest <- which.min(c(abs(mean(out_1, na.rm = T) - 0.5) - abs(mean(out_2, na.rm = T) - 0.5)))
                                   if (closest == 1) {
                                     out <- out_1
                                   } else {

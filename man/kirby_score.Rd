@@ -15,7 +15,7 @@ kirby_score(data, discount_function = c("hyperbolic", "exponential"))
 An object of class \code{td_ipm}.
 }
 \description{
-Score a set of responses according to the method of Kirby (1999). This is described in detail in \url{https://doi.org/10.1007/s40614-016-0070-9}{Kaplan et al. (2016)}.
+Score a set of responses according to the method of Kirby et al. (1999). This is described in detail in \url{https://doi.org/10.1007/s40614-016-0070-9}{Kaplan et al. (2016)}.
 }
 \examples{
 \dontrun{

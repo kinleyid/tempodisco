@@ -117,8 +117,8 @@ predict.td_bclm <- function(object, newdata = NULL, type = c('indiff', 'link', '
 #'
 #' Generate predictions from a temporal discounting indifference point model
 #' @param object A temporal discounting indifference point model. See \code{td_ipm}.
-#' @param del Vector of delays for which to predict indifference points. If omitted, the data used to fit the model will be used for prediction.
-#' @param newdata Optionally, a data frame to use for prediction. This overrides the \code{del} argument.
+#' @param newdata A data frame to use for prediction. If omitted, the data used to fit the model will be used for prediction.
+#' @param type Type of prediction, either \code{'indiff'} (indifference points) or \code{'response'} (whether the participants would is predicted to choose the immediate (1) or delayed reward (0))
 #' @param ... Additional arguments currently not used.
 #' @return A vector of predictions
 #' @examples
