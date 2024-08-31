@@ -14,6 +14,11 @@ qgumbel <- function(p, location = 0, scale = 1) {
   location - scale*log(-log(p))
 }
 
+# Dirac CDF
+pdirac <- function(q, location = 0) {
+  ifelse(q < location, 0, 1)
+}
+
 # Log-likelihood
 ll <- function(p, x) {
   x*log(p) + (1 - x)*log(1 - p)
@@ -21,6 +26,11 @@ ll <- function(p, x) {
 
 # Laplace smoothing for probabilities
 laplace_smooth <- function(p, eps = 1e-10) eps + (1 - 2*eps)*p
+
+# Geometric mean
+geomean <- function(x, ...) {
+  exp(mean(log(x), ...))
+}
 
 get_transform <- function(config, inverse = F) {
   
@@ -170,4 +180,61 @@ adj_amt_indiffs <- function(data, block_indic = 'del', order_indic = NULL) {
   row.names(out) <- NULL
   
   return(out)
+}
+
+#' Kirby score a questionnaire
+#'
+#' Score a set of responses according to the method of Kirby (1999). This is described in detail in \url{https://doi.org/10.1007/s40614-016-0070-9}{Kaplan et al. (2016)}.
+#' @param data Responses to score.
+#' @param discount_function Should \eqn{k} values be computed according to the hyperbolic or exponential discount function? The original method uses the hyperbolic, but in principle the exponential is also possible.
+#' @return An object of class \code{td_ipm}.
+#' @examples
+#' \dontrun{
+#' data("td_bc_single_ptpt")
+#' mod <- kirby_score(td_bc_single_ptpt)
+#' }
+#' @export
+kirby_score <- function(data, discount_function = c('hyperbolic', 'exponential')) {
+  
+  discount_function <- match.arg(discount_function)
+  
+  require_columns(data, c('val_imm', 'val_del', 'del', 'imm_chosen'))
+  
+  data$k <- switch (discount_function,
+                    'hyperbolic' = (data$val_del/data$val_imm - 1) / data$del,
+                    'exponential' = -log(data$val_imm/data$val_del) / data$del
+  )
+  
+  data <- data[order(data$k), ]
+  
+  data$consistency <- sapply(1:nrow(data), function(idx) {
+    mean(c(data$imm_chosen[0:(idx-1)],
+           !data$imm_chosen[(idx):(nrow(data)+1)]),
+         na.rm = T)
+  })
+  max_consistency <- max(data$consistency)
+  if (max_consistency < 0.75) {
+    warning('Maximum consistency score is below 0.75. Inattentive responding?')
+  }
+  most_consistent <- which(data$consistency == max_consistency)
+  
+  cands <- sapply(most_consistent, function(cand) {
+    geomean(data$k[(cand-1) : cand])
+  })
+  if (length(cands) > 1) {
+    best_k <- geomean(cands)
+  } else {
+    best_k <- cands
+  }
+  
+  # Construct dummy td_ipm
+  mod <- list(
+    data = data,
+    config = list(discount_function = td_fn(predefined = discount_function)),
+    optim = list(par = c(k = best_k))
+  )
+  class(mod) <- c('td_ipm', 'td_um')
+  
+  return(mod)
+  
 }

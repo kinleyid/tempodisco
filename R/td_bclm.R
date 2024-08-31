@@ -58,7 +58,8 @@ td_bclm <- function(data,
                                 # val_del, del_ = var('val_del', 'del_')
                                 # sol = solve(B_I + B_xA*val_del*(1 - df) + 2*B_xR*(1 - df)/(1 + df) + B_tA*del_, df)
                                 # print(sol)
-                                # derivative(sol[0], del_)
+                                # print(derivative(sol[0], del_))
+                                # print(derivative(sol[1], del_))
                                 ## This gives
                                 # [df == 1/2*(B_t*del_ + B_I - 2*B_xR - sqrt(B_t^2*del_^2 + 4*B_xA^2*val_del^2 + B_I^2 - 4*B_I*B_xR + 4*B_xR^2 + 2*(B_I*B_t - 2*B_t*B_xR)*del_ + 4*(B_t*B_xA*del_ + B_I*B_xA + 2*B_xA*B_xR)*val_del))/(B_xA*val_del), df == 1/2*(B_t*del_ + B_I - 2*B_xR + sqrt(B_t^2*del_^2 + 4*B_xA^2*val_del^2 + B_I^2 - 4*B_I*B_xR + 4*B_xR^2 + 2*(B_I*B_t - 2*B_t*B_xR)*del_ + 4*(B_t*B_xA*del_ + B_I*B_xA + 2*B_xA*B_xR)*val_del))/(B_xA*val_del)]
                                 ## Followed by the appropriate finds and replaces:
@@ -66,13 +67,30 @@ td_bclm <- function(data,
                                 # del_ -> data$del
                                 # val_del -> data$val_del
 
+                                out_1 <- 1/2*(p['.B_tA']*data$del + p['.B_I'] - 2*p['.B_xR'] - sqrt(p['.B_tA']^2*data$del^2 + 4*p['.B_xA']^2*data$val_del^2 + p['.B_I']^2 - 4*p['.B_I']*p['.B_xR'] + 4*p['.B_xR']^2 + 2*(p['.B_I']*p['.B_tA'] - 2*p['.B_tA']*p['.B_xR'])*data$del + 4*(p['.B_tA']*p['.B_xA']*data$del + p['.B_I']*p['.B_xA'] + 2*p['.B_xA']*p['.B_xR'])*data$val_del))/(p['.B_xA']*data$val_del)
+                                out_2 <- 1/2*(p['.B_tA']*data$del + p['.B_I'] - 2*p['.B_xR'] + sqrt(p['.B_tA']^2*data$del^2 + 4*p['.B_xA']^2*data$val_del^2 + p['.B_I']^2 - 4*p['.B_I']*p['.B_xR'] + 4*p['.B_xR']^2 + 2*(p['.B_I']*p['.B_tA'] - 2*p['.B_tA']*p['.B_xR'])*data$del + 4*(p['.B_tA']*p['.B_xA']*data$del + p['.B_I']*p['.B_xA'] + 2*p['.B_xA']*p['.B_xR'])*data$val_del))/(p['.B_xA']*data$val_del)
                                 # Which one looks more like a discount function?
-                                detval <- p['.B_tA']^2 + 2*(p['.B_I']*p['.B_tA'] - 2*p['.B_tA']*p['.B_xR']) + 4*p['.B_tA']*p['.B_xA']
-                                if (detval > 1) {
-                                  out <- 1/2*(p['.B_tA']*data$del + p['.B_I'] - 2*p['.B_xR'] - sqrt(p['.B_tA']^2*data$del^2 + 4*p['.B_xA']^2*data$val_del^2 + p['.B_I']^2 - 4*p['.B_I']*p['.B_xR'] + 4*p['.B_xR']^2 + 2*(p['.B_I']*p['.B_tA'] - 2*p['.B_tA']*p['.B_xR'])*data$del + 4*(p['.B_tA']*p['.B_xA']*data$del + p['.B_I']*p['.B_xA'] + 2*p['.B_xA']*p['.B_xR'])*data$val_del))/(p['.B_xA']*data$val_del)
+                                
+                                # By negative derivative
+                                derivative_1 <- 1/2*(p['.B_tA'] - (p['.B_tA']^2*data$del + 2*p['.B_tA']*p['.B_xA']*data$val_del + p['.B_I']*p['.B_tA'] - 2*p['.B_tA']*p['.B_xR'])/sqrt(p['.B_tA']^2*data$del^2 + 4*p['.B_xA']^2*data$val_del^2 + p['.B_I']^2 - 4*p['.B_I']*p['.B_xR'] + 4*p['.B_xR']^2 + 2*(p['.B_I']*p['.B_tA'] - 2*p['.B_tA']*p['.B_xR'])*data$del + 4*(p['.B_tA']*p['.B_xA']*data$del + p['.B_I']*p['.B_xA'] + 2*p['.B_xA']*p['.B_xR'])*data$val_del))/(p['.B_xA']*data$val_del)
+                                derivative_2 <- 1/2*(p['.B_tA'] + (p['.B_tA']^2*data$del + 2*p['.B_tA']*p['.B_xA']*data$val_del + p['.B_I']*p['.B_tA'] - 2*p['.B_tA']*p['.B_xR'])/sqrt(p['.B_tA']^2*data$del^2 + 4*p['.B_xA']^2*data$val_del^2 + p['.B_I']^2 - 4*p['.B_I']*p['.B_xR'] + 4*p['.B_xR']^2 + 2*(p['.B_I']*p['.B_tA'] - 2*p['.B_tA']*p['.B_xR'])*data$del + 4*(p['.B_tA']*p['.B_xA']*data$del + p['.B_I']*p['.B_xA'] + 2*p['.B_xA']*p['.B_xR'])*data$val_del))/(p['.B_xA']*data$val_del)
+                                if (derivative_1[1] < 0 & derivative_2[1] > 0) {
+                                  out <- out_1
+                                } else if (derivative_1[1] > 0 & derivative_2[1] < 0) {
+                                  out <- out_2
                                 } else {
-                                  out <- 1/2*(p['.B_tA']*data$del + p['.B_I'] - 2*p['.B_xR'] + sqrt(p['.B_tA']^2*data$del^2 + 4*p['.B_xA']^2*data$val_del^2 + p['.B_I']^2 - 4*p['.B_I']*p['.B_xR'] + 4*p['.B_xR']^2 + 2*(p['.B_I']*p['.B_tA'] - 2*p['.B_tA']*p['.B_xR'])*data$del + 4*(p['.B_tA']*p['.B_xA']*data$del + p['.B_I']*p['.B_xA'] + 2*p['.B_xA']*p['.B_xR'])*data$val_del))/(p['.B_xA']*data$val_del)
+                                  # Which starts closest to 1?
+                                  first_val_1 <- 1/2*(p['.B_tA']*0 + p['.B_I'] - 2*p['.B_xR'] - sqrt(p['.B_tA']^2*0^2 + 4*p['.B_xA']^2*data$val_del^2 + p['.B_I']^2 - 4*p['.B_I']*p['.B_xR'] + 4*p['.B_xR']^2 + 2*(p['.B_I']*p['.B_tA'] - 2*p['.B_tA']*p['.B_xR'])*0 + 4*(p['.B_tA']*p['.B_xA']*0 + p['.B_I']*p['.B_xA'] + 2*p['.B_xA']*p['.B_xR'])*data$val_del))/(p['.B_xA']*data$val_del)
+                                  first_val_2 <- 1/2*(p['.B_tA']*0 + p['.B_I'] - 2*p['.B_xR'] + sqrt(p['.B_tA']^2*0^2 + 4*p['.B_xA']^2*data$val_del^2 + p['.B_I']^2 - 4*p['.B_I']*p['.B_xR'] + 4*p['.B_xR']^2 + 2*(p['.B_I']*p['.B_tA'] - 2*p['.B_tA']*p['.B_xR'])*0 + 4*(p['.B_tA']*p['.B_xA']*0 + p['.B_I']*p['.B_xA'] + 2*p['.B_xA']*p['.B_xR'])*data$val_del))/(p['.B_xA']*data$val_del)
+                                  
+                                  closest <- which.min(c(abs(first_val_1 - 1) - abs(first_val_2 - 1)))
+                                  if (closest == 1) {
+                                    out <- out_1
+                                  } else {
+                                    out <- out_2
+                                  }
                                 }
+                                
                                 return(out)
                               },
                               ED50 = function(...) {'non-analytic'})

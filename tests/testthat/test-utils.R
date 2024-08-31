@@ -39,3 +39,14 @@ test_that('indifference computation works', {
   expect_error(adj_amt_indiffs(adj_amt_sim, order_indic = 'val_imm')) # Wrong order indicator
 })
 
+### kirby_score
+
+data("td_bc_single_ptpt")
+test_that('kirby scoring', {
+  expect_s3_class(kirby_score(td_bc_single_ptpt), 'td_ipm')
+})
+test_that('inconsistent responses produce a warning', {
+  set.seed(123)
+  td_bc_single_ptpt$imm_chosen <- round(runif(nrow(td_bc_single_ptpt)))
+  expect_warning(kirby_score(td_bc_single_ptpt))
+})

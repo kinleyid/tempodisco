@@ -129,20 +129,29 @@ predict.td_bclm <- function(object, newdata = NULL, type = c('indiff', 'link', '
 #' indiffs <- predict(mod, newdata = data.frame(del = 1:100))
 #' }
 #' @export
-predict.td_ipm <- function(object, del = NULL, newdata = NULL, ...) {
+predict.td_ipm <- function(object, newdata = NULL, type = c('indiff', 'response'), ...) {
   
   if (is.null(newdata)) {
-    if (is.null(del)) {
-      newdata <- object$data
+    if (length(list(...)) > 0) {
+      newdata <- data.frame(...) # to enable predict(mod, del = 1:100) type syntax
     } else {
-      newdata <- data.frame(del = del)
+      newdata <- object$data
     }
   }
   
   indiff_func <- object$config$discount_function$fn
   indiffs <- indiff_func(newdata, coef(object))
   names(indiffs) <- NULL
-  return(indiffs)
+  
+  type <- match.arg(type)
+  if (type == 'indiff') {
+    out <- indiffs
+  } else if (type == 'response') {
+    require_columns(newdata, c('val_imm', 'val_del'))
+    out <- as.numeric((newdata$val_imm / newdata$val_del) > indiffs)
+  }
+  
+  return(out)
   
 }
 
@@ -264,15 +273,20 @@ residuals.td_ipm <- function(object, type = c('response', 'pearson'), ...) {
   # type <- match.arg(args$type, choices = c('response', 'pearson'))
   type <- match.arg(type)
   
-  if (type == 'response') {
-    y <- object$data$indiff
-    yhat <- fitted(object)
-    val <- y - yhat
-  } else if (type == 'pearson') {
-    # From residuals.nls
-    val <- residuals(object, type = 'response')
-    std <- sqrt(sum(val^2)/(length(val) - length(coef(object))))
-    val <- val/std
+  data <- object$data
+  if ('indiff' %in% names(data)) {
+    if (type == 'response') {
+      y <- data$indiff
+      yhat <- fitted(object)
+      val <- y - yhat
+    } else if (type == 'pearson') {
+      # From residuals.nls
+      val <- residuals(object, type = 'response')
+      std <- sqrt(sum(val^2)/(length(val) - length(coef(object))))
+      val <- val/std
+    }
+  } else {
+    stop('Data was not fit directly on indifference points, so residuals cannot be computed.')
   }
   
   return(val)
@@ -299,6 +313,7 @@ logLik.td_bcm <- function(mod) {
 #' @param mod An object of class \code{td_ipm}
 #' @export
 logLik.td_ipm <- function(mod) {
+  
   # From logLik.nls
   res <- residuals(mod)
   N <- length(res)
@@ -310,6 +325,7 @@ logLik.td_ipm <- function(mod) {
   attr(val, "df") <- 1L + length(coef(mod))
   attr(val, "nobs") <- attr(val, "nall") <- sum(!zw)
   class(val) <- "logLik"
+
   return(val)
 }
 

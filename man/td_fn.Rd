@@ -27,7 +27,7 @@ td_fn(
 
 \item{par_lims}{A named list of vectors, each specifying the bounds to impose of a parameter}
 
-\item{ED50}{A function which, given a named vector of parameters p, computes the ED50. If there is no closed-form solution, this should return the string "non-analytic". If the ED50 is not well-defined, this should return the string "none"}
+\item{ED50}{A function which, given a named vector of parameters \code{p} and optionally a value of \code{del_val}, computes the ED50. If there is no closed-form solution, this should return the string "non-analytic". If the ED50 is not well-defined, this should return the string "none"}
 
 \item{par_chk}{Optionally, this is a function that checks the parameters to ensure they meet some criteria. E.g., for the dual-systems-exponential discount function, we require k1 < k2.}
 }
@@ -47,7 +47,7 @@ custom_discount_function <- td_fn(
   fn = function(data, p) (1 - p['b'])*exp(-p['k']*data$del) + p['b'],
   par_starts = list(k = c(0.001, 0.1), b = c(0.001, 0.1)),
   par_lims = list(k = c(0, Inf), b = c(0, 1)),
-  ED50 = function(p) 'non-analytic'
+  ED50 = function(...) 'non-analytic'
 )
 mod <- td_bcm(td_bc_single_ptpt, discount_function = custom_discount_function, fit_err_rate = T)
 }

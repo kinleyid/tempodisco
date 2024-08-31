@@ -4,7 +4,7 @@
 \alias{ED50}
 \title{Median effective delay}
 \usage{
-ED50(mod)
+ED50(mod, val_del = NULL)
 }
 \arguments{
 \item{mod}{A temporal discounting model.}

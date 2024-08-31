@@ -4,7 +4,14 @@
 \alias{plot.td_um}
 \title{Plot models}
 \usage{
-\method{plot}{td_um}(x, type = c("summary", "endpoints", "link"), verbose = T, ...)
+\method{plot}{td_um}(
+  x,
+  type = c("summary", "endpoints", "link"),
+  verbose = T,
+  del = NULL,
+  val_del = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{A delay discounting model. See \code{dd_prob_model} and \code{dd_det_model}}
@@ -12,6 +19,10 @@
 \item{type}{Type of plot to generate}
 
 \item{verbose}{Whether to print info about, e.g., setting del = ED50 when type == 'endpoints'}
+
+\item{del}{Plots data for a particular delay}
+
+\item{val_del}{Plots data for a particular delayed value}
 
 \item{...}{Additional arguments to \code{plot()}}
 }
