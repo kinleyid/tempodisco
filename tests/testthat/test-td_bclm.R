@@ -16,8 +16,8 @@ while (model_idx <= length(models)) {
   
   test_that('generics', {
     expect_output(print(mod))
-    expect_in(class(ED50(mod)), c('numeric', 'character')) # Might be "none"
-    expect_type(AUC(mod, verbose = F), 'double')
+    expect_in(class(ED50(mod)), c('numeric', 'character')) # Output might be "none", e.g. for model-free
+    expect_in(class(AUC(mod, verbose = F)), c('numeric', 'character'))
     expect_output(AUC(mod, verbose = T))
     expect_type(BIC(mod), 'double')
     expect_type(AIC(mod), 'double')
@@ -32,9 +32,10 @@ while (model_idx <= length(models)) {
   
   pdf(NULL) # Don't actually produce plots
   test_that('plots', {
-    expect_no_error(plot(mod, type = 'summary'))
-    expect_no_error(plot(mod, type = 'summary', log = 'x'))
+    expect_no_error(plot(mod, type = 'summary', verbose = F))
+    expect_no_error(plot(mod, type = 'summary', verbose = F, log = 'x'))
     expect_no_error(plot(mod, type = 'endpoints', verbose = F))
+    expect_output(plot(mod, type = 'summary', verbose = T))
     expect_output(plot(mod, type = 'endpoints', verbose = T))
     expect_no_error(plot(mod, type = 'endpoints', verbose = F, del = 100, val_del = 50))
     expect_no_error(plot(mod, type = 'link'))
@@ -46,7 +47,7 @@ while (model_idx <= length(models)) {
     expect_vector(fitted(mod), ptype = numeric(0), size = nrow(df))
     expect_vector(predict(mod, type = 'link'), ptype = numeric(0), size = nrow(df))
     expect_vector(predict(mod, type = 'response'), ptype = numeric(0), size = nrow(df))
-    expect_vector(predict(mod, newdata = data.frame(del = 0:1000), type = 'indiff'), ptype = numeric(0), size = 1001)
+    expect_vector(predict(mod, newdata = data.frame(del = 0:1000, val_del = 1), type = 'indiff'), ptype = numeric(0), size = 1001)
   })
 }
 

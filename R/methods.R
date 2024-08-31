@@ -11,11 +11,19 @@
 #' print(ED50(mod))
 #' }
 #' @export
-ED50 <- function(mod) {
-  out <- mod$config$discount_function$ED50(coef(mod))
+ED50 <- function(mod, val_del = NULL) {
+  if (is.null(val_del)) {
+    if ('val_del' %in% names(mod$data)) {
+      val_del <- mean(mod$data$val_del)
+    }
+  }
+  out <- mod$config$discount_function$ED50(coef(mod), val_del)
   if (out == 'non-analytic') {
     # No analytic solution, therefore optimize
-    f <- function(t) predict(mod, newdata = data.frame(del = t), type = 'indiff')
+    f <- function(t) predict(mod,
+                             newdata = data.frame(del = t,
+                                                  val_del = val_del %def% NA),
+                             type = 'indiff')
     optim_func <- function(t) {
       ((f(t)) - 0.5)**2
     }

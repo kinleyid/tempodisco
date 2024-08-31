@@ -185,25 +185,28 @@ coef.td_bclm <- function(object, df_par = T, ...) {
   if (df_par) {
     # In terms of discount function parameters
     p <- object$coefficients
-    B <- unname(c(p['B1'], p['B2'], p['B3']))
     d <- object$config$model
     if (d == 'hyperbolic.1') {
-      cf <- c('k' = B[2]/B[1])
+      cf <- c('k' = unname(p['.B2']/p['.B1']))
     } else if (d == 'hyperbolic.2') {
-      cf <- c('k' = exp(B[2]/B[1]))
+      cf <- c('k' = unname(exp(p['.B2']/p['.B1'])))
     } else if (d == 'exponential.1') {
-      cf <- c('k' = B[2]/B[1])
+      cf <- c('k' = unname(p['.B2']/p['.B1']))
     } else if (d == 'exponential.2') {
-      cf <- c('k' = exp(B[2]/B[1]))
+      cf <- c('k' = unname(exp(p['.B2']/p['.B1'])))
     } else if (d == 'scaled-exponential') {
-      cf <- c('k' = B[2]/B[1],
-              'w' = exp(-B[3]/B[1]))
+      cf <- c('k' = unname(p['.B2']/p['.B1']),
+              'w' = unname(exp(-p['.B3']/p['.B1'])))
     } else if (d == 'nonlinear-time-hyperbolic') {
-      cf <- c('k' = exp(B[3]/B[1]),
-              's' = B[2]/B[1])
+      cf <- c('k' = unname(exp(p['.B3']/p['.B1'])),
+              's' = unname(p['.B2']/p['.B1']))
     } else if (d == 'nonlinear-time-exponential') {
-      cf <- c('k' = exp(B[3]/B[1]),
-              's' = B[2]/B[1])
+      cf <- c('k' = unname(exp(p['.B3']/p['.B1'])),
+              's' = unname(p['.B2']/p['.B1']))
+    } else if (d == 'itch') {
+      cf <- object$coefficients
+    } else if (d == 'naive') {
+      cf <- object$coefficients
     }
   } else {
     cf <- object$coefficients
@@ -316,6 +319,8 @@ logLik.td_ipm <- function(mod) {
 #' Plot delay discounting models
 #' @param x A delay discounting model. See \code{dd_prob_model} and \code{dd_det_model}
 #' @param type Type of plot to generate
+#' @param del Plots data for a particular delay
+#' @param val_del Plots data for a particular delayed value
 #' @param verbose Whether to print info about, e.g., setting del = ED50 when type == 'endpoints'
 #' @param ... Additional arguments to \code{plot()}
 #' @examples
@@ -326,7 +331,7 @@ logLik.td_ipm <- function(mod) {
 #' plot(mod, type = 'endpoints')
 #' }
 #' @export
-plot.td_um <- function(x, type = c('summary', 'endpoints', 'link'), verbose = T, ...) {
+plot.td_um <- function(x, type = c('summary', 'endpoints', 'link'), verbose = T, del = NULL, val_del = NULL, ...) {
   
   type <- match.arg(type)
 
@@ -338,7 +343,16 @@ plot.td_um <- function(x, type = c('summary', 'endpoints', 'link'), verbose = T,
     max_del <- max(data$del)
     min_del <- min(data$del)
     plotting_delays <- seq(min_del, max_del, length.out = 1000)
-    pred_indiffs <- predict(x, newdata = data.frame(del = plotting_delays), type = 'indiff')
+    if (is.null(val_del) & ('val_del' %in% names(x$data))) {
+      val_del = mean(x$data$val_del)
+      if (verbose) {
+        cat(sprintf('Plotting indifference curve for val_del = %s (mean of val_del from data used to fit model). Override this behaviour by setting the `val_del` argument to plot() or set verbose = F to suppress this message.\n', val_del))
+      }
+    }
+    pred_indiffs <- predict(x,
+                            newdata = data.frame(del = plotting_delays,
+                                                 val_del = val_del %def% NA),
+                            type = 'indiff')
     
     # Set up axes
     plot(NA, NA,
@@ -385,23 +399,17 @@ plot.td_um <- function(x, type = c('summary', 'endpoints', 'link'), verbose = T,
         
         # Plot of psychometric curve
         
-        args <- list(...)
-        
-        if ('val_del' %in% names(args)) {
-          val_del <- args$val_del
-        } else {
-          val_del <- mean(x$data$val_del)
+        if (is.null(val_del)) {
+          val_del = mean(x$data$val_del)
           if (x$config$gamma_scale %def% 'none' != 'none') {
             if (verbose) {
-              cat(sprintf('gamma parameter (steepness of curve) is scaled by val_del.\nThus, the curve will have different steepness for a different value of val_del.\nDefaulting to val_del = %s (mean of val_del from data used to fit model).\nUse the `val_del` argument to specify a custom value.\n\n', val_del))
+              cat(sprintf('gamma parameter (steepness of psychometric curve curve) is scaled by val_del.\nThus, the curve will have different steepness for a different value of val_del.\nDefaulting to val_del = %s (mean of val_del from data used to fit model).\nUse the `val_del` argument to specify a custom value or use verbose = F to suppress this message.\n', val_del))
             }
           }
         }
         
-        if ('del' %in% names(args)) {
-          del <- args$del
-        } else {
-          del <- ED50(x)
+        if (is.null(del)) {
+          del <- ED50(x, val_del = val_del)
           if (del == 'none') {
             del <- mean(c(min(x$data$del), max(c(x$data$del))))
             if (verbose) {
@@ -424,7 +432,8 @@ plot.td_um <- function(x, type = c('summary', 'endpoints', 'link'), verbose = T,
         plot(p ~ plotting_rs, type = 'l',
              ylim = c(0, 1),
              xlab = 'val_imm/val_del',
-             ylab = 'Prob. Imm')
+             ylab = 'Prob. Imm',
+             ...)
         
         # If applicable, plot the choices at the given delay
         if (del %in% x$data$del) {
@@ -452,7 +461,8 @@ plot.td_um <- function(x, type = c('summary', 'endpoints', 'link'), verbose = T,
              ylim = c(0, 1),
              xlim = c(-lim, lim),
              ylab = 'imm_chosen',
-             xlab = 'Linear predictor')
+             xlab = 'Linear predictor',
+             ...)
         # Plot probabilities
         plotting_scores <- seq(-lim, lim, length.out = 1000)
         if (is(x, 'td_bcm')) {

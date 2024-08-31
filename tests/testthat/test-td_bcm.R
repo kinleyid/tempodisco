@@ -24,7 +24,7 @@ custom_discount_function <- td_fn(
   fn = function(data, p) 1 / (1 + log(data$del*p['m'] + 1)),
   par_starts = list(m = c(0.001, 0.1)),
   par_lims = list(m = c(0, Inf)),
-  ED50 = function(p) 'non-analytic',
+  ED50 = function(...) 'non-analytic',
   par_chk = function(p) {
     return(p)
   }
@@ -66,8 +66,8 @@ while (arg_combo_idx <= nrow(arg_combos)) {
   
   pdf(NULL) # Don't actually produce plots
   test_that('plots', {
-    expect_no_error(plot(mod, type = 'summary'))
-    expect_no_error(plot(mod, type = 'summary', log = 'x'))
+    expect_no_error(plot(mod, type = 'summary', verbose = F))
+    expect_no_error(plot(mod, type = 'summary', verbose = F, log = 'x'))
     expect_no_error(plot(mod, type = 'endpoints', verbose = F))
     expect_output(plot(mod, type = 'endpoints', verbose = T))
     expect_no_error(plot(mod, type = 'endpoints', verbose = F, del = 100, val_del = 50))

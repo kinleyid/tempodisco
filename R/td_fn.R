@@ -7,7 +7,7 @@
 #' @param fn Function that takes a data.frame and a vector of named parameters and returns a vector of values between 0 and 1
 #' @param par_starts A named list of vectors, each specifying possible starting values for a parameter to try when running optimization
 #' @param par_lims A named list of vectors, each specifying the bounds to impose of a parameter
-#' @param ED50 A function which, given a named vector of parameters p, computes the ED50. If there is no closed-form solution, this should return the string "non-analytic". If the ED50 is not well-defined, this should return the string "none"
+#' @param ED50 A function which, given a named vector of parameters \code{p} and optionally a value of \code{del_val}, computes the ED50. If there is no closed-form solution, this should return the string "non-analytic". If the ED50 is not well-defined, this should return the string "none"
 #' @param par_chk Optionally, this is a function that checks the parameters to ensure they meet some criteria. E.g., for the dual-systems-exponential discount function, we require k1 < k2.
 #' @return An object of class `td_fn`.
 #' @examples 
@@ -20,7 +20,7 @@
 #'   fn = function(data, p) (1 - p['b'])*exp(-p['k']*data$del) + p['b'],
 #'   par_starts = list(k = c(0.001, 0.1), b = c(0.001, 0.1)),
 #'   par_lims = list(k = c(0, Inf), b = c(0, 1)),
-#'   ED50 = function(p) 'non-analytic'
+#'   ED50 = function(...) 'non-analytic'
 #' )
 #' mod <- td_bcm(td_bc_single_ptpt, discount_function = custom_discount_function, fit_err_rate = T)
 #' }
@@ -155,15 +155,15 @@ td_fn <- function(predefined = c('hyperbolic',
                            }
     )
     out$ED50 <- switch (name,
-                        "noise" = function(p) 'none',
-                        "hyperbolic" = function(p) 1/p['k'],
-                        "exponential" = function(p) log(2)/p['k'],
-                        "inverse-q-exponential" = function(p) (2^(1/p['s']) - 1) / p['k'],
-                        "nonlinear-time-hyperbolic" = function(p) (1/p['k']) ^ (1/p['s']),
-                        "nonlinear-time-exponential" = function(p) (log(2)/p['k'])^(1/p['s']),
-                        "scaled-exponential" = function(p) log(2*p['w'])/p['k'],
-                        "dual-systems-exponential" = function(p) 'non-analytic',
-                        "model-free" = function(p) 'none'
+                        "noise" = function(p, ...) 'none',
+                        "hyperbolic" = function(p, ...) 1/p['k'],
+                        "exponential" = function(p, ...) log(2)/p['k'],
+                        "inverse-q-exponential" = function(p, ...) (2^(1/p['s']) - 1) / p['k'],
+                        "nonlinear-time-hyperbolic" = function(p, ...) (1/p['k']) ^ (1/p['s']),
+                        "nonlinear-time-exponential" = function(p, ...) (log(2)/p['k'])^(1/p['s']),
+                        "scaled-exponential" = function(p, ...) log(2*p['w'])/p['k'],
+                        "dual-systems-exponential" = function(...) 'non-analytic',
+                        "model-free" = function(...) 'none'
     )
     if (name == 'dual-systems-exponential') {
       out$par_chk <- function(p) {

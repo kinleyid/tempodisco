@@ -29,7 +29,9 @@ td_bclm <- function(data,
                               'exponential.2',
                               'scaled-exponential',
                               'nonlinear-time-hyperbolic',
-                              'nonlinear-time-exponential'),
+                              'nonlinear-time-exponential',
+                              'itch',
+                              'naive'),
                     ...) {
   
   # Validate data
@@ -37,19 +39,56 @@ td_bclm <- function(data,
   data$imm_chosen <- as.logical(data$imm_chosen)
   attention_checks(data)
   invariance_checks(data)
+  if (length(grep('\\.B', names(data))) > 1) {
+    stop('No columns can have a name that begins with ".B"')
+  }
   
   model <- match.arg(model)
   data <- add_beta_terms(data, model)
-  if ('B3' %in% names(data)) {
-    fml <- imm_chosen ~ B1 + B2 + B3 + 0
-  } else {
-    fml <- imm_chosen ~ B1 + B2 + 0
-  }
+  beta_terms <- names(data)[grep('\\.B', names(data))]
+  fml <- sprintf('imm_chosen ~ %s', paste(c(beta_terms, '0'), collapse = ' + '))
   mod <- glm(formula = fml, data = data, family = binomial(link = 'logit'), ...)
   
-  disc_func_name <- strsplit(model, '\\.')[[1]][1] # Remove period, if necessary
+  if (model == 'itch') {
+    discount_function = td_fn(name = 'itch-implied',
+                              fn = function(data, p) {
+                                ## Sage commands for this:
+                                # df = var('df') # Discount function
+                                # B_I, B_xA, B_xR, B_t = var('B_I', 'B_xA', 'B_xR', 'B_tA')
+                                # val_del, del_ = var('val_del', 'del_')
+                                # sol = solve(B_I + B_xA*val_del*(1 - df) + 2*B_xR*(1 - df)/(1 + df) + B_tA*del_, df)
+                                # print(sol)
+                                # derivative(sol[0], del_)
+                                ## This gives
+                                # [df == 1/2*(B_t*del_ + B_I - 2*B_xR - sqrt(B_t^2*del_^2 + 4*B_xA^2*val_del^2 + B_I^2 - 4*B_I*B_xR + 4*B_xR^2 + 2*(B_I*B_t - 2*B_t*B_xR)*del_ + 4*(B_t*B_xA*del_ + B_I*B_xA + 2*B_xA*B_xR)*val_del))/(B_xA*val_del), df == 1/2*(B_t*del_ + B_I - 2*B_xR + sqrt(B_t^2*del_^2 + 4*B_xA^2*val_del^2 + B_I^2 - 4*B_I*B_xR + 4*B_xR^2 + 2*(B_I*B_t - 2*B_t*B_xR)*del_ + 4*(B_t*B_xA*del_ + B_I*B_xA + 2*B_xA*B_xR)*val_del))/(B_xA*val_del)]
+                                ## Followed by the appropriate finds and replaces:
+                                # (B_[a-zA-Z]+) -> p['.\1']
+                                # del_ -> data$del
+                                # val_del -> data$val_del
+
+                                # Which one looks more like a discount function?
+                                detval <- p['.B_tA']^2 + 2*(p['.B_I']*p['.B_tA'] - 2*p['.B_tA']*p['.B_xR']) + 4*p['.B_tA']*p['.B_xA']
+                                if (detval > 1) {
+                                  out <- 1/2*(p['.B_tA']*data$del + p['.B_I'] - 2*p['.B_xR'] - sqrt(p['.B_tA']^2*data$del^2 + 4*p['.B_xA']^2*data$val_del^2 + p['.B_I']^2 - 4*p['.B_I']*p['.B_xR'] + 4*p['.B_xR']^2 + 2*(p['.B_I']*p['.B_tA'] - 2*p['.B_tA']*p['.B_xR'])*data$del + 4*(p['.B_tA']*p['.B_xA']*data$del + p['.B_I']*p['.B_xA'] + 2*p['.B_xA']*p['.B_xR'])*data$val_del))/(p['.B_xA']*data$val_del)
+                                } else {
+                                  out <- 1/2*(p['.B_tA']*data$del + p['.B_I'] - 2*p['.B_xR'] + sqrt(p['.B_tA']^2*data$del^2 + 4*p['.B_xA']^2*data$val_del^2 + p['.B_I']^2 - 4*p['.B_I']*p['.B_xR'] + 4*p['.B_xR']^2 + 2*(p['.B_I']*p['.B_tA'] - 2*p['.B_tA']*p['.B_xR'])*data$del + 4*(p['.B_tA']*p['.B_xA']*data$del + p['.B_I']*p['.B_xA'] + 2*p['.B_xA']*p['.B_xR'])*data$val_del))/(p['.B_xA']*data$val_del)
+                                }
+                                return(out)
+                              },
+                              ED50 = function(...) {'non-analytic'})
+  } else if (model == 'naive') {
+    discount_function = td_fn(name = 'naive-glm-implied',
+                              fn = function(data, p) {
+                                1/(p['.B1']*data$val_del) * -(p['.B2']*data$val_del + p['.B3']*data$del + p['.B4'])
+                              },
+                              ED50 = function(...) {'non-analytic'})                    
+  } else {
+    disc_func_name <- strsplit(model, '\\.')[[1]][1] # Remove period, if necessary
+    discount_function <- td_fn(predefined = disc_func_name)
+  }
+  
   mod$config <- list(
-    discount_function = td_fn(disc_func_name),
+    discount_function = discount_function,
     model = model
   )
   
@@ -60,29 +99,41 @@ td_bclm <- function(data,
 
 add_beta_terms <- function(data, model) {
   if (model == 'hyperbolic.1') {
-    data$B1 <- 1 - data$val_del / data$val_imm
-    data$B2 <- data$del
+    data$.B1 <- 1 - data$val_del / data$val_imm
+    data$.B2 <- data$del
   } else if (model == 'hyperbolic.2') {
-    data$B1 <- qlogis(data$val_imm / data$val_del) + log(data$del)
-    data$B2 <- 1
+    data$.B1 <- qlogis(data$val_imm / data$val_del) + log(data$del)
+    data$.B2 <- 1
   } else if (model == 'exponential.1') {
-    data$B1 <- log(data$val_imm / data$val_del)
-    data$B2 <- data$del
+    data$.B1 <- log(data$val_imm / data$val_del)
+    data$.B2 <- data$del
   } else if (model == 'exponential.2') {
-    data$B1 <- qgumbel(data$val_imm / data$val_del) + log(data$del)
-    data$B2 <- 1
+    data$.B1 <- qgumbel(data$val_imm / data$val_del) + log(data$del)
+    data$.B2 <- 1
   } else if (model == 'scaled-exponential') {
-    data$B1 <- log(data$val_imm / data$val_del)
-    data$B2 <- data$del
-    data$B3 <- 1
+    data$.B1 <- log(data$val_imm / data$val_del)
+    data$.B2 <- data$del
+    data$.B3 <- 1
   } else if (model == 'nonlinear-time-hyperbolic') {
-    data$B1 <- log(data$val_imm / data$val_del)
-    data$B2 <- log(data$del)
-    data$B3 <- 1
+    data$.B1 <- log(data$val_imm / data$val_del)
+    data$.B2 <- log(data$del)
+    data$.B3 <- 1
   } else if (model == 'nonlinear-time-exponential') {
-    data$B1 <- qgumbel(data$val_imm / data$val_del)
-    data$B2 <- log(data$del)
-    data$B3 <- 1
+    data$.B1 <- qgumbel(data$val_imm / data$val_del)
+    data$.B2 <- log(data$del)
+    data$.B3 <- 1
+  } else if (model == 'itch') {
+    data$.B_I <- 1
+    data$.B_xA <- data$val_del - data$val_imm
+    x_star <- (data$val_del + data$val_imm) / 2
+    data$.B_xR <- (data$val_del - data$val_imm) / x_star
+    data$.B_tA <- data$del
+    # BtR deliberately excluded because it introduces colinearity when one reward is immediate
+  } else if (model == 'naive') {
+    data$.B1 <- data$val_imm
+    data$.B2 <- data$val_del
+    data$.B3 <- data$del
+    data$.B4 <- 1
   }
   return(data)
 }
