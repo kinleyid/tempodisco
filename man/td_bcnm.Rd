@@ -16,6 +16,7 @@ td_bcnm(
   eps_par_starts = c(0.01, 0.25),
   silent = T,
   optim_args = list(),
+  na.action = na.omit,
   ...
 )
 }
@@ -37,6 +38,8 @@ td_bcnm(
 \item{silent}{Boolean (true by default). The call to \code{optim()} occurs within a \code{try()} wrapper. The value of \code{silent} is passed along to \code{try()}.}
 
 \item{optim_args}{Additional arguments to pass to \code{optim()}. Default is \code{list(silent = T)}.}
+
+\item{na.action}{Action to take when data contains \code{NA} values. Default is \code{na.omit}.}
 
 \item{...}{Additional arguments to provide finer-grained control over the model configuration.}
 }
