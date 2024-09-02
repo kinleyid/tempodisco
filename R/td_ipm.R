@@ -14,6 +14,7 @@ get_rss_fn <- function(data, discount_function) {
 #' Compute a model of a single subject's indifference points
 #' @param data A data frame with columns \code{indiff} for the pre-computed indifference points and \code{del} for the delay
 #' @param discount_function A vector of strings specifying the name of the discount functions to use, or an object of class \code{td_fn}.
+#' @param na.action Action to take when data contains \code{NA} values. Default is \code{na.omit}.
 #' @param optim_args A list of additional args to pass to \code{optim}
 #' @param silent A Boolean specifying whether the call to \code{optim} (which occurs in a \code{try} block) should be silent on error
 #' @return A list from \code{optim} with additional components specifying the AIC, the ED50, the discount function, and the probabilistic model
@@ -45,6 +46,7 @@ td_ipm <- function(
                           'nonlinear-time-exponential',
                           'model-free',
                           'noise'),
+    na.action = na.omit,
     optim_args = list(),
     silent = T) {
   
@@ -55,7 +57,10 @@ td_ipm <- function(
   }
   
   # Required data columns
-  require_columns(data, c('indiff', 'del'))
+  req_cols <- c('indiff', 'del')
+  require_columns(data, req_cols)
+  data <- data[req_cols]
+  data <- na.action(data)
   
   # Valid discount function name
   validate_discount_function(discount_function)

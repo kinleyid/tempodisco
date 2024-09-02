@@ -11,6 +11,7 @@
 #' @param eps_par_starts A vector of starting values to try for the "eps" parameter (which controls the error rate) during optimization. Ignored if `fit_err_rate = FALSE`.
 #' @param optim_args Additional arguments to pass to \code{optim()}. Default is \code{list(silent = T)}.
 #' @param silent Boolean (true by default). The call to \code{optim()} occurs within a \code{try()} wrapper. The value of \code{silent} is passed along to \code{try()}.
+#' @param na.action Action to take when data contains \code{NA} values. Default is \code{na.omit}.
 #' @param ... Additional arguments to provide finer-grained control over the model configuration.
 #' @return An object of class \code{td_bcnm} with components \code{data} (containing the data used for fitting), \code{config} (containing the internal configuration of the model, including the \code{discount_function}), and \code{optim} (the output of \code{optim()}).
 #' @examples
@@ -49,6 +50,7 @@ td_bcnm <- function(
     eps_par_starts = c(0.01, 0.25),
     silent = T,
     optim_args = list(),
+    na.action = na.omit,
     ...) {
   
   # From a user's POV, it's easier to specify `choice_rule` and `fixed_ends`
@@ -102,7 +104,10 @@ td_bcnm <- function(
   }
   
   # Required data columns
-  require_columns(data, c('val_imm', 'val_del', 'del', 'imm_chosen'))
+  req_cols <- c('val_imm', 'val_del', 'del', 'imm_chosen')
+  require_columns(data, req_cols)
+  data <- data[req_cols]
+  data <- na.action(data)
   
   # Ensure imm_chosen is logical
   data$imm_chosen <- as.logical(data$imm_chosen)

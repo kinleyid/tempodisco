@@ -36,7 +36,9 @@ td_bclm <- function(data,
                     ...) {
   
   # Validate data
-  require_columns(data, c('val_imm', 'val_del', 'del', 'imm_chosen'))
+  req_cols <- c('val_imm', 'val_del', 'del', 'imm_chosen')
+  require_columns(data, req_cols)
+  data <- data[req_cols]
   data$imm_chosen <- as.logical(data$imm_chosen)
   attention_checks(data)
   invariance_checks(data)

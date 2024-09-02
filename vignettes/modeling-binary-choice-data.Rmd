@@ -20,13 +20,14 @@ library(tempodisco)
 
 ## Classic methods
 
-For binary choice data not explicitly designed to titrate out indifference points (as in an adjusting amount procedure), there are a few analysis options. Historically common methods include the scoring method designed for the Monetary Choice Questionnaire [(Kirby, 1999)](https://doi.org/10.1037//0096-3445.128.1.78):
+For binary choice data not explicitly designed to titrate out indifference points (as in an adjusting amount procedure), there are a few analysis options. A common one is the scoring method designed for the Monetary Choice Questionnaire [(Kirby, 1999)](https://doi.org/10.1037//0096-3445.128.1.78):
 
 ```{r}
 data("td_bc_single_ptpt")
 mod <- kirby_score(td_bc_single_ptpt)
-coef(mod)
+print(mod)
 ```
+
 Although this method computes $k$ values according to the hyperbolic discount function, in principle it's possible to use the exponential discount function:
 
 ```{r}
@@ -43,14 +44,14 @@ print(mod)
 
 ## Newer methods
 
-This approach turns out to be possible for other discount functions as well [(Kinley et al., 2024)](https://doi.org/10.31234/osf.io/y2fdh). We can test all of them and select the best one according to the Bayesian Information Criterion as follows:
+The [Wileyto et al. (2004)](https://doi.org/10.3758/BF03195548) approach turns out to be possible for other discount functions as well [(Kinley et al., 2024)](https://doi.org/10.31234/osf.io/y2fdh). We can test all the available ones and select the best according to the Bayesian Information Criterion as follows:
 
 ```{r}
 mod <- td_bclm(td_bc_single_ptpt, model = 'all')
 print(mod)
 ```
 
-To fit an even wider range of discount functions, we can fit a nonlinear regression model by calling `td_bcnm`. A full list of the available discount functions can be found in the documentation for `td_bcnm`.
+To explore a wider range of discount functions, we can fit a nonlinear model by calling `td_bcnm`. A full list of the available discount functions can be found in the documentation for `td_bcnm`.
 
 ```{r}
 mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'all')

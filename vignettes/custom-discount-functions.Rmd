@@ -18,20 +18,24 @@ knitr::opts_chunk$set(
 library(tempodisco)
 ```
 
-The first step to create a custom discount function is to create a function that takes as arguments `data` (a dataframe) and `p` (a vector of parameters) and produces an indifference point. For example, the following describes hyperbolic discounting with the magnitude effect accounted for as in [Vincent (2015)](https://doi.org/10.3758/s13428-015-0672-2):
+## Example 1: hyperbolic function with magnitude effect
+
+The first step to create a custom discount function is to define a function that computes an indifference point given arguments `data` (a dataframe) and `p` (a vector of parameters). For example, the following describes hyperbolic discounting with the magnitude effect accounted for as in [Vincent (2015)](https://doi.org/10.3758/s13428-015-0672-2):
+
+$$k = \exp[ m \log \text{val}_\text{del} + c' ]$$
+$$k = c \cdot {\text{val}_\text{del}}^m$$
 
 ```{r}
 indiff_fn <- function(data, p) {
-  k <- exp(p['m']*log(data$val_del) + p['c'])
+  k <- p['c'] * data$val_del^p['m']
   1 / (1 + k * data$del)
 }
 ```
 
-In many cases, there will be limits on the values the parameters can take on. For example, $k$ should always be positive. For the function above, this is enforced by `k = exp(...)` and the parameters $m$ and $c$ can take on any values (i.e., the limits are $-\infty$ to $infty$). We encode this in a list with a pair of values for each parameter:
+Next, we specify the range of values each parameter can take on. $k$ should always be positive, meaning $c$ above should be positive. $m$ can take on any value.
 
 ```{r}
-par_lims <- list(m = c(-Inf, Inf),
-                 c = c(-Inf, Inf))
+par_lims <- list(c = c(0, Inf))
 ```
 
 For optimization, the function must be initially evaluated at some set of parameter values. We can specify these as a similar list:
@@ -41,17 +45,18 @@ par_starts <- list(m = c(-1, 0, 1),
                    c = c(-10, -5, -1))
 ```
 
-When we provide more than one possible starting value per parameter in this way, each combination of starting values will be tried during optimization, and the best fit will be kept.
+When we provide more than one possible starting value per parameter in this way, each combination of starting values will be tried during optimization, and the best resulting fit will be kept.
 
-Next, we need a function to compute the ED50 (the delay at which the function returns 0.5). In this case, the ED50 is:
+Optionally, we can define a function to compute the ED50 (the delay at which the function returns 0.5). In this case, the ED50 is:
 
 ```{r}
 ED50_fn <- function(p, val_del) {
-  1 / exp(p['m']*log(val_del) + p['c'])
+  k <- p['c'] * val_del^p['m']
+  1 / k
 }
 ```
 
-If we couldn't solve for the ED50 explicitly, it would also be valid to just create a function that takes any arbitrary input and returns the string `"non-analytic"`. This instructs the `ED50()` method to solve for the ED50 value numerically.
+If we do not define such a function, the `ED50()` method will solve for the ED50 value numerically.
 
 With these ingredients, we can create our custom discount function with a call to `td_fn()`:
 
@@ -71,17 +76,40 @@ data("td_bc_single_ptpt")
 mod <- td_bcnm(td_bc_single_ptpt, discount_function = custom_discount_function)
 print(mod)
 ```
+## Example 2: dual-systems hyperbolic
 
-Surprisingly, we get a positive value for $m$, implying steeper discounting for larger rewards (the opposite of the usual magnitude effect). To illustrate this, we can plot the discount curve for different values of `val_del`:
-
-```{r}
-plot(mod, log = 'x', val_del = 200)
-plot(mod, log = 'x', val_del = 300)
-```
-
-This is probably because a narrow range of delayed reward values was used, so we shouldn't read too much into the best-fitting value of $m$:
+Let's create a discount function similar to the dual-systems function of (Van den Bos & McClure, (2013))[https://doi.org/10.1002/jeab.6], but with hyperbolic discounting in each system rather than exponential.
 
 ```{r}
-range(mod$data$val_del)
+dsh <- td_fn(name = 'dual-systems-hyperbolic',
+             fn = function(data, p) {
+               p['w'] * 1/(1 + p['k1']*data$del) + (1 - p['w']) * 1/(1 + p['k2']*data$del)
+             },
+             par_starts = list(k1 = c(0.001, 0.0001),
+                               k2 = c(0.1, 0.01),
+                               w = 0.5),
+             par_lims = list(w = c(0, 1),
+                             k1 = c(0, Inf),
+                             k2 = c(0, Inf)),
+             par_chk = function(p) {
+               # Ensure k1 < k2
+               if (p['k1'] > p['k2']) {
+                 # Switch k1 and k2
+                 k2 <- p['k1']
+                 k1 <- p['k2']
+                 p['k1'] <- k1
+                 p['k2'] <- k2
+                 # Complement of w
+                 p['w'] <- 1 - p['w']
+               }
+               return(p)
+             })
+print(dsh)
 ```
 
+Here, we've added a parameter checker function `par_chk` which will ensure certain conditions are met for our parameters. We'll define $k_1$ as our patient system, meaning we want to ensure $k_1 < k2$. Note that we haven't specified a function to compute ED50. With the model defined, we can fit it to our data:
+
+```{r}
+mod <- td_bcnm(td_bc_single_ptpt, discount_function = dsh)
+print(mod)
+```

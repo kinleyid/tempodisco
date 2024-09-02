@@ -18,10 +18,10 @@ knitr::opts_chunk$set(
 library(tempodisco)
 ```
 
-"Area under the curve" (AUC) is often used as an empirical measure of discounting. To compute this measure, we first fit a model using the `'model-free'` discount function, and then call the `AUC` function. For example:
+"Area under the curve" (AUC) is often used as an empirical measure of discounting ((Myerson et al., 2001)[https://doi.org/10.1901/jeab.2001.76-235]). To compute this measure, we first fit a model using the `'model-free'` discount function (which identifies indifference points separately at each delay), and then call the `AUC` function. For example:
 
 ```{r}
-# Compute indifference points
+# Get data containing indifference points
 data("adj_amt_sim")
 df <- adj_amt_indiffs(adj_amt_sim)
 # Fit model
@@ -33,7 +33,7 @@ To compute the AUC only between certain limits, you can use the `min_del` and `m
 ```{r}
 print(AUC(mod, min_del = 1, max_del = 100))
 ```
-For the AUC computed this way, the later indifference points tend to have an outsize influence over the overall measure. To address this, [Borges et al. (2016)](https://doi.org/10.1002/jeab.219) suggest transforming the delays to a log or ordinal scale. After this transformation, we can re-fit the model and re-compute the AUC. For example, for the log transformation:
+For the AUC computed this way, the later indifference points tend to have an outsize influence on the overall measure. To address this, [Borges et al. (2016)](https://doi.org/10.1002/jeab.219) suggest transforming the delays to a log or ordinal scale. After this transformation, we can re-fit the model and re-compute the AUC. For example, for the log transformation:
 
 ```{r}
 df$untransformed_del <- df$del # Save a copy

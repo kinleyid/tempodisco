@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 library(tempodisco)
 ```
 
-By default, `tempodisco` allows you to fit models using a variety of discount functions. However, this raises the question of how you can quantify and compare overall rates of discounting between two different discount functions. For example, it would be a mistake to directly compare $k$ values from the scaled exponential [(Laibson, 1997)](https://doi.org/10.1162/003355397555253) and nonlinear-time exponential [(Ebert & Prelec, 2007)](https://doi.org/10.1287/mnsc.1060.0671) discount functions, since these mean different things. Instead, we need a model-agnostic measure of discounting. One of these is the ED50 [Yoon & Higgins, 2008](https://doi.org/10.1016/j.drugalcdep.2007.12.011), which is the delay at which the discount function returns a value of 0.5, i.e. the delay at which a delayed reward's value is 50% of its face value. This can be computed using the `ED50` function:
+By default, `tempodisco` allows you to fit models using a variety of discount functions. However, this raises the question of how you can quantify and compare overall rates of discounting between two different discount functions. For example, it would be a mistake to directly compare $k$ values from the scaled exponential [(Laibson, 1997)](https://doi.org/10.1162/003355397555253) and nonlinear-time exponential [(Ebert & Prelec, 2007)](https://doi.org/10.1287/mnsc.1060.0671) discount functions, since these mean different things. Instead, we need a model-agnostic measure of discounting. One of these is the ED50 ([Yoon & Higgins, 2008](https://doi.org/10.1016/j.drugalcdep.2007.12.011)), which is the delay at which the discount function returns a value of 0.5, i.e. the delay at which a delayed reward's value is 50% of its face value. This can be computed using the `ED50()` function:
 
 ```{r}
 data("td_bc_single_ptpt")
@@ -33,12 +33,13 @@ ed501 <- ED50(mod1)
 ed502 <- ED50(mod2)
 cat(sprintf('Percentage difference in ED50 values: %.2f%%\n', 100*abs(ed501 - ed502)/((ed501 + ed501)/2)))
 ```
+
 Another option is to use the model-based area under the curve (AUC) with the `AUC` function:
 
 ```{r}
-auc1 <- AUC(mod1)
-auc2 <- AUC(mod2)
+auc1 <- AUC(mod1, verbose = F)
+auc2 <- AUC(mod2, verbose = F)
 cat(sprintf('Percentage difference in AUC values: %.2f%%\n', 100*abs(auc1 - auc2)/((auc1 + auc2)/2)))
 ```
 
-This latter method has the advantage of being well-defined for the "model-free" discount function.
+This latter method has the advantage of being well-defined for the "model-free" discount function, whereas the ED50 is not.

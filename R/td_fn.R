@@ -49,8 +49,26 @@ td_fn <- function(predefined = c('hyperbolic',
     out$name <- name
     out$fn <- fn
     out$par_starts <- par_starts
+    
+    if (is.null(par_lims)) {
+      par_lims <- list()
+      par_lims[names(par_starts)] <- c(-Inf, Inf)
+    } else {
+      for (par_name in names(par_starts)) {
+        if (!(par_name %in% names(par_lims))) {
+          par_lims[[par_name]] <- c(-Inf, Inf)
+        }
+      }
+    }
+    
     out$par_lims <- par_lims
-    out$ED50 <- ED50
+    
+    if (is.null(ED50)) {
+      out$ED50 <- function(...) 'non-analytic'
+    } else {
+      out$ED50 <- ED50
+    }
+    
     if (!is.null(par_chk)) {
       out$par_chk <- par_chk
     }

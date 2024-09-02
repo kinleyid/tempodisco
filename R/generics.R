@@ -35,7 +35,7 @@ print.td_ipm <- function(x, ...) {
 #' @export
 print.td_fn <- function(x, ...) {
   obj <- x
-  cat(sprintf('\nTemporal discounting function: "%s"\n\n', obj$name))
+  cat(sprintf('\n"%s" temporal discounting function\n\n', obj$name))
   
   code <- deparse(body(obj$fn), width.cutoff = 500)
   code <- gsub('p\\["([^"]+)"\\]', '\\1', code)
