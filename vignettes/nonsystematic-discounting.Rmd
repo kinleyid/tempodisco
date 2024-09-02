@@ -1,8 +1,8 @@
 ---
-title: "nonsystematic-discounting"
+title: "Indentifying non-systematic discounting"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{nonsystematic-discounting}
+  %\VignetteIndexEntry{Indentifying non-systematic discounting}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

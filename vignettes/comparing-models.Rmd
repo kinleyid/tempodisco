@@ -1,8 +1,8 @@
 ---
-title: "comparing-models"
+title: "Comparing discounting across different discount functions"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{comparing-models}
+  %\VignetteIndexEntry{Comparing discounting across different discount functions}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

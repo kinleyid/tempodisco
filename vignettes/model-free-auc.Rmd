@@ -1,8 +1,8 @@
 ---
-title: "model-free-auc"
+title: "Computing model-free area under the curve (AUC)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{model-free-auc}
+  %\VignetteIndexEntry{Computing model-free area under the curve (AUC)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -48,7 +48,7 @@ mod <- td_ipm(df, discount_function = 'model-free')
 print(AUC(mod))
 ```
 
-Note that any transformation of the delays must be performed _prior_ to fitting the model. For the model-free discount function, because interpolations between indifference points are _linear_ in the original scale of the data. This is evident in the curved interpolations in the plot below:
+Note that any transformation of the delays must be performed _prior_ to fitting the model. This is because, for the model-free discount function, interpolations between indifference points are _linear_ in the original scale of the data. This is evident in the curved interpolations in the plot below:
 
 ```{r}
 df$del <- df$untransformed_del

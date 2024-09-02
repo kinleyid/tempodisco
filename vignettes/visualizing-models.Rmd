@@ -1,8 +1,8 @@
 ---
-title: "visualizing-models"
+title: "Visualizing models"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{visualizing-models}
+  %\VignetteIndexEntry{Visualizing models}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -13,8 +13,6 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
-
-# Visualizing temporal discounting models
 
 ```{r setup}
 library(tempodisco)

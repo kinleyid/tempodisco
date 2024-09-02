@@ -1,8 +1,8 @@
 ---
-title: "adjusting-amounts"
+title: "Working with data from an adjusting amount procedure"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{adjusting-amounts}
+  %\VignetteIndexEntry{Working with data from an adjusting amount procedure}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

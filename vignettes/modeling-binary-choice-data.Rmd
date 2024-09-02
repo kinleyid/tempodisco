@@ -1,8 +1,8 @@
 ---
-title: "modeling-binary-choice-data"
+title: "Modeling binary choice data"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{modeling-binary-choice-data}
+  %\VignetteIndexEntry{Modeling binary choice data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -13,8 +13,6 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
-
-# Modeling binary choice data
 
 ```{r setup}
 library(tempodisco)
