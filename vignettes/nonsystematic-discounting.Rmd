@@ -1,0 +1,43 @@
+---
+title: "nonsystematic-discounting"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{nonsystematic-discounting}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(tempodisco)
+```
+
+To check for non-systematic discounting per the criteria of [Johnson & Bickel (2008)](https://doi.org/10.1037%2F1064-1297.16.3.264), we first need to fit a "model-free" discount function to our data (other discount functions are guaranteed monotonically decreasing, meaning the first criterion (non-monotonic discounting) can't ever be met.
+
+```{r}
+data("adj_amt_sim")
+df <- adj_amt_indiffs(adj_amt_sim)
+mod <- td_ipm(df, discount_function = 'model-free')
+plot(mod, verbose = F)
+```
+As we can see, this data meets the first criterion for non-systematicity but not the second:
+
+```{r}
+nonsys(mod)
+```
+We can do the same thing for binary choice data:
+```{r}
+data("td_bc_single_ptpt")
+mod <- td_bcm(td_bc_single_ptpt, discount_function = 'model-free')
+plot(mod, log = 'x', verbose = F)
+```
+This data meets neither criterion:
+```{r}
+nonsys(mod)
+```

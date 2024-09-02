@@ -6,9 +6,8 @@
 \usage{
 td_bclm(
   data,
-  model = c("hyperbolic.1", "hyperbolic.2", "exponential.1", "exponential.2",
-    "scaled-exponential", "nonlinear-time-hyperbolic", "nonlinear-time-exponential",
-    "itch", "naive"),
+  model = c("all", "hyperbolic.1", "hyperbolic.2", "exponential.1", "exponential.2",
+    "scaled-exponential", "nonlinear-time-hyperbolic", "nonlinear-time-exponential"),
   ...
 )
 }

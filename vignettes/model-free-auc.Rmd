@@ -1,0 +1,57 @@
+---
+title: "model-free-auc"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{model-free-auc}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(tempodisco)
+```
+
+"Area under the curve" (AUC) is often used as an empirical measure of discounting. To compute this measure, we first fit a model using the `'model-free'` discount function, and then call the `AUC` function. For example:
+
+```{r}
+# Compute indifference points
+data("adj_amt_sim")
+df <- adj_amt_indiffs(adj_amt_sim)
+# Fit model
+mod <- td_ipm(df, discount_function = 'model-free')
+print(AUC(mod))
+```
+To compute the AUC only between certain limits, you can use the `min_del` and `max_del` arguments:
+
+```{r}
+print(AUC(mod, min_del = 1, max_del = 100))
+```
+For the AUC computed this way, the later indifference points tend to have an outsize influence over the overall measure. To address this, [Borges et al. (2016)](https://doi.org/10.1002/jeab.219) suggest transforming the delays to a log or ordinal scale. After this transformation, we can re-fit the model and re-compute the AUC. For example, for the log transformation:
+
+```{r}
+df$untransformed_del <- df$del # Save a copy
+df$del <- log(df$untransformed_del)
+mod <- td_ipm(df, discount_function = 'model-free')
+print(AUC(mod))
+```
+Similarly, for the orginal transformation:
+```{r}
+df$del <- as.numeric(factor(df$untransformed_del, ordered = T))
+mod <- td_ipm(df, discount_function = 'model-free')
+print(AUC(mod))
+```
+
+Note that any transformation of the delays must be performed _prior_ to fitting the model. For the model-free discount function, because interpolations between indifference points are _linear_ in the original scale of the data. This is evident in the curved interpolations in the plot below:
+
+```{r}
+df$del <- df$untransformed_del
+mod <- td_ipm(df, discount_function = 'model-free')
+plot(mod, log = 'x', verbose = F)
+```

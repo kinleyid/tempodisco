@@ -1,0 +1,90 @@
+---
+title: "custom-discount-functions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{custom-discount-functions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Creating custom discount functions
+## With an application to measuring magnitude effects
+
+```{r setup}
+library(tempodisco)
+```
+
+The first step to create a custom discount function is to create a function that takes as arguments `data` (a dataframe) and `p` (a vector of parameters) and produces an indifference point. For example, the following describes hyperbolic discounting with the magnitude effect accounted for as in [Vincent (2015)](https://doi.org/10.3758/s13428-015-0672-2):
+
+```{r}
+indiff_fn <- function(data, p) {
+  k <- exp(p['m']*log(data$val_del) + p['c'])
+  1 / (1 + k * data$del)
+}
+```
+
+In many cases, there will be limits on the values the parameters can take on. For example, $k$ should always be positive. For the function above, this is enforced by `k = exp(...)` and the parameters $m$ and $c$ can take on any values (i.e., the limits are $-\infty$ to $infty$). We encode this in a list with a pair of values for each parameter:
+
+```{r}
+par_lims <- list(m = c(-Inf, Inf),
+                 c = c(-Inf, Inf))
+```
+
+For optimization, the function must be initially evaluated at some set of parameter values. We can specify these as a similar list:
+
+```{r}
+par_starts <- list(m = c(-1, 0, 1),
+                   c = c(-10, -5, -1))
+```
+
+When we provide more than one possible starting value per parameter in this way, each combination of starting values will be tried during optimization, and the best fit will be kept.
+
+Next, we need a function to compute the ED50 (the delay at which the function returns 0.5). In this case, the ED50 is:
+
+```{r}
+ED50_fn <- function(p, val_del) {
+  1 / exp(p['m']*log(val_del) + p['c'])
+}
+```
+
+If we couldn't solve for the ED50 explicitly, it would also be valid to just create a function that takes any arbitrary input and returns the string `"non-analytic"`. This instructs the `ED50()` method to solve for the ED50 value numerically.
+
+With these ingredients, we can create our custom discount function with a call to `td_fn()`:
+
+```{r}
+custom_discount_function <- td_fn(name = 'hyp-mag-eff',
+                                  fn = indiff_fn,
+                                  par_starts = par_starts,
+                                  par_lims = par_lims,
+                                  ED50 = ED50_fn)
+print(custom_discount_function)
+```
+
+The next step is to try fitting the model:
+
+```{r}
+data("td_bc_single_ptpt")
+mod <- td_bcm(td_bc_single_ptpt, discount_function = custom_discount_function)
+print(mod)
+```
+
+Surprisingly, we get a positive value for $m$, implying steeper discounting for larger rewards (the opposite of the usual magnitude effect). To illustrate this, we can plot the discount curve for different values of `val_del`:
+
+```{r}
+plot(mod, log = 'x', val_del = 200)
+plot(mod, log = 'x', val_del = 300)
+```
+
+This is probably because a narrow range of delayed reward values was used, so we shouldn't read too much into the best-fitting value of $m$:
+
+```{r}
+range(mod$data$val_del)
+```
+

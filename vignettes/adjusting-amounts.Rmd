@@ -1,0 +1,46 @@
+---
+title: "adjusting-amounts"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{adjusting-amounts}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(tempodisco)
+```
+
+The idea of an adjusting amount procedure is to "titrate" an individual's indifference point at a given delay. After running an experiment of this type, you may have a data table where each row corresponds to a different choice the participant made:
+
+```{r}
+data("adj_amt_sim")
+head(adj_amt_sim)
+```
+
+In this case, you need some column to differentiate different "blocks" of the experiment, so that a separate indifference point can be computed for each block. In the data above, as is standard, each delay corresponded to a different block. We can run `adj_amt_indiffs` to compute the indifference points for these blocks:
+
+```{r}
+scored <- adj_amt_indiffs(adj_amt_sim)
+head(scored)
+```
+
+By default, `adj_amt_indiffs` assumes that there is a column called `del` that differentiates between different blocks. You can override this using the `block_indic` column. Similarly, `adj_amt_indiffs` assumes that the rows are already in chronological order within blocks, so that the final row corresponds to the last decision. To override this behaviour, we can use the `order_indic` argument to pass the name of a column that specifies the order in which decisions took place:
+
+```{r}
+scored <- adj_amt_indiffs(adj_amt_sim, block_indic = 'del', order_indic = 'trial_idx')
+head(scored)
+```
+With our indifference points computed, we can fit a model to the data:
+
+```{r}
+mod <- td_ipm(scored, discount_function = c('hyperbolic'))
+plot(mod)
+```

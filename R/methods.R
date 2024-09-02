@@ -42,6 +42,7 @@ ED50 <- function(mod, val_del = NULL) {
 #' @param mod A temporal discounting model. See `td_gnlm`
 #' @param min_del Lower limit to use for integration
 #' @param max_del Upper limit to use for integration
+#' @param val_del Delayed value to use for computing the indifference curve, if applicable
 #' @param verbose Specifies whether to provide extra detail, if applicable
 #' @param ... Further arguments passed to `integrate()`
 #' @return AUC value
@@ -52,7 +53,7 @@ ED50 <- function(mod, val_del = NULL) {
 #' print(AUC(mod))
 #' }
 #' @export
-AUC <- function(mod, min_del = 0, max_del = NULL, verbose = T, ...) {
+AUC <- function(mod, min_del = 0, max_del = NULL, val_del = NULL, verbose = T, ...) {
   
   if (is.null(max_del)) {
     max_del <- max(mod$data$del)
@@ -66,13 +67,28 @@ AUC <- function(mod, min_del = 0, max_del = NULL, verbose = T, ...) {
       cat(sprintf('Assuming an indifference point of 1 at delay 0\n'))
     }
   }
-  disc_func <- function(t) predict(mod, newdata = data.frame(del = t), type = 'indiff')
+  if (is.null(val_del)) {
+    if ('val_del' %in% names(mod$data)) {
+      val_del <- mean(mod$data$val_del)
+      if (verbose) {
+        cat(sprintf('Defaulting to val_del = %s\n', val_del))
+      }
+    } else {
+      val_del <- NA
+    }
+  }
+  disc_func <- function(t) {
+    predict(mod,
+            newdata = data.frame(del = t,
+                                 val_del = val_del),
+            type = 'indiff')
+  }
   out <- tryCatch(
     expr = {
       integrate(function(t) disc_func(t),
                 lower = min_del,
                 upper = max_del,
-                ...)$value
+                ...)$value / (max_del - min_del)
     },
     error = function(e) {
       return(sprintf('integrate() failed to compute AUC with error: "%s"', e$message))

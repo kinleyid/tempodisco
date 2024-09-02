@@ -14,6 +14,16 @@ print.td_bcm <- function(x, ...) {
 }
 
 #' @export
+print.td_bclm <- function(x, ...) {
+  cat(sprintf('\nTemporal discounting binary choice linear model\n\n'))
+  cat(sprintf('Discount function: %s from model %s, with coefficients:\n\n',
+              x$config$discount_function$name,
+              x$config$model))
+  print(coef(x))
+  NextMethod()
+}
+
+#' @export
 print.td_ipm <- function(x, ...) {
   cat(sprintf('\nTemporal discounting indifference point model\n\n'))
   cat(sprintf('Discount function: %s, with coefficients:\n\n', x$config$discount_function$name))
@@ -26,8 +36,14 @@ print.td_ipm <- function(x, ...) {
 print.td_fn <- function(x, ...) {
   obj <- x
   cat(sprintf('\nTemporal discounting function: "%s"\n\n', obj$name))
-  print(obj$fn)
-  cat(sprintf('\n'))
+  
+  code <- deparse(body(obj$fn), width.cutoff = 500)
+  code <- gsub('p\\["([^"]+)"\\]', '\\1', code)
+  code <- gsub('data\\$', '', code)
+  cat(sprintf('Indifference points:\n'))
+  cat(paste(code, collapse = "\n"))
+  
+  cat(sprintf('\n\nParameter limits:\n'))
   for (par in names(obj$par_lims)) {
     cat(sprintf('%s < %s < %s\n', obj$par_lims[[par]][1], par, obj$par_lims[[par]][2]))
   }
@@ -337,6 +353,7 @@ logLik.td_ipm <- function(mod) {
 #' @param type Type of plot to generate
 #' @param del Plots data for a particular delay
 #' @param val_del Plots data for a particular delayed value
+#' @param legend Logical: display a legend? Ignored if \code{type != 'summary'}
 #' @param verbose Whether to print info about, e.g., setting del = ED50 when type == 'endpoints'
 #' @param ... Additional arguments to \code{plot()}
 #' @examples
@@ -347,7 +364,7 @@ logLik.td_ipm <- function(mod) {
 #' plot(mod, type = 'endpoints')
 #' }
 #' @export
-plot.td_um <- function(x, type = c('summary', 'endpoints', 'link'), verbose = T, del = NULL, val_del = NULL, ...) {
+plot.td_um <- function(x, type = c('summary', 'endpoints', 'link'), legend = T, verbose = T, del = NULL, val_del = NULL, ...) {
   
   type <- match.arg(type)
 
@@ -402,7 +419,18 @@ plot.td_um <- function(x, type = c('summary', 'endpoints', 'link'), verbose = T,
              data = data[data$imm_chosen, ])
       points(rel_val ~ del, col = 'blue',
              data = data[!data$imm_chosen, ])
+      if (legend) {
+        legend("topright",
+               inset = 0.02,
+               title = 'Choices',
+               legend = c("Imm.", "Del."),
+               col = c("red", "blue"),
+               pch = 1,
+               box.lty = 0, # No border
+               bg = rgb(1, 1, 1, 0.5)) # Background color with transparency
+      }
     }
+    
     title(x$config$discount_function$name)
     
   } else {

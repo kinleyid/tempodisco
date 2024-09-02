@@ -7,6 +7,7 @@
 \method{plot}{td_um}(
   x,
   type = c("summary", "endpoints", "link"),
+  legend = T,
   verbose = T,
   del = NULL,
   val_del = NULL,

@@ -1,0 +1,81 @@
+---
+title: "visualizing-models"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{visualizing-models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Visualizing temporal discounting models
+
+```{r setup}
+library(tempodisco)
+```
+
+We can inspect models using 3 types of plots, controlled by the `type` argument to `plot()`.
+
+## `"summary"` plots
+ 
+For a binary choice model, a "summary" plot displays both the binary choices and the discount curve:
+
+```{r}
+data("td_bc_single_ptpt")
+mod <- td_bcm(td_bc_single_ptpt, discount_function = 'hyperbolic')
+plot(mod, type = 'summary')
+```
+
+The plotting function prints some info, telling us it is plotting the discount curve corresponding to the average delayed reward value from the data used for fitting the model. This is only relevant if the discount curve depends on the delayed reward value (i.e., if magnitude effects are accounted for). In this case the magnitude effect is not accounted for, so we can suppress this message using `verbose = F`. We can also log-transform the x-axis to achieve a more even spread between the delays:
+
+```{r}
+plot(mod, type = 'summary', verbose = F, log = 'x')
+```
+
+For an indifference point model, the discount function is usually plotted alongside the empirical indifference points:
+
+```{r}
+data("td_ip_simulated_ptpt")
+mod_ip <- td_ipm(td_ip_simulated_ptpt, discount_function = 'hyperbolic')
+plot(mod_ip, type = 'summary', log = 'x', verbose = F)
+```
+
+The only exception to this is an indifference point model produced by Kirby scoring, which applies to binary choice data. In this case, the binary choices are displayed.
+
+```{r}
+mod_ip <- kirby_score(td_bc_single_ptpt)
+plot(mod_ip, type = 'summary', log = 'x', verbose = F)
+```
+
+However, because indifference point models don't explicitly model the probabilities of individual choices, the other plot types are not applicable to them.
+
+## `"endpoints"` plots
+
+To visualize how stochastic the decision maker was, we can set `type = 'endpoints'`. This plots a psychometric curve of the probability of selecting the immediate reward as a function of its value relative to the delayed reward, (i.e., from 0 to 1, the "endpoints" for which the plot type is named):
+
+```{r}
+plot(mod, type = 'endpoints')
+```
+
+This time we get some relevant messages. First, this curve is centered by default (it corresponds to the delay at which the indifference point is 0.5). Second, it corresponds to the average delayed reward value from the data used for fitting the model. The "logistic" choice rule (used by default) assumes that the "sharpness" of the psychometric curve increases for higher reward values. We can customize these using the `del` and `val_del` arguments:
+
+```{r}
+del <- sort(unique(mod$data$del))[2]
+plot(mod, type = 'endpoints', del = del, val_del = 1000)
+```
+
+Note that when `del` corresponds to one of the delays in the data, the binary choices corresponding to that delay are included in the plot as points on the y = 0 and y = 1 lines.
+
+## `"link"` plots
+
+Finally, we can plot the probability of selecting the immediate reward against the values of the link function. This is potentially useful for visually detecting potential outliers.
+
+```{r}
+plot(mod, type = 'link')
+```
