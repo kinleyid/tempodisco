@@ -52,10 +52,10 @@ mod <- td_bclm(td_bc_single_ptpt, model = 'all')
 print(mod)
 ```
 
-To fit an even wider range of discount functions, we can fit a nonlinear regression model by calling `td_bcm`. A full list of the available discount functions can be found in the documentation for `td_bcm`.
+To fit an even wider range of discount functions, we can fit a nonlinear regression model by calling `td_bcnm`. A full list of the available discount functions can be found in the documentation for `td_bcnm`.
 
 ```{r}
-mod <- td_bcm(td_bc_single_ptpt, discount_function = 'all')
+mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'all')
 print(mod)
 ```
 
@@ -63,9 +63,9 @@ Several additional arguments can be used to customize the model. For example, we
 
 ```{r}
 # Probit choice rule:
-mod <- td_bcm(td_bc_single_ptpt, discount_function = 'exponential', choice_rule = 'probit')
+mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'exponential', choice_rule = 'probit')
 # Power choice rule:
-mod <- td_bcm(td_bc_single_ptpt, discount_function = 'exponential', choice_rule = 'power')
+mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'exponential', choice_rule = 'power')
 ```
 
 It is also possible to fit an error rate $\epsilon$ that describes the probability of the participant making a response error (see [Vincent, 2015](https://doi.org/10.3758/s13428-015-0672-2)). I.e.:
@@ -77,7 +77,7 @@ data("td_bc_study")
 # Select the second participant
 second_ptpt <- unique(td_bc_study$id)[2]
 df <- subset(td_bc_study, id == second_ptpt)
-mod <- td_bcm(df, discount_function = 'exponential', fit_err_rate = T)
+mod <- td_bcnm(df, discount_function = 'exponential', fit_err_rate = T)
 plot(mod, type = 'endpoints', verbose = F)
 lines(c(0, 1), c(0, 0), lty = 2)
 lines(c(0, 1), c(1, 1), lty = 2)
@@ -88,6 +88,6 @@ We can see that the probability of choosing the immediate reward doesn't approac
 Alternatively, we might expect that participants should never choose an immediate reward worth 0 and should never choose a delayed reward worth the same face amount as an immediate reward [(Kinley et al., 2024)](https://doi.org/10.31234/osf.io/y2fdh). We can control this by setting `fixed_ends = T`, which "fixes" the endpoints of the psychometric curve, where `val_imm = 0` and `val_imm = val_del`, at 0 and 1, respectively:
 
 ```{r}
-mod <- td_bcm(df, discount_function = 'exponential', fixed_ends = T)
+mod <- td_bcnm(df, discount_function = 'exponential', fixed_ends = T)
 plot(mod, type = 'endpoints', verbose = F)
 ```

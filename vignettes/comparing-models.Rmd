@@ -22,8 +22,8 @@ By default, `tempodisco` allows you to fit models using a variety of discount fu
 
 ```{r}
 data("td_bc_single_ptpt")
-mod1 <- td_bcm(td_bc_single_ptpt, discount_function = 'scaled-exponential')
-mod2 <- td_bcm(td_bc_single_ptpt, discount_function = 'nonlinear-time-hyperbolic')
+mod1 <- td_bcnm(td_bc_single_ptpt, discount_function = 'scaled-exponential')
+mod2 <- td_bcnm(td_bc_single_ptpt, discount_function = 'nonlinear-time-hyperbolic')
 
 k1 <- coef(mod1)['k']
 k2 <- coef(mod2)['k']

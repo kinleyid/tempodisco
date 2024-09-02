@@ -45,9 +45,9 @@ while (arg_combo_idx <= nrow(arg_combos)) {
     arg_combo$discount_function <- custom_discount_function
   }
   
-  mod <- do.call(td_bcm, c(list(data = df), arg_combo))
+  mod <- do.call(td_bcnm, c(list(data = df), arg_combo))
   
-  expect_s3_class(mod, 'td_bcm')
+  expect_s3_class(mod, 'td_bcnm')
   
   test_that('generics', {
     expect_output(print(mod))
@@ -85,10 +85,10 @@ while (arg_combo_idx <= nrow(arg_combos)) {
 }
 
 test_that('errors', {
-  expect_error(td_bcm(df, choice_rule = 'random'))
-  expect_error(td_bcm(df, noise_dist = 'norm'))
-  expect_error(td_bcm())
-  expect_error(td_bcm(df[, 1:2]))
-  expect_error(td_bcm(df, discount_function = 'new'))
-  expect_error(td_bcm(df, discount_function = 'new'))
+  expect_error(td_bcnm(df, choice_rule = 'random'))
+  expect_error(td_bcnm(df, noise_dist = 'norm'))
+  expect_error(td_bcnm())
+  expect_error(td_bcnm(df[, 1:2]))
+  expect_error(td_bcnm(df, discount_function = 'new'))
+  expect_error(td_bcnm(df, discount_function = 'new'))
 })

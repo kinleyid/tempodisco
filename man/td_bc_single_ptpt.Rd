@@ -5,7 +5,7 @@
 \alias{td_bc_single_ptpt}
 \title{Binary choice data for a single participant}
 \description{
-70 binary choices made by a single participant. Along with the columns required by \code{td_bcm}, the reaction time (\code{rt}) is recorded.
+70 binary choices made by a single participant. Along with the columns required by \code{td_bcnm}, the reaction time (\code{rt}) is recorded.
 }
 \references{
 \url{doi.org/10.31234/osf.io/y2fdh}

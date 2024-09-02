@@ -29,7 +29,7 @@ Additionally, 2 other discount functions are tested: a "model-free" function in 
 
 ## Example usage
 
-### Fitting binary choice models: `td_bcm` and `td_bclm`
+### Fitting binary choice models: `td_bcnm` and `td_bclm`
 
 To fit a binary choice model, we need data from a single participant formatted as follows:
 
@@ -48,13 +48,13 @@ Here, each row corresponds to a difference decision. *val_imm* specifies the val
 From here, we can fit a binary choice model:
 
 ```R
-mod <- td_bcm(td_bc_single_ptpt)
+mod <- td_bcnm(td_bc_single_ptpt)
 ```
 
 By default, all of the discount functions above are tested. If we are interested in only a subset of these, we can specify them as follows:
 
 ```R
-mod <- td_bcm(td_bc_single_ptpt, discount_function = c('hyperbolic', 'exponential'))
+mod <- td_bcnm(td_bc_single_ptpt, discount_function = c('hyperbolic', 'exponential'))
 ```
 
 From here, we can plot the model and get various useful pieces of information:

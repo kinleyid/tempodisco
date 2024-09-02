@@ -7,7 +7,7 @@
 nonsys(obj)
 }
 \arguments{
-\item{obj}{Either a \code{data.frame} with columns \code{indiff} and \code{del}, or a discounting model of class \code{td_bcm} or \code{td_ipm}, fit using the \code{"model-free"} discount function.}
+\item{obj}{Either a \code{data.frame} with columns \code{indiff} and \code{del}, or a discounting model of class \code{td_bcnm} or \code{td_ipm}, fit using the \code{"model-free"} discount function.}
 }
 \value{
 Named logical vector specifying whether nonsystematic discounting is exhibited according to C1/C2.
@@ -23,7 +23,7 @@ Check for non-systematic discounting, per the Johnson & Bickel (2008) criteria. 
 \dontrun{
 # On a model
 data("td_bc_single_ptpt")
-mod <- td_bcm(td_bc_single_ptpt, discount_function = 'model-free')
+mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'model-free')
 any(nonsys(mod))
 
 # On a dataframe

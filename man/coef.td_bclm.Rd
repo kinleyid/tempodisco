@@ -7,7 +7,7 @@
 \method{coef}{td_bclm}(object, df_par = T, ...)
 }
 \arguments{
-\item{object}{An object of class \code{td_bcm}}
+\item{object}{An object of class \code{td_bcnm}}
 
 \item{df_par}{Boolean specifying whether the coefficients returned should be the parameters of a discount function (versus the beta parameters from the regression)}
 

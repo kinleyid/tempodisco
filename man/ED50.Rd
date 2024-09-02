@@ -20,7 +20,7 @@ Compute the median effective delay
 \examples{
 \dontrun{
 data("td_bc_single_ptpt")
-mod <- td_bcm(td_bc_single_ptpt)
+mod <- td_bcnm(td_bc_single_ptpt)
 print(ED50(mod))
 }
 }

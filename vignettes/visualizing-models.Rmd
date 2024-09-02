@@ -28,7 +28,7 @@ For a binary choice model, a "summary" plot displays both the binary choices and
 
 ```{r}
 data("td_bc_single_ptpt")
-mod <- td_bcm(td_bc_single_ptpt, discount_function = 'hyperbolic')
+mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'hyperbolic')
 plot(mod, type = 'summary')
 ```
 

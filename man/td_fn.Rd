@@ -40,7 +40,7 @@ Get or create a discount function
 \examples{
 \dontrun{
 data("td_bc_single_ptpt")
-mod <- td_bcm(td_bc_single_ptpt, discount_function = "hyperbolic", fixed_ends = T)
+mod <- td_bcnm(td_bc_single_ptpt, discount_function = "hyperbolic", fixed_ends = T)
 # Custom discount function
 custom_discount_function <- td_fn(
   name = 'custom',
@@ -49,6 +49,6 @@ custom_discount_function <- td_fn(
   par_lims = list(k = c(0, Inf), b = c(0, 1)),
   ED50 = function(...) 'non-analytic'
 )
-mod <- td_bcm(td_bc_single_ptpt, discount_function = custom_discount_function, fit_err_rate = T)
+mod <- td_bcnm(td_bc_single_ptpt, discount_function = custom_discount_function, fit_err_rate = T)
 }
 }

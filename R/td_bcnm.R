@@ -12,11 +12,11 @@
 #' @param optim_args Additional arguments to pass to \code{optim()}. Default is \code{list(silent = T)}.
 #' @param silent Boolean (true by default). The call to \code{optim()} occurs within a \code{try()} wrapper. The value of \code{silent} is passed along to \code{try()}.
 #' @param ... Additional arguments to provide finer-grained control over the model configuration.
-#' @return An object of class \code{td_bcm} with components \code{data} (containing the data used for fitting), \code{config} (containing the internal configuration of the model, including the \code{discount_function}), and \code{optim} (the output of \code{optim()}).
+#' @return An object of class \code{td_bcnm} with components \code{data} (containing the data used for fitting), \code{config} (containing the internal configuration of the model, including the \code{discount_function}), and \code{optim} (the output of \code{optim()}).
 #' @examples
 #' \dontrun{
 #' data("td_bc_single_ptpt")
-#' mod <- td_bcm(td_bc_single_ptpt, discount_function = "hyperbolic", fixed_ends = T)
+#' mod <- td_bcnm(td_bc_single_ptpt, discount_function = "hyperbolic", fixed_ends = T)
 #' # Custom discount function
 #' custom_discount_function <- td_fn(
 #'   name = 'custom',
@@ -25,10 +25,10 @@
 #'   par_lims = list(k = c(0, Inf), b = c(0, 1)),
 #'   ED50 = function(p) 'non-analytic'
 #' )
-#' mod <- td_bcm(td_bc_single_ptpt, discount_function = custom_discount_function, fit_err_rate = T)
+#' mod <- td_bcnm(td_bc_single_ptpt, discount_function = custom_discount_function, fit_err_rate = T)
 #' }
 #' @export
-td_bcm <- function(
+td_bcnm <- function(
     data,
     discount_function = c('all',
                           'hyperbolic',
@@ -138,7 +138,7 @@ td_bcm <- function(
   best_crit <- Inf
   best_mod <- list()
   cand_mod <- list(data = data)
-  class(cand_mod) <- c('td_bcm', 'td_um')
+  class(cand_mod) <- c('td_bcnm', 'td_um')
   for (cand_fn in cand_fns) {
     config <- args
     config$discount_function <- cand_fn

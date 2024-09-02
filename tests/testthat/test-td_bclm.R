@@ -52,7 +52,7 @@ while (model_idx <= length(models)) {
 }
 
 test_that('errors', {
-  expect_error(td_bcm(df, model = 'random'))
-  expect_error(td_bcm())
-  expect_error(td_bcm(df[, 1:2]))
+  expect_error(td_bcnm(df, model = 'random'))
+  expect_error(td_bcnm())
+  expect_error(td_bcnm(df[, 1:2]))
 })

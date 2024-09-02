@@ -71,7 +71,7 @@ The next step is to try fitting the model:
 
 ```{r}
 data("td_bc_single_ptpt")
-mod <- td_bcm(td_bc_single_ptpt, discount_function = custom_discount_function)
+mod <- td_bcnm(td_bc_single_ptpt, discount_function = custom_discount_function)
 print(mod)
 ```
 

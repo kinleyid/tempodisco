@@ -1,6 +1,6 @@
 
 #' @export
-print.td_bcm <- function(x, ...) {
+print.td_bcnm <- function(x, ...) {
   cat(sprintf('\nTemporal discounting binary choice model\n\n'))
   cat(sprintf('Discount function: %s, with coefficients:\n\n', x$config$discount_function$name))
   print(coef(x))
@@ -52,7 +52,7 @@ print.td_fn <- function(x, ...) {
 #' Model Predictions
 #'
 #' Generate predictions from a temporal discounting binary choice model
-#' @param object A temporal discounting binary choice model. See \code{td_bcm}.
+#' @param object A temporal discounting binary choice model. See \code{td_bcnm}.
 #' @param newdata Optionally, a data frame to use for prediction. If omitted, the data used to fit the model will be used for prediction.
 #' @param type The type of prediction required. As in predict.glm, \code{"link"} (default) and \code{"response"} give predictions on the scales of the linear predictors and response variable, respectively. \code{"indiff"} gives predicted indifference points. In this case, \code{newdata} needs only a \code{del} column.
 #' @param ... Additional arguments currently not used.
@@ -60,11 +60,11 @@ print.td_fn <- function(x, ...) {
 #' @examples
 #' \dontrun{
 #' data("td_bc_single_ptpt")
-#' mod <- td_bcm(td_bc_single_ptpt, discount_function = 'hyperbolic')
+#' mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'hyperbolic')
 #' indiffs <- predict(mod, newdata = data.frame(del = 1:100), type = 'indiff')
 #' }
 #' @export
-predict.td_bcm <- function(object, newdata = NULL, type = c('link', 'response', 'indiff'), ...) {
+predict.td_bcnm <- function(object, newdata = NULL, type = c('link', 'response', 'indiff'), ...) {
   
   if (is.null(newdata)) {
     newdata <- object$data
@@ -118,7 +118,7 @@ predict.td_bclm <- function(object, newdata = NULL, type = c('indiff', 'link', '
   type <- match.arg(type)
   if (type == 'indiff') {
     
-    return(predict.td_bcm(object, newdata = newdata, type = type))
+    return(predict.td_bcnm(object, newdata = newdata, type = type))
     
   } else {
     
@@ -174,11 +174,11 @@ predict.td_ipm <- function(object, newdata = NULL, type = c('indiff', 'response'
 #' Get fitted values
 #' 
 #' Get fitted values of a temporal discounting binary choice model
-#' @param object An object of class \code{td_bcm}
+#' @param object An object of class \code{td_bcnm}
 #' @param ... Additional arguments currently not used.
 #' @return A named vector of fitted values
 #' @export
-fitted.td_bcm <- function(object, ...) {predict(object, type = 'response')}
+fitted.td_bcnm <- function(object, ...) {predict(object, type = 'response')}
 
 #' Get fitted values
 #' 
@@ -192,16 +192,16 @@ fitted.td_ipm <- function(object, ...) {predict(object)}
 #' Extract model coefficients
 #' 
 #' Get coefficients of a temporal discounting binary choice model
-#' @param object An object of class \code{td_bcm}
+#' @param object An object of class \code{td_bcnm}
 #' @param ... Additional arguments currently not used.
 #' @return A named vector of coefficients
 #' @export
-coef.td_bcm <- function(object, ...) {object$optim$par}
+coef.td_bcnm <- function(object, ...) {object$optim$par}
 
 #' Extract model coefficients
 #' 
 #' Get coefficients of a temporal discounting binary choice model
-#' @param object An object of class \code{td_bcm}
+#' @param object An object of class \code{td_bcnm}
 #' @param df_par Boolean specifying whether the coefficients returned should be the parameters of a discount function (versus the beta parameters from the regression)
 #' @param ... Additional arguments currently not used.
 #' @return A named vector of coefficients
@@ -251,12 +251,12 @@ coef.td_ipm <- function(object, ...) {object$optim$par}
 #' Residuals from temporal discounting model
 #'
 #' Get residuals from a temporal discounting binary choice model
-#' @param object A temporal discounting binary choice model. See \code{td_bcm}.
+#' @param object A temporal discounting binary choice model. See \code{td_bcnm}.
 #' @param type The type of residuals to be returned. See \code{residuals.glm}.
 #' @param ... Additional arguments currently not used.
 #' @return A vector of residuals
 #' @export
-residuals.td_bcm <- function(object, type = c('deviance', 'pearson', 'response'), ...) {
+residuals.td_bcnm <- function(object, type = c('deviance', 'pearson', 'response'), ...) {
   
   # args <- list(...)
   # type <- args$type
@@ -278,7 +278,7 @@ residuals.td_bcm <- function(object, type = c('deviance', 'pearson', 'response')
 #' Residuals from temporal discounting model
 #'
 #' Get residuals from a temporal discounting indifference point model
-#' @param object A temporal discounting model. See \code{td_bcm}.
+#' @param object A temporal discounting model. See \code{td_bcnm}.
 #' @param type The type of residuals to be returned. See \code{residuals.nls}.
 #' @param ... Additional arguments currently not used.
 #' @return A vector of residuals
@@ -311,9 +311,9 @@ residuals.td_ipm <- function(object, type = c('response', 'pearson'), ...) {
 #' Extract log-likelihood
 #' 
 #' Compute log-likelihood for a temporal discounting binary choice model.
-#' @param mod An object of class \code{td_bcm}
+#' @param mod An object of class \code{td_bcnm}
 #' @export
-logLik.td_bcm <- function(mod) {
+logLik.td_bcnm <- function(mod) {
   p <- laplace_smooth(predict(mod, type = 'response'))
   x <- mod$data$imm_chosen
   val <- sum(ll(p, x))
@@ -493,7 +493,7 @@ plot.td_um <- function(x, type = c('summary', 'endpoints', 'link'), legend = T, 
         # Plot of probabilities and data against linear predictors
         
         # Get score range
-        if (is(x, 'td_bcm')) {
+        if (is(x, 'td_bcnm')) {
           score_func <- do.call(get_score_func_frame, x$config)
           scores <- score_func(x$data, coef(x))
         } else if (is(x, 'td_bclm')) {
@@ -509,7 +509,7 @@ plot.td_um <- function(x, type = c('summary', 'endpoints', 'link'), legend = T, 
              ...)
         # Plot probabilities
         plotting_scores <- seq(-lim, lim, length.out = 1000)
-        if (is(x, 'td_bcm')) {
+        if (is(x, 'td_bcnm')) {
           prob_func <- do.call(get_prob_func_frame, x$config)
           p <- prob_func(plotting_scores, coef(x))
         } else if (is(x, 'td_bclm')) {

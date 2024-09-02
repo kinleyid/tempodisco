@@ -3,7 +3,7 @@
 
 # On a model
 data("td_bc_single_ptpt")
-mod <- td_bcm(td_bc_single_ptpt, discount_function = 'model-free')
+mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'model-free')
 ns <- nonsys(mod)
 
 expect_named(ns)

@@ -8,7 +8,7 @@
 #' @examples
 #' \dontrun{
 #' data("td_bc_single_ptpt")
-#' mod <- td_bcm(td_bc_single_ptpt)
+#' mod <- td_bcnm(td_bc_single_ptpt)
 #' print(ED50(mod))
 #' }
 #' @export
@@ -49,7 +49,7 @@ ED50 <- function(mod, val_del = NULL) {
 #' @examples
 #' \dontrun{
 #' data("td_bc_single_ptpt")
-#' mod <- td_bcm(td_bc_single_ptpt)
+#' mod <- td_bcnm(td_bc_single_ptpt)
 #' print(AUC(mod))
 #' }
 #' @export
@@ -104,13 +104,13 @@ AUC <- function(mod, min_del = 0, max_del = NULL, val_del = NULL, verbose = T, .
 #'  \item C1: No indifference point can exceed the previous by more than 0.2
 #'  \item C2: Last indifference point must be lower than first by at least 0.1
 #' }
-#' @param obj Either a \code{data.frame} with columns \code{indiff} and \code{del}, or a discounting model of class \code{td_bcm} or \code{td_ipm}, fit using the \code{"model-free"} discount function.
+#' @param obj Either a \code{data.frame} with columns \code{indiff} and \code{del}, or a discounting model of class \code{td_bcnm} or \code{td_ipm}, fit using the \code{"model-free"} discount function.
 #' @returns Named logical vector specifying whether nonsystematic discounting is exhibited according to C1/C2.
 #' @examples
 #' \dontrun{
 #' # On a model
 #' data("td_bc_single_ptpt")
-#' mod <- td_bcm(td_bc_single_ptpt, discount_function = 'model-free')
+#' mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'model-free')
 #' any(nonsys(mod))
 #' 
 #' # On a dataframe
@@ -127,7 +127,7 @@ nonsys <- function(obj) {
     require_columns(obj, c('indiff', 'del'))
     indiffs <- obj$indiff
     delays <- obj$del
-  } else if (inherits(obj, c('td_bcm', 'td_ipm'))) {
+  } else if (inherits(obj, c('td_bcnm', 'td_ipm'))) {
     if (obj$config$discount_function$name != 'model-free') {
       stop('Discount function must be "model-free" to check for non-systematic discounting.')
     } else {
@@ -137,7 +137,7 @@ nonsys <- function(obj) {
       delays <- as.numeric(gsub('del_', '', names(cf)))
     }
   } else {
-    stop('Input must be a data.frame or a model of class td_bcm or td_ipm.')
+    stop('Input must be a data.frame or a model of class td_bcnm or td_ipm.')
   }
   
   idx <- order(delays)

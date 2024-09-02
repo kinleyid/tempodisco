@@ -7,7 +7,7 @@
 \method{residuals}{td_ipm}(object, type = c("response", "pearson"), ...)
 }
 \arguments{
-\item{object}{A temporal discounting model. See \code{td_bcm}.}
+\item{object}{A temporal discounting model. See \code{td_bcnm}.}
 
 \item{type}{The type of residuals to be returned. See \code{residuals.nls}.}
 
