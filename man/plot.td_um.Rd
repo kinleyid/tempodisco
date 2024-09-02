@@ -19,6 +19,8 @@
 
 \item{type}{Type of plot to generate}
 
+\item{legend}{Logical: display a legend? Ignored if \code{type != 'summary'}}
+
 \item{verbose}{Whether to print info about, e.g., setting del = ED50 when type == 'endpoints'}
 
 \item{del}{Plots data for a particular delay}
