@@ -11,9 +11,9 @@ tags:
   - intertemporal choice
 authors:
   - name: Isaac Kinley
-    orcid: 0000-0000-0000-0000
+    orcid: 0000-0003-2057-9606
     corresponding: true
-    affiliation: 1 # (Multiple affiliations must be quoted)
+    affiliation: 1
 affiliations:
  - name: Postdoctoral Fellow, Rotman Research Institute, Canada
    index: 1
