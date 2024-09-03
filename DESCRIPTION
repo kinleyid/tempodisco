@@ -5,7 +5,7 @@ Description: Models of temporal discounting behaviour. Models can be fit to eith
 Authors@R: person("Isaac", "Kinley", email = "isaac.kinley@gmail.com",
   role = c("aut", "cre"))
 License: GPL-2
-Version: 0.0.1
+Version: 0.1.0
 RoxygenNote: 7.3.1
 Encoding: UTF-8
 Imports:
