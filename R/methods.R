@@ -28,7 +28,7 @@ ED50 <- function(mod, val_del = NULL) {
     optim_func <- function(t) {
       ((f(t)) - 0.5)**2
     }
-    optimized <- optim(fn = optim_func, par = 0, lower = 0, method = 'L-BFGS-B')
+    optimized <- optim(fn = optim_func, par = 1, lower = 0, method = 'L-BFGS-B')
     out <- optimized$par
   }
   names(out) <- NULL
