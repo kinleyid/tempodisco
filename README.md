@@ -4,6 +4,9 @@
 # tempodisco
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/kinleyid/tempodisco/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/kinleyid/tempodisco/actions/workflows/R-CMD-check.yaml)
+[![codecov](https://codecov.io/github/kinleyid/tempodisco/graph/badge.svg?token=CCQXS3SNGB)](https://codecov.io/github/kinleyid/tempodisco)
 <!-- badges: end -->
 
 The goal of tempodisco is to provide easy access to common methods for
