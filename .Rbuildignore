@@ -8,3 +8,6 @@
 ^doc$
 ^Meta$
 ^README\.Rmd$
+
+^paper$
+^LICENSE.md
