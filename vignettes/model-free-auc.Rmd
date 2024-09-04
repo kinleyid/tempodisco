@@ -28,11 +28,13 @@ df <- adj_amt_indiffs(adj_amt_sim)
 mod <- td_ipm(df, discount_function = 'model-free')
 print(AUC(mod))
 ```
+
 To compute the AUC only between certain limits, you can use the `min_del` and `max_del` arguments:
 
 ```{r}
 print(AUC(mod, min_del = 1, max_del = 100))
 ```
+
 For the AUC computed this way, the later indifference points tend to have an outsize influence on the overall measure. To address this, [Borges et al. (2016)](https://doi.org/10.1002/jeab.219) suggest transforming the delays to a log or ordinal scale. After this transformation, we can re-fit the model and re-compute the AUC. For example, for the log transformation:
 
 ```{r}
@@ -41,7 +43,9 @@ df$del <- log(df$untransformed_del)
 mod <- td_ipm(df, discount_function = 'model-free')
 print(AUC(mod))
 ```
-Similarly, for the orginal transformation:
+
+Similarly, for the ordinal transformation:
+
 ```{r}
 df$del <- as.numeric(factor(df$untransformed_del, ordered = T))
 mod <- td_ipm(df, discount_function = 'model-free')

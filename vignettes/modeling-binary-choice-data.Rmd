@@ -44,17 +44,11 @@ print(mod)
 
 ## Newer methods
 
-The [Wileyto et al. (2004)](https://doi.org/10.3758/BF03195548) approach turns out to be possible for other discount functions as well [(Kinley et al., 2024)](https://doi.org/10.31234/osf.io/y2fdh). A full list is below:
+The [Wileyto et al. (2004)](https://doi.org/10.3758/BF03195548) approach turns out to be possible for other discount functions as well:
 
-| Name | Discount function | Linear predictor | Parameters |
-|--|--|--|--|
-| `hyperbolic.1` | Hyperbolic ([Mazur, 1987](https://doi.org/10.4324/9781315825502)):<br><br>$\frac{1}{1 + kt}$ | $\beta_1 \left(1 - \frac{v_D}{v_I} \right) + \beta_2 t$ | $k = \frac{\beta_2}{\beta_1}$ | 
-| `hyperbolic.2` | ([Mazur, 1987](https://doi.org/10.4324/9781315825502)):<br><br>$\frac{1}{1 + kt}$ | $\beta_1\left( \sigma^{-1}\left[\frac{v_\mathcal{I}}{v_\mathcal{D}}\right] + \log t \right) + \beta_2$ | $k = e^\frac{\beta_2}{\beta_1}$ |
-| `exponential.1` | Exponential ([Samuelson, 1937](https://doi.org/10.2307/2967612)):<br><br>$e^{-kt}$ | $\beta_1 \log \frac{v_I}{v_D} + \beta_2 t$ | $k = \frac{\beta_2}{\beta_1}$ |
-| `exponential.2` | Exponential ([Samuelson, 1937](https://doi.org/10.2307/2967612)):<br><br>$e^{-kt}$ | $\beta_1\left( G^{-1}\left[\frac{v_\mathcal{I}}{v_\mathcal{D}}\right] + \log t \right) + \beta_2$ | $k = e^\frac{\beta_2}{\beta_1}$ |
-| `scaled-exponential` | Scaled exponential (beta-delta; [Laibson, 1997](https://doi.org/10.1162/003355397555253)):<br><br>$w e^{-kt}$ | $\beta_1\log\frac{v_{I}}{v_{D}} + \beta_2 t + \beta_3$ | $k = \frac{\beta_2}{\beta_1}$, $w = e^{-\frac{\beta_3}{\beta_1}}$ |
-| `nonlinear-time-hyperbolic` | Nonlinear-time hyperbolic ([Rachlin, 2006](https://doi.org/10.1901/jeab.2006.85-05)):<br><br>$\frac{1}{1 + k t^s}$ | $\beta_1 \sigma^{-1}\left[\frac{v_{I}}{v_{D}}\right] + \beta_2\log t + \beta_3$ | $k = e^\frac{\beta_3}{\beta_1}$, $s = \frac{\beta_2}{\beta_1}$ |
-| `nonlinear-time-exponential` | Nonlinear-time exponential ([Ebert & Prelec, 2007](https://doi.org/10.1287/mnsc.1060.0671)):<br><br>$e^{-kt^s}$ | $\beta_1 G^{-1}\left[\frac{v_\mathcal{I}}{v_\mathcal{D}}\right] + \beta_2\log t + \beta_3$ | $k = e^\frac{\beta_3}{\beta_1}$, $s = \frac{\beta_2}{\beta_1}$ |
+```{r child="../man/fragments/linear-models.Rmd"}
+```
+
 
 We can test all of these and select the best according to the Bayesian Information Criterion as follows:
 
@@ -65,15 +59,8 @@ print(mod)
 
 To explore a wider range of discount functions, we can fit a nonlinear model by calling `td_bcnm`. The full list is as follows:
 
-| Name | Functional form |
-|------|-----------------|
-| Exponential ([Samuelson, 1937](https://doi.org/10.2307/2967612)) |	$f(t; k) = e^{-k t}$ |
-| Scaled exponential (beta-delta; [Laibson, 1997](https://doi.org/10.1162/003355397555253)) | $f(t; k, w) = w e^{-k t}$ |
-| Nonlinear-time exponential ([Ebert & Prelec, 2007](https://doi.org/10.1287/mnsc.1060.0671)) | $f(t; k, s) = e^{-k t^s}$ |
-| Dual-systems exponential ([Ven den Bos & McClure, 2013](https://doi.org/10.1002/jeab.6)) | $f(t; k_1, k_2, w) = w e^{-k_1 t} + (1 - w) e^{-k_2 t}$ |
-| Inverse q-exponential ([Green & Myerson, 2004](https://doi.org/10.1037/0033-2909.130.5.769)) | $f(t; k, s) = \frac{1}{(1 + k t)^s}$ |
-| Hyperbolic ([Mazur, 1987](https://doi.org/10.4324/9781315825502)) | $f(t; k) = \frac{1}{1 + kt}$ |
-| Nonlinear-time hyperbolic ([Rachlin, 2006](https://doi.org/10.1901/jeab.2006.85-05)) | $f(t; k, s) = \frac{1}{1 + k t^s}$ |
+```{r child="../man/fragments/predefined-discount-functions.Rmd"}
+```
 
 ```{r}
 mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'all')

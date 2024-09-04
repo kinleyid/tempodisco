@@ -1,0 +1,123 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# tempodisco
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of tempodisco is to provide easy access to common methods for working with temporal discounting data.
+
+## Installation
+
+You can install tempodisco from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("kinleyid/tempodisco")
+```
+
+## Example usage
+
+```{r}
+library(tempodisco)
+```
+
+
+### Modeling indifference point data
+
+To compute indifference points from an adjusting amount procedure, we can use the `adj_amt_indiffs` function:
+
+```{r}
+data("adj_amt_sim") # Load simulated data from an adjusting amounts procedure
+indiff_data <- adj_amt_indiffs(adj_amt_sim)
+head(indiff_data)
+```
+
+This returns a data frame with a column for each delay and a column for the corresponding indifference points. The function `td_ipm` can then be used to identify the best-fitting discount function (according to the Bayesian information criterion) from any subset of the following options:
+
+```{r child="man/fragments/predefined-discount-functions.Rmd"}
+```
+
+For example:
+
+```{r}
+mod <- td_ipm(data = indiff_data, discount_function = c('exponential', 'hyperbolic', 'nonlinear-time-hyperbolic'))
+print(mod)
+```
+
+From here, we can extract useful information about the model and visualize it
+
+```{r}
+plot(mod)
+print(coef(mod)) # k value
+print(BIC(mod)) # Bayesian information criterion
+```
+
+### Modeling binary choice data
+
+A traditional method of modeling binary choice data is to compute a value of $k$ using the scoring method introduced for the Kirby Monetary Choice Questionnaire:
+
+```{r}
+data("td_bc_single_ptpt")
+```
+
+```{r child="man/fragments/kirby-scoring.Rmd"}
+```
+
+Another option is to use the logistic regression method of Wileyto et al., where we can solve for the $k$ value of the hyperbolic discount function in terms of the regression coefficients:
+
+```{r child="man/fragments/wileyto-scoring.Rmd"}
+```
+
+We can extend this approach to a number of other discount functions using the `method` argument to `td_bclm`:
+
+```{r child="man/fragments/linear-models.Rmd"}
+```
+
+By setting `method = "all"` (the default), `td_bclm` tests all of the above models and returns the best-fitting one, according to the Bayesian information criterion:
+
+```{r}
+mod <- td_bclm(td_bc_single_ptpt, model = 'all')
+print(mod)
+```
+
+We can explore an even wider range of discount functions using nonlinear modeling with `td_bcnm`. When `discount_function = "all"` (the default), all of the following models are tested and the best-fitting one (according to the Bayesian information criterion) is returned:
+
+```{r child="man/fragments/predefined-discount-functions.Rmd"}
+```
+
+```{r}
+mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'all')
+plot(mod, log = 'x', verbose = F)
+```
+
+### The "model-free" discount function
+
+In addition to the discount functions listed above, we can fit a "model-free" discount function to the data, meaning we fit each indifference point independently. This enables us to, first, test whether a participant exhibits non-systematic discounting according to the Johnson & Bickel criteria:
+
+```{r child="man/fragments/j-b-criteria.Rmd"}
+```
+
+```{r}
+mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'model-free')
+print(nonsys(mod)) # Model violates neither criterion; no non-systematic discounting detected
+```
+
+We can also measure the model-free area under the curve (AUC), a useful model-agnostic measure of discounting.
+
+```{r}
+print(AUC(mod))
+```

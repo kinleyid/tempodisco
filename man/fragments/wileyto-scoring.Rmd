@@ -1,0 +1,7 @@
+
+```{r}
+mod <- wileyto_score(td_bc_single_ptpt)
+print(mod)
+```
+
+([Wileyto et al., 2004](https://doi.org/10.3758/BF03195548))

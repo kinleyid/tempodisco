@@ -33,7 +33,7 @@ td_fn <- function(predefined = c('hyperbolic',
                                   'dual-systems-exponential',
                                   'nonlinear-time-exponential',
                                   'model-free',
-                                  'noise'),
+                                  'intercept-only'),
                   name = NULL,
                   fn = NULL,
                   par_starts = NULL,
@@ -78,7 +78,7 @@ td_fn <- function(predefined = c('hyperbolic',
     name <- match.arg(predefined)
     out$name <- name
     out$fn <- switch (name,
-                      'noise' = function(data, p) rep(p['i'], length(data$del)),
+                      'intercept-only' = function(data, p) rep(p['(i)'], length(data$del)),
                       'hyperbolic' = function(data, p) 1 / (1 + p['k']*data$del),
                       'exponential' = function(data, p) exp(-p['k']*data$del),
                       'inverse-q-exponential' = function(data, p) 1 / (1 + p['k']*data$del)**p['s'],
@@ -95,8 +95,8 @@ td_fn <- function(predefined = c('hyperbolic',
                       }
     )
     out$par_starts <- switch(name,
-                             'noise' = list(
-                               i = exp(seq(-8, 0, length.out = 3))
+                             'intercept-only' = list(
+                               `(i)` = exp(seq(-8, 0, length.out = 3))
                              ),
                              'hyperbolic' = list(
                                k = exp(seq(-8, 0, length.out = 3))
@@ -134,8 +134,8 @@ td_fn <- function(predefined = c('hyperbolic',
                              }
     )
     out$par_lims <- switch(name,
-                           'noise' = list(
-                             i = c(0, 1)
+                           'intercept-only' = list(
+                             `(i)` = c(0, 1)
                            ),
                            'hyperbolic' = list(
                              k = c(0, Inf)
@@ -173,7 +173,7 @@ td_fn <- function(predefined = c('hyperbolic',
                            }
     )
     out$ED50 <- switch (name,
-                        "noise" = function(p, ...) 'none',
+                        "intercept-only" = function(p, ...) 'none',
                         "hyperbolic" = function(p, ...) 1/p['k'],
                         "exponential" = function(p, ...) log(2)/p['k'],
                         "inverse-q-exponential" = function(p, ...) (2^(1/p['s']) - 1) / p['k'],

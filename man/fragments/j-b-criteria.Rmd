@@ -1,0 +1,5 @@
+
+- C1 (monotonicity): No indifference point can exceed the previous by more than 0.2 (i.e., 20% of the larger delayed reward)
+- C2 (minimal discounting): The last indifference point must be lower than first by at least 0.1 (i.e., 10% of the larger delayed reward)
+
+([Johnson & Bickel, 2008](https://doi.org/10.1037/1064-1297.16.3.264))

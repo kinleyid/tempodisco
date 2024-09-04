@@ -1,0 +1,7 @@
+
+```{r}
+mod <- kirby_score(td_bc_single_ptpt)
+print(coef(mod))
+```
+
+([Kirby, 1999](https://doi.org/10.1037/0096-3445.128.1.78))

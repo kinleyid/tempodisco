@@ -18,7 +18,13 @@ knitr::opts_chunk$set(
 library(tempodisco)
 ```
 
-To check for non-systematic discounting per the criteria of [Johnson & Bickel (2008)](https://doi.org/10.1037%2F1064-1297.16.3.264), we first need to fit a "model-free" discount function to our data. Other discount functions are guaranteed monotonically decreasing, meaning the first criterion (non-monotonic discounting) can't ever be met.
+The Johnson & Bickel criteria are often used to determine whether an individual exhibits "non-systematic" discounting:
+
+```{r child="../man/fragments/j-b-criteria.Rmd"}
+```
+
+
+To check for non-systematic discounting, we first need to fit a "model-free" discount function to our data. Other discount functions are guaranteed monotonically decreasing, meaning the first criterion (non-monotonic discounting) can't ever be met.
 
 ```{r}
 data("adj_amt_sim")
