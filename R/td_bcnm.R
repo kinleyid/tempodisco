@@ -3,7 +3,7 @@
 #'
 #' Compute a binary choice model for a single subject
 #' @param data A data frame with columns \code{val_imm} and \code{val_del} for the values of the immediate and delayed rewards, \code{del} for the delay, and \code{imm_chosen} (Boolean) for whether the immediate reward was chosen. Other columns can also be present but will be ignored.
-#' @param discount_function A string specifying the name of the discount functions to use, or an object of class \code{td_fn} (used for creating custom discount functions). See \code{td_fn()}.
+#' @param discount_function A string specifying the name of the discount functions to use, or an object of class \code{td_fn} (used for creating custom discount functions), or a list of objects of class \code{td_fn}.
 #' @param choice_rule A string specifying whether the \code{'logistic'} (default), \code{'probit'}, or \code{'power'} choice rule should be used.
 #' @param fixed_ends A Boolean (false by default) specifying whether the model should satisfy the desiderata that subjects should always prefer something over nothing (i.e., nonzero delayed reward over nothing) and the same reward sooner rather than later.
 #' @param fit_err_rate A Boolean (false by default) specifying whether the model should include an error rate (parameterized by "eps"). See Eq. 5 here: https://doi.org/10.3758/s13428-015-0672-2
@@ -129,13 +129,18 @@ td_bcnm <- function(
     )
   )
   
-  # Get a list of discount functions to test
-  if (is.list(discount_function)) {
-    cand_fns <- list(discount_function)
-  } else {
+  # Get a list of candidate td_fn objects to test
+  if (is.character(discount_function)) {
+    # Vector of characters
     cand_fns <- list()
     for (fn_name in discount_function) {
       cand_fns <- c(cand_fns, list(td_fn(fn_name)))
+    }
+  } else {
+    if (is(discount_function, 'td_fn')) {
+      cand_fns <- list(discount_function) # List containing only one td_fn object
+    } else {
+      cand_fns <- discount_function # assumed to already be a list of td_fn objects, ensured by validation above
     }
   }
   

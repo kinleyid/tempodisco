@@ -155,3 +155,16 @@ nonsys <- function(obj) {
   return(c(C1 = C1, C2 = C2))
   
 }
+
+#' Get discount function
+#' 
+#' Access the name of the discount function of a model
+#' @param mod A temporal discounting model
+#' @returns The name of the discount function
+#' @examples
+#' \dontrun{
+#' data("td_bc_single_ptpt")
+#' mod <- td_bcnm(td_bc_single_ptpt)
+#' discount_function(mod)
+#' }
+#' @export

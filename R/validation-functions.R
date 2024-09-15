@@ -46,7 +46,9 @@ validate_discount_function <- function(discount_function) {
     }
   } else {
     if (!is(discount_function, 'td_fn')) {
-      stop('Discount function must be an object of class td_fn.')
+      if (!all(sapply(discount_function, class) == 'td_fn')) {
+        stop('Discount function must be an object of class td_fn or a list of such objects.')
+      }
     }
   }
   

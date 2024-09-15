@@ -10,7 +10,7 @@ print.td_bcnm <- function(x, ...) {
   }
   cat(sprintf('\nED50: %s\n', ED50(x)))
   cat(sprintf('AUC: %s\n', AUC(x, verbose = F)))
-  cat(sprintf('BIC: %s', BIC(x)))
+  cat(sprintf('BIC: %s\n', BIC(x)))
 }
 
 #' @export

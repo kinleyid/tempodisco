@@ -13,7 +13,7 @@ get_rss_fn <- function(data, discount_function) {
 #'
 #' Compute a model of a single subject's indifference points
 #' @param data A data frame with columns \code{indiff} for the pre-computed indifference points and \code{del} for the delay
-#' @param discount_function A vector of strings specifying the name of the discount functions to use, or an object of class \code{td_fn}.
+#' @param discount_function A vector of strings specifying the name of the discount functions to use, or an object of class \code{td_fn} (used for creating custom discount functions), or a list of objects of class \code{td_fn}.
 #' @param na.action Action to take when data contains \code{NA} values. Default is \code{na.omit}.
 #' @param optim_args A list of additional args to pass to \code{optim}
 #' @param silent A Boolean specifying whether the call to \code{optim} (which occurs in a \code{try} block) should be silent on error
@@ -45,7 +45,7 @@ td_ipm <- function(
                           'dual-systems-exponential',
                           'nonlinear-time-exponential',
                           'model-free',
-                          'noise'),
+                          'intercept-only'),
     na.action = na.omit,
     optim_args = list(),
     silent = T) {
@@ -65,13 +65,18 @@ td_ipm <- function(
   # Valid discount function name
   validate_discount_function(discount_function)
   
-  # Get a list of discount functions to test
-  if (is.list(discount_function)) {
-    cand_fns <- list(discount_function)
-  } else {
+  # Get a list of candidate td_fn objects to test
+  if (is.character(discount_function)) {
+    # Vector of characters
     cand_fns <- list()
     for (fn_name in discount_function) {
       cand_fns <- c(cand_fns, list(td_fn(fn_name)))
+    }
+  } else {
+    if (is(discount_function, 'td_fn')) {
+      cand_fns <- list(discount_function) # List containing only one td_fn object
+    } else {
+      cand_fns <- discount_function # assumed to already be a list of td_fn objects, ensured by validation above
     }
   }
   
