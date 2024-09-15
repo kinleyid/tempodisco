@@ -90,8 +90,17 @@ td_fn <- function(predefined = c('hyperbolic',
                         p <- p[grep('del_', names(p))]
                         # Round parameters and delays to 10 decimal points for comparison
                         dels <- round(as.numeric(gsub('del_', '', names(p))), 10)
-                        a <- approx(x = dels, y = p, xout = round(data$del, 10))
-                        return(a$y)
+                        xout <- round(data$del, 10)
+                        get_yout <- function(xout_value) {
+                          if (xout_value %in% dels) {
+                            return(p[which(dels == xout_value)])
+                          } else {
+                            interp_result <- approx(x = dels, y = p, xout = xout_value)
+                            return(interp_result$y)
+                          }
+                        }
+                        yout <- sapply(xout, get_yout)
+                        return(yout)
                       }
     )
     out$par_starts <- switch(name,
