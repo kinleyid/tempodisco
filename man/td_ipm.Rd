@@ -8,7 +8,7 @@ td_ipm(
   data,
   discount_function = c("all", "hyperbolic", "exponential", "inverse-q-exponential",
     "nonlinear-time-hyperbolic", "scaled-exponential", "dual-systems-exponential",
-    "nonlinear-time-exponential", "model-free", "noise"),
+    "nonlinear-time-exponential", "model-free", "intercept-only"),
   na.action = na.omit,
   optim_args = list(),
   silent = T
@@ -17,7 +17,7 @@ td_ipm(
 \arguments{
 \item{data}{A data frame with columns \code{indiff} for the pre-computed indifference points and \code{del} for the delay}
 
-\item{discount_function}{A vector of strings specifying the name of the discount functions to use, or an object of class \code{td_fn}.}
+\item{discount_function}{A vector of strings specifying the name of the discount functions to use, or an object of class \code{td_fn} (used for creating custom discount functions), or a list of objects of class \code{td_fn}.}
 
 \item{na.action}{Action to take when data contains \code{NA} values. Default is \code{na.omit}.}
 

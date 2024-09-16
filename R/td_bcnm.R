@@ -113,10 +113,10 @@ td_bcnm <- function(
   data$imm_chosen <- as.logical(data$imm_chosen)
   
   # Attention checks
-  attention_checks(data)
+  attention_checks(data, warn = T)
   
   # All immediate chosen or all delayed chosen?
-  invariance_checks(data)
+  invariance_checks(data, warn = T)
   
   # Valid discount function name
   validate_discount_function(discount_function)

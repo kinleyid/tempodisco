@@ -168,3 +168,4 @@ nonsys <- function(obj) {
 #' discount_function(mod)
 #' }
 #' @export
+discount_function <- function(mod) mod$config$discount_function$name

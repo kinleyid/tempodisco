@@ -23,7 +23,7 @@ td_bcnm(
 \arguments{
 \item{data}{A data frame with columns \code{val_imm} and \code{val_del} for the values of the immediate and delayed rewards, \code{del} for the delay, and \code{imm_chosen} (Boolean) for whether the immediate reward was chosen. Other columns can also be present but will be ignored.}
 
-\item{discount_function}{A string specifying the name of the discount functions to use, or an object of class \code{td_fn} (used for creating custom discount functions). See \code{td_fn()}.}
+\item{discount_function}{A string specifying the name of the discount functions to use, or an object of class \code{td_fn} (used for creating custom discount functions), or a list of objects of class \code{td_fn}.}
 
 \item{choice_rule}{A string specifying whether the \code{'logistic'} (default), \code{'probit'}, or \code{'power'} choice rule should be used.}
 

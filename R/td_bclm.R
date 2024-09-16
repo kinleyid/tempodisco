@@ -40,8 +40,8 @@ td_bclm <- function(data,
   require_columns(data, req_cols)
   data <- data[req_cols]
   data$imm_chosen <- as.logical(data$imm_chosen)
-  attention_checks(data)
-  invariance_checks(data)
+  attention_checks(data, warn = T)
+  invariance_checks(data, warn = T)
   if (length(grep('\\.B', names(data))) > 1) {
     stop('No columns can have a name that begins with ".B"')
   }
