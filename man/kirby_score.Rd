@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{kirby_score}
 \alias{kirby_score}
-\title{Kirby score a questionnaire}
+\title{Kirby MCQ-style scoring}
 \usage{
 kirby_score(data, discount_function = c("hyperbolic", "exponential"))
 }

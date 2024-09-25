@@ -83,7 +83,7 @@ get_transform <- function(config, inverse = F) {
 #   return(R)
 # }
 
-run_optimization <- function(fn, par_starts, par_lims, optim_args, silent) {
+run_optimization <- function(fn, par_starts, par_lims, optim_args, silent = F) {
   
   # Get the best-fitting optim() object
  
@@ -182,7 +182,7 @@ adj_amt_indiffs <- function(data, block_indic = 'del', order_indic = NULL) {
   return(out)
 }
 
-#' Kirby score a questionnaire
+#' Kirby MCQ-style scoring
 #'
 #' Score a set of responses according to the method of \href{https://doi.org/10.1037//0096-3445.128.1.78}{Kirby et al. (1999)}. This is described in detail in \href{https://doi.org/10.1007/s40614-016-0070-9}{Kaplan et al. (2016)}.
 #' @param data Responses to score.
@@ -198,20 +198,8 @@ kirby_score <- function(data, discount_function = c('hyperbolic', 'exponential')
   
   discount_function <- match.arg(discount_function)
   
-  require_columns(data, c('val_imm', 'val_del', 'del', 'imm_chosen'))
+  data <- kirby_preproc(data, discount_function)
   
-  data$k <- switch (discount_function,
-                    'hyperbolic' = (data$val_del/data$val_imm - 1) / data$del,
-                    'exponential' = -log(data$val_imm/data$val_del) / data$del
-  )
-  
-  data <- data[order(data$k), ]
-  
-  data$consistency <- sapply(1:nrow(data), function(idx) {
-    mean(c(data$imm_chosen[0:(idx-1)],
-           !data$imm_chosen[(idx):(nrow(data)+1)]),
-         na.rm = T)
-  })
   max_consistency <- max(data$consistency)
   if (max_consistency < 0.75) {
     warning('Maximum consistency score is below 0.75. Inattentive responding?')
@@ -239,6 +227,47 @@ kirby_score <- function(data, discount_function = c('hyperbolic', 'exponential')
   
 }
 
+#' Compute consistency score
+#'
+#' Compute the consistency score per the method of \href{https://doi.org/10.1037//0096-3445.128.1.78}{Kirby et al. (1999)}. This is described in detail in \href{https://doi.org/10.1007/s40614-016-0070-9}{Kaplan et al. (2016)}, where it's suggested that a consistency score below 0.75 might be a sign of inattentive responding.
+#' @param data Responses to score.
+#' @param discount_function Should \eqn{k} values be computed according to the hyperbolic or exponential discount function? The original method uses the hyperbolic, but in principle the exponential is also possible.
+#' @return A consistency score
+#' @examples
+#' \dontrun{
+#' data("td_bc_single_ptpt")
+#' mod <- kirby_consistency(td_bc_single_ptpt)
+#' }
+#' @export
+kirby_consistency <- function(data, discount_function = c('hyperbolic', 'exponential')) {
+  
+  data <- kirby_preproc(data, discount_function)
+  return(max(data$consistency))
+  
+}
+
+kirby_preproc <- function(data, discount_function = c('hyperbolic', 'exponential')) {
+  # Compute k and consistency scores
+  discount_function <- match.arg(discount_function)
+  require_columns(data, c('val_imm', 'val_del', 'del', 'imm_chosen'))
+  
+  data$k <- switch (discount_function,
+                    'hyperbolic' = (data$val_del/data$val_imm - 1) / data$del,
+                    'exponential' = -log(data$val_imm/data$val_del) / data$del
+  )
+  
+  data <- data[order(data$k), ]
+  
+  data$consistency <- sapply(1:nrow(data), function(idx) {
+    mean(c(data$imm_chosen[0:(idx-1)],
+           !data$imm_chosen[(idx):(nrow(data)+1)]),
+         na.rm = T)
+  })
+  
+  return(data)
+  
+}
+
 #' Wileyto score a questionnaire
 #' 
 #' Score a set of responses according to the method of \href{https://doi.org/10.3758/BF03195548}{Wileyto et al. (2004)}. This function is a thin wrapper to \code{\link{td_bclm}}.
@@ -254,5 +283,33 @@ wileyto_score <- function(data) {
   
   mod <- td_bclm(data, model = 'hyperbolic.1')
   return(mod)
+  
+}
+
+kinley_score <- function(data) {
+  
+}
+
+delwise_consistencies <- function(data) {
+  
+  require_columns(data, c('val_del', 'val_imm', 'imm_chosen', 'del'))
+  
+  data$val_rel <- data$val_imm / data$val_del
+  
+  rows <- by(data, data$del, function(sdf) {
+    sdf <- sdf[order(sdf$val_rel), ]
+    sdf$consistency <- sapply(1:nrow(sdf), function(idx) {
+      mean(c(sdf$imm_chosen[0:(idx-1)],
+             !sdf$imm_chosen[(idx):(nrow(sdf)+1)]),
+           na.rm = T)
+    })
+    
+    data.frame(
+      del = sdf$del[1],
+      consistency = max(sdf$consistency)
+    )
+  }, simplify = F)
+  
+  do.call(rbind, rows)
   
 }
