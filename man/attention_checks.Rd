@@ -4,15 +4,17 @@
 \alias{attention_checks}
 \title{Run attention checks}
 \usage{
-attention_checks(data, warn = F)
+attention_checks(data, warn = F, ppn = F)
 }
 \arguments{
 \item{data}{A \code{data.frame} with columns \code{val_imm}, \code{val_del} and \code{del_chosen}, representing data from a single participant.}
 
 \item{warn}{Logical: give a warning for failed attention checks?}
+
+\item{ppn}{Logical: return proportions of attention checks participant failed, versus absolute numbers?}
 }
 \value{
-Named vector counting the number of times the participant chose an immediate reward of 0 (\code{imm_0}) or chose a delayed reward equal in face value to an immediate reward (\code{imm_eq_del}).
+Named vector counting the number of times the participant chose an immediate reward of 0 (\code{imm_0}) or chose a delayed reward equal in face value to an immediate reward (\code{del_eq_imm}).
 }
 \description{
 Check whether participants failed attention checks, either choosing an immediate reward of 0 or choosing a delayed reward equal in face value to an immediate reward. If the participant was never offered either choice, a warning is given.
