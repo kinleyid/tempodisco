@@ -42,7 +42,12 @@ attention_checks <- function(data, warn = F, ppn = F) {
   #   warning('Participant was never offered an immediate reward equal to 0 or equal to the delayed reward; no attention checks to fail.')
   # }
   
-  return(c(imm_0 = sum(D1), del_eq_imm = sum(D2)))
+  if (ppn) {
+    f <- mean
+  } else {
+    f <- sum
+  }
+  return(c(imm_0 = f(D1), del_eq_imm = f(D2)))
   
 }
 
