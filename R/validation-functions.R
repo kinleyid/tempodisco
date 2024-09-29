@@ -13,7 +13,7 @@ require_columns <- function(data, columns) {
 #' Check whether participants failed attention checks, either choosing an immediate reward of 0 or choosing a delayed reward equal in face value to an immediate reward. If the participant was never offered either choice, a warning is given.
 #' @param data A \code{data.frame} with columns \code{val_imm}, \code{val_del} and \code{del_chosen}, representing data from a single participant.
 #' @param warn Logical: give a warning for failed attention checks?
-#' @returns Named vector counting the number of times the participant chose an immediate reward of 0 (\code{imm_0}) or chose a delayed reward equal in face value to an immediate reward (\code{imm_eq_del}).
+#' @returns Named vector counting the number of times the participant chose an immediate reward of 0 (\code{imm_0}) or chose a delayed reward equal in face value to an immediate reward (\code{del_eq_imm}).
 #' @examples
 #' \dontrun{
 #' # On a model
@@ -31,17 +31,17 @@ attention_checks <- function(data, warn = F) {
     warning(sprintf('Participant chose an immediate reward with a value of 0 %s time(s). Failed attention check?', sum(D1)))
   }
   
-  imm_eq_del <- data$val_imm == data$val_del
-  D2 <- imm_eq_del & !data$imm_chosen
+  del_eq_imm <- data$val_imm == data$val_del
+  D2 <- del_eq_imm & !data$imm_chosen
   if (any(D2) & warn) {
     warning(sprintf('Participant chose a delayed reward of equal value to an immediate reward %s time(s). Failed attention check?', sum(D2)))
   }
   
-  # if (sum(imm_0 | imm_eq_del) == 0) {
+  # if (sum(imm_0 | del_eq_imm) == 0) {
   #   warning('Participant was never offered an immediate reward equal to 0 or equal to the delayed reward; no attention checks to fail.')
   # }
   
-  return(c(imm_0 = sum(D1), imm_eq_del = sum(D2)))
+  return(c(imm_0 = sum(D1), del_eq_imm = sum(D2)))
   
 }
 
