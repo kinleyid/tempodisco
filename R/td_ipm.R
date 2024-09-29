@@ -45,7 +45,7 @@ td_ipm <- function(
                           'dual-systems-exponential',
                           'nonlinear-time-exponential',
                           'model-free',
-                          'intercept-only'),
+                          'constant'),
     na.action = na.omit,
     optim_args = list(),
     silent = T) {

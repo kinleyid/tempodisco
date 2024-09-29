@@ -7,7 +7,7 @@
 td_fn(
   predefined = c("hyperbolic", "exponential", "inverse-q-exponential",
     "nonlinear-time-hyperbolic", "scaled-exponential", "dual-systems-exponential",
-    "nonlinear-time-exponential", "model-free", "intercept-only"),
+    "nonlinear-time-exponential", "model-free", "constant"),
   name = NULL,
   fn = NULL,
   par_starts = NULL,

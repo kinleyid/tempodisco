@@ -40,7 +40,7 @@ td_bcnm <- function(
                           'dual-systems-exponential',
                           'nonlinear-time-exponential',
                           'model-free',
-                          'noise'),
+                          'constant'),
     choice_rule = c('logistic', 'probit', 'power'),
     fixed_ends = F,
     fit_err_rate = F,

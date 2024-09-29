@@ -8,7 +8,7 @@ td_ipm(
   data,
   discount_function = c("all", "hyperbolic", "exponential", "inverse-q-exponential",
     "nonlinear-time-hyperbolic", "scaled-exponential", "dual-systems-exponential",
-    "nonlinear-time-exponential", "model-free", "intercept-only"),
+    "nonlinear-time-exponential", "model-free", "constant"),
   na.action = na.omit,
   optim_args = list(),
   silent = T

@@ -8,7 +8,7 @@ td_bcnm(
   data,
   discount_function = c("all", "hyperbolic", "exponential", "inverse-q-exponential",
     "nonlinear-time-hyperbolic", "scaled-exponential", "dual-systems-exponential",
-    "nonlinear-time-exponential", "model-free", "noise"),
+    "nonlinear-time-exponential", "model-free", "constant"),
   choice_rule = c("logistic", "probit", "power"),
   fixed_ends = F,
   fit_err_rate = F,
