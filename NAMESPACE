@@ -3,6 +3,7 @@
 S3method(coef,td_bclm)
 S3method(coef,td_bcnm)
 S3method(coef,td_ipm)
+S3method(deviance,td_bcnm)
 S3method(fitted,td_bcnm)
 S3method(fitted,td_ipm)
 S3method(logLik,td_bcnm)

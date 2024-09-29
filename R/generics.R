@@ -345,6 +345,12 @@ logLik.td_ipm <- function(mod) {
   return(val)
 }
 
+#' Model deviance
+#' 
+#' Compute deviance for a temporal discounting binary choice model.
+#' @param mod An object of class \code{td_bcnm}
+#' @export
+deviance.td_bcnm <- function(mod) return(-2*logLik.td_bcnm(mod))
 
 #' Plot models
 #'
