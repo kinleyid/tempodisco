@@ -164,7 +164,7 @@ adj_amt_indiffs <- function(data, block_indic = 'del', order_indic = NULL) {
     if (!all(diff(adj_amts) < 0)) {
       stop(sprintf('For block %s = %s, amount adjustments are not monotonically decreasing in magnitude. Consider specifying/checking the order_indic argument.', block_indic, block_id))
     }
-    
+
     final_imm_chosen <- block$imm_chosen[nrow(block)]
     adj_amt <- 2^-(nrow(block) + 1)
     adj_dir <- ifelse(final_imm_chosen, -1, 1)
@@ -283,33 +283,5 @@ wileyto_score <- function(data) {
   
   mod <- td_bclm(data, model = 'hyperbolic.1')
   return(mod)
-  
-}
-
-kinley_score <- function(data) {
-  
-}
-
-delwise_consistencies <- function(data) {
-  
-  require_columns(data, c('val_del', 'val_imm', 'imm_chosen', 'del'))
-  
-  data$val_rel <- data$val_imm / data$val_del
-  
-  rows <- by(data, data$del, function(sdf) {
-    sdf <- sdf[order(sdf$val_rel), ]
-    sdf$consistency <- sapply(1:nrow(sdf), function(idx) {
-      mean(c(sdf$imm_chosen[0:(idx-1)],
-             !sdf$imm_chosen[(idx):(nrow(sdf)+1)]),
-           na.rm = T)
-    })
-    
-    data.frame(
-      del = sdf$del[1],
-      consistency = max(sdf$consistency)
-    )
-  }, simplify = F)
-  
-  do.call(rbind, rows)
   
 }
