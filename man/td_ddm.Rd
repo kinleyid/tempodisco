@@ -10,7 +10,7 @@ td_ddm(
   v_par_starts = c(0.01, 0.1, 1),
   beta_par_starts = c(0.25, 0.5, 0.75),
   alpha_par_starts = c(0.5, 1, 10),
-  tau_par_starts = c(0.2, 0.5),
+  tau_par_starts = c(0.2, 0.8),
   drift_transform = c("none", "sigmoid", "bias-correct"),
   silent = T,
   optim_args = list(),

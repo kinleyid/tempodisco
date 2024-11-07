@@ -1,8 +1,8 @@
 ---
-title: "Drit diffusion models"
+title: "Drift diffusion models"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Visualizing models}
+  %\VignetteIndexEntry{Drift diffusion models}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

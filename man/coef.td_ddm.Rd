@@ -7,7 +7,7 @@
 \method{coef}{td_ddm}(object, type = "all", ...)
 }
 \arguments{
-\item{object}{An object of class \code{td_ddm}}
+\item{object}{An object of class \link{td_ddm}}
 
 \item{type}{A string specifying which coefficients to extract. \code{'all'} extracts them all, \code{'ddm'} extracts only DDM-specific parameters, and \code{'df'} extracts only discount function parameters}
 

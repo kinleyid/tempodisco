@@ -7,7 +7,7 @@
 \method{fitted}{td_ipm}(object, ...)
 }
 \arguments{
-\item{object}{An object of class \code{td_ipm}}
+\item{object}{An object of class \link{td_ipm}}
 
 \item{...}{Additional arguments currently not used.}
 }

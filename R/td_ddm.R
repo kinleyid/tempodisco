@@ -46,7 +46,7 @@ td_ddm <- function(
     v_par_starts = c(0.01, 0.1, 1),
     beta_par_starts = c(0.25, 0.5, 0.75),
     alpha_par_starts = c(0.5, 1, 10),
-    tau_par_starts = c(0.2, 0.5),
+    tau_par_starts = c(0.2, 0.8),
     drift_transform = c('none', 'sigmoid', 'bias-correct'),
     silent = T,
     optim_args = list(),
@@ -70,9 +70,6 @@ td_ddm <- function(
   
   # All immediate chosen or all delayed chosen?
   invariance_checks(data, warn = T)
-  
-  # Valid discount function
-  validate_discount_function(discount_function)
   
   # End input validation----------------------
   
@@ -198,10 +195,10 @@ median_pimm_ddm <- function(par) {
 }
 
 # Function to get the median, given some set of w and a
-pddm_median <- function(w = 0.5, a = 1) {
-  o <- optim(0, function(v) {(pddm(v, w, a) - 0.5)**2}, control = list(warn.1d.NelderMead = F))
-  o$par
-}
+# pddm_median <- function(w = 0.5, a = 1) {
+#   o <- optim(0, function(v) {(pddm(v, w, a) - 0.5)**2}, control = list(warn.1d.NelderMead = F))
+#   o$par
+# }
 
 # # Function to get the optimal bias, given some v and a
 # pddm_bias <- function(v, a = 1) {

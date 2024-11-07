@@ -260,7 +260,7 @@ predict.td_ddm <- function(object, newdata = NULL, type = c('indiff', 'link', 'r
 #' Get fitted values
 #' 
 #' Get fitted values of a temporal discounting binary choice model
-#' @param object An object of class \code{td_bcnm}
+#' @param object An object of class \link{td_bcnm}
 #' @param ... Additional arguments currently not used.
 #' @return A named vector of fitted values
 #' @export
@@ -269,16 +269,25 @@ fitted.td_bcnm <- function(object, ...) {predict(object, type = 'response')}
 #' Get fitted values
 #' 
 #' Get fitted values of a temporal discounting indifference point model
-#' @param object An object of class \code{td_ipm}
+#' @param object An object of class \link{td_ipm}
 #' @param ... Additional arguments currently not used.
 #' @return A named vector of fitted values
 #' @export
 fitted.td_ipm <- function(object, ...) {predict(object)}
 
+#' Get fitted values
+#' 
+#' Get fitted values of a temporal discounting drift diffusion model
+#' @param object An object of class \link{td_ddm}
+#' @param ... Additional arguments currently not used.
+#' @return A named vector of fitted values
+#' @export
+fitted.td_ddm <- function(object, ...) {predict(object, type = 'response')}
+
 #' Extract model coefficients
 #' 
 #' Get coefficients of a temporal discounting drift diffusion model
-#' @param object An object of class \code{td_ddm}
+#' @param object An object of class \link{td_ddm}
 #' @param type A string specifying which coefficients to extract. \code{'all'} extracts them all, \code{'ddm'} extracts only DDM-specific parameters, and \code{'df'} extracts only discount function parameters
 #' @param ... Additional arguments currently not used.
 #' @return A named vector of coefficients
