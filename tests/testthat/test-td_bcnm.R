@@ -1,4 +1,6 @@
 
+require(vctrs)
+
 # Get data
 data("td_bc_single_ptpt")
 df <- td_bc_single_ptpt

@@ -1,4 +1,6 @@
 
+require(vctrs)
+
 # Get data
 data("td_ip_simulated_ptpt")
 df <- td_ip_simulated_ptpt
