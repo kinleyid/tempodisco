@@ -197,10 +197,10 @@ td_fn <- function(predefined = c('hyperbolic',
         # Ensure k1 < k2
         if (p['k1'] > p['k2']) {
           # Switch k1 and k2
-          k2 <- p['k1']
-          k1 <- p['k2']
-          p['k1'] <- k1
-          p['k2'] <- k2
+          k1 <- p['k1']
+          k2 <- p['k2']
+          p['k1'] <- k2
+          p['k2'] <- k1
           # Complement of w
           p['w'] <- 1 - p['w']
         }

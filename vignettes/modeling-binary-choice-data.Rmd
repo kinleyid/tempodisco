@@ -49,7 +49,6 @@ The [Wileyto et al. (2004)](https://doi.org/10.3758/BF03195548) approach turns o
 ```{r child="../man/fragments/linear-models.Rmd"}
 ```
 
-
 We can test all of these and select the best according to the Bayesian Information Criterion as follows:
 
 ```{r}

@@ -12,7 +12,8 @@ Imports:
   stats,
   graphics,
   methods,
-  grDevices
+  grDevices,
+  RWiener
 Suggests: 
   knitr,
   rmarkdown,

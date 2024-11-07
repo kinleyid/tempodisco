@@ -24,7 +24,7 @@
 #'   fn = function(data, p) (1 - p['b'])*exp(-p['k']*data$del) + p['b'],
 #'   par_starts = list(k = c(0.001, 0.1), b = c(0.001, 0.1)),
 #'   par_lims = list(k = c(0, Inf), b = c(0, 1)),
-#'   ED50 = function(p) 'non-analytic'
+#'   ED50 = function(...) 'non-analytic'
 #' )
 #' mod <- td_bcnm(td_bc_single_ptpt, discount_function = custom_discount_function, fit_err_rate = T)
 #' }
@@ -118,7 +118,7 @@ td_bcnm <- function(
   # All immediate chosen or all delayed chosen?
   invariance_checks(data, warn = T)
   
-  # Valid discount function name
+  # Valid discount function
   validate_discount_function(discount_function)
   
   # Get arguments as a list
@@ -162,7 +162,10 @@ td_bcnm <- function(
     if (robust) {
       # nll_fn <- get_rob_fn(data, prob_mod_frame)
     } else {
-      nll_fn <- get_nll_fn(data, prob_mod_frame)
+      nll_fn <- function(par) {
+        p <- laplace_smooth(prob_mod_frame(data, par))
+        return(sum(-ll(p, data$imm_chosen)))
+      }
     }
     
     # Get parameter starting values
@@ -304,6 +307,7 @@ get_nll_fn <- function(data, prob_mod_frame) {
   # "frame" with structural aspects specified but parameters unspecified
   
   nll_fn <- function(par) {
+    browser()
     p <- laplace_smooth(prob_mod_frame(data, par))
     return(sum(-ll(p, data$imm_chosen)))
   }

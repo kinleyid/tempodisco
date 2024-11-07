@@ -59,7 +59,7 @@ custom_discount_function <- td_fn(
   fn = function(data, p) (1 - p['b'])*exp(-p['k']*data$del) + p['b'],
   par_starts = list(k = c(0.001, 0.1), b = c(0.001, 0.1)),
   par_lims = list(k = c(0, Inf), b = c(0, 1)),
-  ED50 = function(p) 'non-analytic'
+  ED50 = function(...) 'non-analytic'
 )
 mod <- td_bcnm(td_bc_single_ptpt, discount_function = custom_discount_function, fit_err_rate = T)
 }
