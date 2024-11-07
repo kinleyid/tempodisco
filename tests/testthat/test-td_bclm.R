@@ -1,6 +1,4 @@
 
-require(vctrs)
-
 # Get data
 data("td_bc_single_ptpt")
 df <- td_bc_single_ptpt
@@ -27,9 +25,9 @@ while (model_idx <= length(models)) {
     expect_type(logLik(mod), 'double')
     expect_named(coef(mod))
     expect_named(coef(mod, df_par = F))
-    expect_vector(residuals(mod, type = 'deviance'), size = nrow(df))
-    expect_vector(residuals(mod, type = 'pearson'), size = nrow(df))
-    expect_vector(residuals(mod, type = 'response'), size = nrow(df))
+    expect_length(residuals(mod, type = 'deviance'), n = nrow(df))
+    expect_length(residuals(mod, type = 'pearson'), n = nrow(df))
+    expect_length(residuals(mod, type = 'response'), n = nrow(df))
   })
   
   pdf(NULL) # Don't actually produce plots
@@ -46,10 +44,10 @@ while (model_idx <= length(models)) {
   
   # prediction
   test_that('predictions', {
-    expect_vector(fitted(mod), ptype = numeric(0), size = nrow(df))
-    expect_vector(predict(mod, type = 'link'), ptype = numeric(0), size = nrow(df))
-    expect_vector(predict(mod, type = 'response'), ptype = numeric(0), size = nrow(df))
-    expect_vector(predict(mod, newdata = data.frame(del = 0:1000, val_del = 1), type = 'indiff'), ptype = numeric(0), size = 1001)
+    expect_length(fitted(mod), n = nrow(df))
+    expect_length(predict(mod, type = 'link'), n = nrow(df))
+    expect_length(predict(mod, type = 'response'), n = nrow(df))
+    expect_length(predict(mod, newdata = data.frame(del = 0:1000, val_del = 1), type = 'indiff'), n = 1001)
   })
 }
 
