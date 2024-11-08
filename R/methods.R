@@ -127,7 +127,7 @@ nonsys <- function(obj) {
     require_columns(obj, c('indiff', 'del'))
     indiffs <- obj$indiff
     delays <- obj$del
-  } else if (inherits(obj, c('td_bcnm', 'td_ipm'))) {
+  } else if (inherits(obj, c('td_bcnm', 'td_ipm', 'td_ddm'))) {
     if (obj$config$discount_function$name != 'model-free') {
       stop('Discount function must be "model-free" to check for non-systematic discounting.')
     } else {
@@ -137,7 +137,7 @@ nonsys <- function(obj) {
       delays <- as.numeric(gsub('del_', '', names(cf)))
     }
   } else {
-    stop('Input must be a data.frame or a model of class td_bcnm or td_ipm.')
+    stop('Input must be a data.frame or a model of class td_bcnm, td_ipm, or td_ddm.')
   }
   
   idx <- order(delays)
@@ -148,7 +148,7 @@ nonsys <- function(obj) {
   # No indifference point can exceed the previous by more than 0.2
   C1 <- any(diff(indiffs) > 0.2)
   
-  # Criterion 2: minimal discounting
+  # Criterion 2: minimal delay sensitivity
   # Last indifference point must be lower than first by at least 0.1
   C2 <- (indiffs[1] - indiffs[length(indiffs)]) < 0.1
   

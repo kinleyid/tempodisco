@@ -739,4 +739,3 @@ plot.td_um <- function(x,
     }
   }
 }
-

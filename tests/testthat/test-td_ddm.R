@@ -72,6 +72,14 @@ test_that('multiple discount functions', {
   expect_no_error(do.call(td_ddm, args))
 })
 
+test_that('drift transformations', {
+  args <- default_args
+  args$drift_transform <- 'sigmoid'
+  expect_no_error(do.call(td_ddm, args))
+  args$drift_transform <- 'bias-correct'
+  expect_no_error(do.call(td_ddm, args))
+})
+
 test_that('errors', {
   expect_error(td_ddm(df, discount_function = 'random'))
   expect_error(td_ddm())
