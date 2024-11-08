@@ -46,6 +46,8 @@ test_that('plots', {
   expect_output(plot(mod, type = 'endpoints', verbose = T))
   expect_no_error(plot(mod, type = 'endpoints', verbose = F, del = 100, val_del = 50))
   expect_no_error(plot(mod, type = 'link'))
+  expect_no_error(plot(mod, type = 'rt'))
+  expect_no_error(plot(mod, type = 'rt', confint = 0.9))
   dev.off()
 })
 

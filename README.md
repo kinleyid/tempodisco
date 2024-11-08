@@ -253,6 +253,7 @@ Following [Peters & D’Esposito
 (2020)](https://doi.org/10.1371/journal.pcbi.1007615), we can apply a
 sigmoidal transform to the drift rate $\delta$ to improve model fit
 using the argument `drift_transform = "sigmoid"`:
+
 $$\delta' = v_\text{max} \left(\frac{2}{1 + \exp\{-\delta\}} - 1\right)$$
 
 ``` r
@@ -292,10 +293,13 @@ cor.test(pred_rts, td_bc_single_ptpt$rt)
 #> 0.3667584
 ```
 
-This implementation follows the model described in [Peters & D’Esposito
-(2020)](https://doi.org/10.1371/journal.pcbi.1007615); the drift rate is
-based on the difference in subjective value between the immediate and
-delayed rewards, where the subjective value of
+We can also plot reaction times against the model’s predictions:
+
+``` r
+plot(ddm_sig, type = 'rt', confint = 0.8)
+```
+
+<img src="man/figures/README-unnamed-chunk-17-1.png" width="100%" />
 
 ### The “model-free” discount function
 

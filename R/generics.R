@@ -246,13 +246,8 @@ predict.td_ddm <- function(object, newdata = NULL, type = c('indiff', 'link', 'r
     cf <- coef(object)
     drifts <- linpred_func(newdata, cf)
     
-    # Get expected RT, irrespective of boundary (formula from https://doi.org/10.1016/j.jmp.2009.01.006)
-    z <- cf['beta']*cf['alpha']
-    A <- exp(-2*drifts*cf['alpha']) - 1
-    Z <- exp(-2*drifts*z) - 1
-    E_rt <- -z/drifts + cf['alpha']/drifts * Z/A + cf['tau']
-    
-    return(E_rt)
+    # Compute expected reaction times
+    return(ddm_predicted_rts(drifts, cf))
     
   }
 }
@@ -494,8 +489,9 @@ deviance.td_ddm <- function(mod) return(-2*logLik.td_ddm(mod))
 #' @param type Type of plot to generate
 #' @param del Plots data for a particular delay
 #' @param val_del Plots data for a particular delayed value
-#' @param legend Logical: display a legend? Ignored if \code{type != 'summary'}
-#' @param verbose Whether to print info about, e.g., setting del = ED50 when type == 'endpoints'
+#' @param legend Logical: display a legend? Ignored unless \code{type = 'summary'}
+#' @param verbose Whether to print info about, e.g., setting del = ED50 when \code{type = 'endpoints'}
+#' @param confint When \code{type = 'rt'}, what confidence interval should be plotted for RTs? Default is 0.95 (95\% confidence interval)
 #' @param ... Additional arguments to \code{plot()}
 #' @examples
 #' \dontrun{
@@ -505,7 +501,14 @@ deviance.td_ddm <- function(mod) return(-2*logLik.td_ddm(mod))
 #' plot(mod, type = 'endpoints')
 #' }
 #' @export
-plot.td_um <- function(x, type = c('summary', 'endpoints', 'link'), legend = T, verbose = T, del = NULL, val_del = NULL, ...) {
+plot.td_um <- function(x,
+                       type = c('summary', 'endpoints', 'link', 'rt'),
+                       legend = T,
+                       verbose = T,
+                       del = NULL,
+                       val_del = NULL,
+                       confint = 0.95,
+                       ...) {
   
   type <- match.arg(type)
 
@@ -674,6 +677,48 @@ plot.td_um <- function(x, type = c('summary', 'endpoints', 'link'), legend = T, 
                        }
         )
         lines(pimm ~ plotting_scores)
+        
+      } else if (type == 'rt') {
+        
+        if (!is(x, 'td_ddm')) {
+          stop('type = "rt" is only applicable for models of class td_ddm')
+        }
+        
+        # Get range of linear predictors
+        linpred_func <- do.call(get_linpred_func_ddm, x$config)
+        linpreds <- linpred_func(x$data, coef(x))
+        linpred_lim <- max(abs(min(linpreds)), abs(max(linpreds)))
+        
+        # Plot RTs against linear predictors
+        plot(x$data$rt ~ linpreds,
+             type = 'n', # Don't show for now, just setting up axes
+             # ylim = c(min(x$data$rt), max(x$data$rt)),
+             xlim = c(-linpred_lim, linpred_lim),
+             xlab = 'Drift rate',
+             ylab = 'RT (s)',
+             ...)
+        
+        # Plot model predictions
+        plotting_linpreds <- seq(-linpred_lim, linpred_lim, length.out = 1000)
+        
+        # Plot predicted RTs
+        cf <- coef(x)
+        pred_rts <- ddm_predicted_rts(plotting_linpreds, cf)
+        lines(pred_rts ~ plotting_linpreds)
+        
+        # Plot confidence interval
+        conf_extremum <- (1 - confint)/2
+        for (p in c(conf_extremum, 1 - conf_extremum)) {
+          bounds <- sapply(plotting_linpreds, function(drift) {
+            RWiener::qwiener(p = p, delta = drift,
+                             alpha = cf['alpha'], tau = cf['tau'], beta = cf['beta'],
+                             resp = 'both')
+          })
+          lines(bounds ~ plotting_linpreds, lty = 'dashed')
+        }
+        
+        # Plot actual data
+        points(x$data$rt ~ linpreds)
         
       }
     }

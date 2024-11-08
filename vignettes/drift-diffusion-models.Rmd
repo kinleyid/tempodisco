@@ -53,7 +53,7 @@ ddm <- td_ddm(td_bc_single_ptpt, discount_function = 'exponential',
 print(ddm)
 ```
 
-As we can see, parameters are estimated not only for the discount function ($k$), but also for the DDM ($v$, $\beta$, $\alpha$ and $\tau$). These can be extracted using `coef()` to collect for group-level analysis (see the vignette ["Analyzing data from multiple participants"](analyzling-study.html)). As with other model classes (`td_bcnm`, `td_bclm`), we can plot the resulting discount function
+As we can see, parameters are estimated not only for the discount function ($k$), but also for the DDM ($v$, $\beta$, $\alpha$ and $\tau$). These can be extracted using `coef()` to collect for group-level analysis (see the vignette ["Analyzing data from multiple participants"](analyzling-study.html)). As with other model classes (`td_bcnm`, `td_bclm`), we can plot the resulting discount function:
 
 ```{r}
 plot(ddm, log = 'x', verbose = F)
@@ -68,7 +68,13 @@ predicted_rts <- predict(ddm, type = 'rt')
 cor.test(predicted_rts, ddm$data$rt)
 ```
 
-As expected, they are correlated.
+As expected, they are correlated. To compare these visually, we can `plot()` the DDM wiht the argument `type = "rt"`:
+
+```{r}
+plot(ddm, type = 'rt', confint = 0.9) #, ylim = c(0, 10))
+```
+
+This displays both the predicted RTs from the model and a 90% confidence interval
 
 [Fontanesi et al. (2019)](https://doi.org/10.3758/s13423-018-1554-2) suggest applying a sigmoid transform to drift rates according the the following equation, which is reported by [Peters & D'Esposito (2020)](https://doi.org/10.1371/journal.pcbi.1007615) to improve model fit for intertemporal choice data:
 
@@ -86,4 +92,8 @@ print(BIC(ddm))
 print(BIC(ddm_sig))
 ```
 
-Sure enough, the model with the sigmoid transform performs better per the Bayesian information criterion.
+Sure enough, the model with the sigmoid transform performs better per the Bayesian information criterion. Plotting the probability of choosing the immediate reward against the drift rate, we can see that many datapoints are pushed to either extreme, creating good separation between cases where the immediate versus delayed rewards were chosen.
+
+```{r}
+plot(ddm_sig, type = 'link')
+```

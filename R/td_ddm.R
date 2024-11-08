@@ -273,3 +273,14 @@ get_prob_func_ddm <- function(discount_function, drift_transform) {
   return(prob_func)
 
 }
+
+ddm_predicted_rts <- function(drifts, par) {
+  # Compute the RT expectation, irrespective of boundary (formula from https://doi.org/10.1016/j.jmp.2009.01.006)
+  
+  z <- par['beta']*par['alpha']
+  A <- exp(-2*drifts*par['alpha']) - 1
+  Z <- exp(-2*drifts*z) - 1
+  E_rt <- -z/drifts + par['alpha']/drifts * Z/A + par['tau']
+  
+  return(E_rt)
+}
