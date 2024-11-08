@@ -71,7 +71,7 @@ cor.test(predicted_rts, ddm$data$rt)
 As expected, they are correlated. To compare these visually, we can `plot()` the DDM wiht the argument `type = "rt"`:
 
 ```{r}
-plot(ddm, type = 'rt', confint = 0.9) #, ylim = c(0, 10))
+plot(ddm, type = 'rt', confint = 0.9)
 ```
 
 This displays both the predicted RTs from the model and a 90% confidence interval

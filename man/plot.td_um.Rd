@@ -20,7 +20,7 @@
 
 \item{type}{Type of plot to generate}
 
-\item{legend}{Logical: display a legend? Ignored unless \code{type = 'summary'}}
+\item{legend}{Logical: display a legend? Only relevant for \code{type = 'summary'} and \code{type = 'rt'}}
 
 \item{verbose}{Whether to print info about, e.g., setting del = ED50 when \code{type = 'endpoints'}}
 

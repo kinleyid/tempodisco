@@ -72,8 +72,23 @@ Note that when `del` corresponds to one of the delays in the data, the binary ch
 
 ## `"link"` plots
 
-Finally, we can plot the probability of selecting the immediate reward against the values of the link function. This is potentially useful for visually detecting potential outliers.
+Finally, we can plot the probability of selecting the immediate reward against the values of the link function. This is potentially useful for visually detecting outliers.
 
 ```{r}
 plot(mod, type = 'link')
 ```
+
+## `rt` plots
+
+For drift [diffusion models](drift-diffusion-models.html), we can create a plot of reaction times against the model's predictions:
+
+```{r}
+ddm <- td_ddm(td_bc_single_ptpt, discount_function = 'exponential',
+              v_par_starts = 0.01,
+              beta_par_starts = 0.5,
+              alpha_par_starts = 3.5,
+              tau_par_starts = 0.9)
+plot(ddm, type = 'rt', confint = 0.9, legend = T)
+```
+
+Here, we have selected to also view a 90% confidence interval around the model's predictions.

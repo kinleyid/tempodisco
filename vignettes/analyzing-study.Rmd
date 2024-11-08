@@ -22,8 +22,8 @@ The other vignettes examine how we can analyze data at the single-subject level.
 
 ```{r}
 data("td_bc_study")
-# For speed, only look at the first 20 participants
-ids <- unique(td_bc_study$id)[1:20]
+# For speed, only look at the first 10 participants
+ids <- unique(td_bc_study$id)[1:10]
 study <- subset(td_bc_study, id %in% ids)
 ```
 
@@ -33,7 +33,6 @@ As a first step, we might want to remove cases of non-systematic discounting:
 # Check for nonsystematic discounting
 is_nonsys <- by(study, study$id, function(ptpt) { # Stratify by participant ID
   mod <- td_bcnm(ptpt, discount_function = 'model-free') # Fit a "model-free" discount function to the participant-level data
-  print(mod)
   any(nonsys(mod)) # Check whether either non-systematic criterion is met
 }, simplify = T)
 # Keep data from systematic discounters

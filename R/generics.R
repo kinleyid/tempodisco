@@ -489,7 +489,7 @@ deviance.td_ddm <- function(mod) return(-2*logLik.td_ddm(mod))
 #' @param type Type of plot to generate
 #' @param del Plots data for a particular delay
 #' @param val_del Plots data for a particular delayed value
-#' @param legend Logical: display a legend? Ignored unless \code{type = 'summary'}
+#' @param legend Logical: display a legend? Only relevant for \code{type = 'summary'} and \code{type = 'rt'}
 #' @param verbose Whether to print info about, e.g., setting del = ED50 when \code{type = 'endpoints'}
 #' @param confint When \code{type = 'rt'}, what confidence interval should be plotted for RTs? Default is 0.95 (95\% confidence interval)
 #' @param ... Additional arguments to \code{plot()}
@@ -687,10 +687,11 @@ plot.td_um <- function(x,
         # Get range of linear predictors
         linpred_func <- do.call(get_linpred_func_ddm, x$config)
         linpreds <- linpred_func(x$data, coef(x))
+        x$data$linpreds <- linpreds
         linpred_lim <- max(abs(min(linpreds)), abs(max(linpreds)))
         
         # Plot RTs against linear predictors
-        plot(x$data$rt ~ linpreds,
+        plot(rt ~ linpreds, data = x$data,
              type = 'n', # Don't show for now, just setting up axes
              # ylim = c(min(x$data$rt), max(x$data$rt)),
              xlim = c(-linpred_lim, linpred_lim),
@@ -717,8 +718,22 @@ plot.td_um <- function(x,
           lines(bounds ~ plotting_linpreds, lty = 'dashed')
         }
         
-        # Plot actual data
-        points(x$data$rt ~ linpreds)
+        # Overlay actual data
+        points(rt ~ linpreds, col = 'red',
+               data = x$data[x$data$imm_chosen, ])
+        points(rt ~ linpreds, col = 'blue',
+               data = x$data[!x$data$imm_chosen, ])
+        
+        if (legend) {
+          legend("topright",
+                 inset = 0.02,
+                 title = 'Choices',
+                 legend = c("Imm.", "Del."),
+                 col = c("red", "blue"),
+                 pch = 1,
+                 box.lty = 0, # No border
+                 bg = rgb(1, 1, 1, 0.5)) # Background color with transparency
+        }
         
       }
     }
