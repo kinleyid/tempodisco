@@ -220,6 +220,83 @@ plot(mod, log = 'x', verbose = F)
 
 <img src="man/figures/README-unnamed-chunk-13-1.png" width="100%" />
 
+### Drift diffusion models
+
+To model reaction times using a drift diffusion model, we can use
+`td_ddm` (here, for speed, we are starting the optimization near optimal
+values):
+
+``` r
+ddm <- td_ddm(td_bc_single_ptpt, discount_function = 'exponential',
+              v_par_starts = 0.01,
+              beta_par_starts = 0.5,
+              alpha_par_starts = 3.5,
+              tau_par_starts = 0.9)
+print(ddm)
+#> 
+#> Temporal discounting drift diffusion model
+#> 
+#> Discount function: exponential
+#> Coefficients:
+#> 
+#>           k           v        beta       alpha         tau 
+#> 0.009664986 0.008541880 0.591146000 3.501014882 0.903601241 
+#> 
+#> "none" transform applied to drift rates.
+#> 
+#> ED50: 71.7173522454106
+#> AUC: 0.0283275204463082
+#> BIC: 260.86822208669
+```
+
+Following [Peters & D’Esposito
+(2020)](https://doi.org/10.1371/journal.pcbi.1007615), we can apply a
+sigmoidal transform to the drift rate $\delta$ to improve model fit
+using the argument `drift_transform = "sigmoid"`:
+$$\delta' = v_\text{max} \left(\frac{2}{1 + \exp\{-\delta\}} - 1\right)$$
+
+``` r
+ddm_sig <- td_ddm(td_bc_single_ptpt, discount_function = 'exponential',
+              drift_transform = 'sigmoid',
+              v_par_starts = 0.01,
+              beta_par_starts = 0.5,
+              alpha_par_starts = 3.5,
+              tau_par_starts = 0.9)
+coef(ddm_sig)
+#>             k             v          beta         alpha           tau 
+#>    0.01059955    0.03568827    0.58234627    3.85938224    0.83088464 
+#> max_abs_drift 
+#>    1.14207920
+```
+
+This introduces a new variable `max_abs_drift` ($v_\text{max}$ in the
+equation above) controlling the absolute value of the maximum drift
+rate.
+
+We can use the model to predict reaction times and compare them to the
+actual data:
+
+``` r
+pred_rts <- predict(ddm_sig, type = 'rt')
+cor.test(pred_rts, td_bc_single_ptpt$rt)
+#> 
+#>  Pearson's product-moment correlation
+#> 
+#> data:  pred_rts and td_bc_single_ptpt$rt
+#> t = 3.2509, df = 68, p-value = 0.001791
+#> alternative hypothesis: true correlation is not equal to 0
+#> 95 percent confidence interval:
+#>  0.1442124 0.5539902
+#> sample estimates:
+#>       cor 
+#> 0.3667584
+```
+
+This implementation follows the model described in [Peters & D’Esposito
+(2020)](https://doi.org/10.1371/journal.pcbi.1007615); the drift rate is
+based on the difference in subjective value between the immediate and
+delayed rewards, where the subjective value of
+
 ### The “model-free” discount function
 
 In addition to the discount functions listed above, we can fit a

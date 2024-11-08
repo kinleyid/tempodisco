@@ -106,6 +106,43 @@ mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'all')
 plot(mod, log = 'x', verbose = F)
 ```
 
+### Drift diffusion models
+
+To model reaction times using a drift diffusion model, we can use `td_ddm` (here, for speed, we are starting the optimization near optimal values):
+
+```{r}
+ddm <- td_ddm(td_bc_single_ptpt, discount_function = 'exponential',
+              v_par_starts = 0.01,
+              beta_par_starts = 0.5,
+              alpha_par_starts = 3.5,
+              tau_par_starts = 0.9)
+print(ddm)
+```
+
+Following [Peters & D'Esposito (2020)](https://doi.org/10.1371/journal.pcbi.1007615), we can apply a sigmoidal transform to the drift rate $\delta$ to improve model fit using the argument `drift_transform = "sigmoid"`:
+$$\delta' = v_\text{max} \left(\frac{2}{1 + \exp\{-\delta\}} - 1\right)$$
+
+```{r}
+ddm_sig <- td_ddm(td_bc_single_ptpt, discount_function = 'exponential',
+              drift_transform = 'sigmoid',
+              v_par_starts = 0.01,
+              beta_par_starts = 0.5,
+              alpha_par_starts = 3.5,
+              tau_par_starts = 0.9)
+coef(ddm_sig)
+```
+
+This introduces a new variable `max_abs_drift` ($v_\text{max}$ in the equation above) controlling the absolute value of the maximum drift rate.
+
+We can use the model to predict reaction times and compare them to the actual data:
+
+```{r}
+pred_rts <- predict(ddm_sig, type = 'rt')
+cor.test(pred_rts, td_bc_single_ptpt$rt)
+```
+
+This implementation follows the model described in [Peters & D'Esposito (2020)](https://doi.org/10.1371/journal.pcbi.1007615); the drift rate is based on the difference in subjective value between the immediate and delayed rewards, where the subjective value of 
+
 ### The "model-free" discount function
 
 In addition to the discount functions listed above, we can fit a "model-free" discount function to the data, meaning we fit each indifference point independently. This enables us to, first, test whether a participant exhibits non-systematic discounting according to the Johnson & Bickel criteria:

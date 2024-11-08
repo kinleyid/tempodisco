@@ -5,7 +5,7 @@
 \alias{td_bc_study}
 \title{Binary choice data for a study}
 \description{
-Data from 421 participants, who each made 70 binary choices. Along with the columns required by \code{td_bcnm}, the reaction time (\code{rt}) is recorded. Participants are identified by the alphnumeric code in the \code{id} column.
+Data from 421 participants, who each made 70 binary choices. Along with the columns required by \code{td_bcnm}, the reaction time (\code{rt}) in seconds is recorded. Participants are identified by the alphnumeric code in the \code{id} column.
 }
 \references{
 \url{doi.org/10.31234/osf.io/y2fdh}
