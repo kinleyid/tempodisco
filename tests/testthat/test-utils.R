@@ -50,6 +50,17 @@ test_that('inconsistent responses produce a warning', {
   td_bc_single_ptpt$imm_chosen <- round(runif(nrow(td_bc_single_ptpt)))
   expect_warning(kirby_score(td_bc_single_ptpt))
 })
+test_that('residuals', {
+  mod <- kirby_score(td_bc_single_ptpt)
+  expect_length(residuals(mod, type = 'response'), n = nrow(td_bc_single_ptpt))
+  expect_error(residuals(mod, type = 'pearson'))
+})
+
+test_that('confint stuff', {
+  expect_no_error(vcov(mod))
+  expect_no_error(confint(mod))
+  expect_no_error(summary(mod))
+})
 
 ### wileyto_score
 data("td_bc_single_ptpt")

@@ -59,6 +59,12 @@ test_that('predictions', {
   expect_length(predict(mod, newdata = data.frame(del = 0:1000, val_del = 1), type = 'indiff'), n = 1001)
 })
 
+test_that('confint stuff', {
+  expect_no_error(vcov(mod))
+  expect_no_error(confint(mod))
+  expect_no_error(summary(mod))
+})
+
 test_that('multiple discount functions', {
   custom_discount_function <- td_fn(
     name = 'custom',

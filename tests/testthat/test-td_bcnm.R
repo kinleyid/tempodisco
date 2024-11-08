@@ -82,6 +82,12 @@ while (arg_combo_idx <= nrow(arg_combos)) {
     expect_length(predict(mod, type = 'response'), n = nrow(df))
     expect_length(predict(mod, newdata = data.frame(del = 0:1000), type = 'indiff'), n = 1001)
   })
+  
+  test_that('confint stuff', {
+    expect_no_error(vcov(mod))
+    expect_no_error(confint(mod))
+    expect_no_error(summary(mod))
+  })
 }
 
 test_that('errors', {

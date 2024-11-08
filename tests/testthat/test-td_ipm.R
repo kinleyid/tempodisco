@@ -73,6 +73,12 @@ while (df_idx <= length(discount_functions)) {
     newdata <- data.frame(del = 100, val_del = 1, val_imm = runif(10))
     expect_length(predict(mod, newdata = newdata, type = 'response'), n = nrow(newdata))
   })
+  
+  test_that('confint stuff', {
+    expect_no_error(vcov(mod))
+    expect_no_error(confint(mod))
+    expect_no_error(summary(mod))
+  })
 }
 
 test_that('errors', {

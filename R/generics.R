@@ -402,7 +402,14 @@ residuals.td_ipm <- function(object, type = c('response', 'pearson'), ...) {
       val <- val/std
     }
   } else {
-    stop('Data was not fit directly on indifference points, so residuals cannot be computed.')
+    if (type == 'response') {
+      y <- data$indiff
+      yhat <- fitted(object)
+      val <- y - yhat
+    } else if (type == 'pearson') {
+      # stop('Pearson residuals cannot be computed. Model predicts indifference points but data consists of binary choices.')
+      stop('Pearson residuals cannot be computed; model predicts indifference points, not response probabilities.')
+    }
   }
   
   return(val)
@@ -491,8 +498,8 @@ deviance.td_ddm <- function(mod) return(-2*logLik.td_ddm(mod))
 #' @param val_del Plots data for a particular delayed value
 #' @param legend Logical: display a legend? Only relevant for \code{type = 'summary'} and \code{type = 'rt'}
 #' @param verbose Whether to print info about, e.g., setting del = ED50 when \code{type = 'endpoints'}
-#' @param confint When \code{type = 'rt'}, what confidence interval should be plotted for RTs? Default is 0.95 (95\% confidence interval)
-#' @param ... Additional arguments to \code{plot()}
+#' @param confint When \code{type = 'rt'}, what (percentile-based) confidence interval should be plotted for RTs? Default is 0.95 (95\% confidence interval)
+#' @param ... Additional arguments to \code{plot.default()}
 #' @examples
 #' \dontrun{
 #' data("td_bc_single_ptpt")
@@ -738,4 +745,62 @@ plot.td_um <- function(x,
       }
     }
   }
+}
+
+#' Calculate variance-vovariance matrix for a teporal discounting model
+#' 
+#' Returns a variance-covariance matrix of the parameters of a temporal discounting model.
+#' @param object Model for which to estimate variance-covariance matrix.
+#' @param ... Additional arguments not currently used
+#' @note
+#' This method only works for models where parameter fitting involved a call to optim(), which is not the case for methods such as \link{kirby_score}.
+#' @export
+vcov.td_um <- function(object, ...) {
+  if (inherits(object, 'glm')) {
+    # td_bclm already has this generic defined
+    NextMethod()
+  } else {
+    if ('hessian' %in% names(object$optim)) {
+      return(solve(object$optim$hessian))
+    } else {
+      n_cf <- length(coef(object))
+      val <- matrix(nrow = n_cf, ncol = n_cf)
+      rownames(val) <- names(coef(object))
+      colnames(val) <- names(coef(object))
+      return(val)
+      # stop('We need a Hessian matrix to compute variance estimates, but parameter estimates for the current model did not come from an optimization routine that computed such a matrix.')
+    }
+  }
+}
+
+#' Summary of temporal discounting model
+#' 
+#' Prints a summary of the model, including confidence intervals for the parameters and 
+#' @export
+summary.td_um <- function(object, ...) {
+  if (inherits(object, 'glm')) {
+    NextMethod()
+  } else {
+    cf <- cbind(
+      coef(object), # Estimates
+      sqrt(diag(vcov(object))), # SDs
+      confint(object) # Bounds
+    )
+    colnames(cf)[1:2] <- c('Estimate', 'SD')
+    sm <- list(coefficients = cf,
+               loglik = logLik(object),
+               aic = AIC(object),
+               bic = BIC(object))
+    class(sm) <- "summary.td_um"
+    return(sm)
+  }
+}
+
+#' @export
+print.summary.td_um <- function(x, ...){
+  cat("\nCoefficients:\n")
+  print(x$coefficients)
+  cat("\n")
+  cat("log-likelihood: ", x$loglik, "\nAIC: ", x$aic, "\nBIC: ", x$bic)
+  cat("\n")
 }

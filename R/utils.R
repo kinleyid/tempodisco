@@ -115,7 +115,8 @@ run_optimization <- function(fn, par_starts, par_lims, optim_args, silent = F) {
             par = par_start_combos[combo_idx, ],
             method = 'L-BFGS-B',
             lower = lower,
-            upper = upper
+            upper = upper,
+            hessian = T
           ),
           optim_args
         )
