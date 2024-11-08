@@ -6,11 +6,12 @@
 \usage{
 \method{plot}{td_um}(
   x,
-  type = c("summary", "endpoints", "link"),
+  type = c("summary", "endpoints", "link", "rt"),
   legend = T,
   verbose = T,
   del = NULL,
   val_del = NULL,
+  confint = 0.95,
   ...
 )
 }
@@ -19,13 +20,15 @@
 
 \item{type}{Type of plot to generate}
 
-\item{legend}{Logical: display a legend? Ignored if \code{type != 'summary'}}
+\item{legend}{Logical: display a legend? Only relevant for \code{type = 'summary'} and \code{type = 'rt'}}
 
-\item{verbose}{Whether to print info about, e.g., setting del = ED50 when type == 'endpoints'}
+\item{verbose}{Whether to print info about, e.g., setting del = ED50 when \code{type = 'endpoints'}}
 
 \item{del}{Plots data for a particular delay}
 
 \item{val_del}{Plots data for a particular delayed value}
+
+\item{confint}{When \code{type = 'rt'}, what confidence interval should be plotted for RTs? Default is 0.95 (95\% confidence interval)}
 
 \item{...}{Additional arguments to \code{plot()}}
 }

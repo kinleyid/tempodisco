@@ -3,4 +3,5 @@
 #' @importFrom graphics lines points title axis
 #' @importFrom methods is
 #' @importFrom grDevices rgb
+#' @importFrom RWiener dwiener
 NULL

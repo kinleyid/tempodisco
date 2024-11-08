@@ -53,8 +53,8 @@ while (df_idx <= length(discount_functions)) {
       expect_type(AIC(mod), 'double')
       expect_type(AIC(mod, k = 5), 'double')
       expect_type(logLik(mod), 'double')
-      expect_vector(residuals(mod, type = 'pearson'), size = nrow(df))
-      expect_vector(residuals(mod, type = 'response'), size = nrow(df))
+      expect_length(residuals(mod, type = 'pearson'), n = nrow(df))
+      expect_length(residuals(mod, type = 'response'), n = nrow(df))
     } # Computed using Kirby scoring or similar on binary choices, therefore the above functions don't apply
   })
   
@@ -67,11 +67,11 @@ while (df_idx <= length(discount_functions)) {
   
   # prediction
   test_that('predictions', {
-    expect_vector(fitted(mod), ptype = numeric(0), size = nrow(mod$data))
-    expect_vector(predict(mod, newdata = data.frame(del = 0:1000), type = 'indiff'), ptype = numeric(0), size = 1001)
-    expect_vector(predict(mod, del = 0:1000, type = 'indiff'), ptype = numeric(0), size = 1001)
+    expect_length(fitted(mod), n = nrow(mod$data))
+    expect_length(predict(mod, newdata = data.frame(del = 0:1000), type = 'indiff'), n = 1001)
+    expect_length(predict(mod, del = 0:1000, type = 'indiff'), n = 1001)
     newdata <- data.frame(del = 100, val_del = 1, val_imm = runif(10))
-    expect_vector(predict(mod, newdata = newdata, type = 'response'), ptype = numeric(0), size = nrow(newdata))
+    expect_length(predict(mod, newdata = newdata, type = 'response'), n = nrow(newdata))
   })
 }
 

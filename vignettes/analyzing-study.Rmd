@@ -22,8 +22,8 @@ The other vignettes examine how we can analyze data at the single-subject level.
 
 ```{r}
 data("td_bc_study")
-# For speed, only look at the first 20 participants
-ids <- unique(td_bc_study$id)[1:20]
+# For speed, only look at the first 10 participants
+ids <- unique(td_bc_study$id)[1:10]
 study <- subset(td_bc_study, id %in% ids)
 ```
 

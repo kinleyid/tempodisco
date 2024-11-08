@@ -33,6 +33,18 @@ print.td_ipm <- function(x, ...) {
 }
 
 #' @export
+print.td_ddm <- function(x, ...) {
+  cat(sprintf('\nTemporal discounting drift diffusion model\n\n'))
+  cat(sprintf('Discount function: %s\nCoefficients:\n\n', x$config$discount_function$name))
+  print(coef(x))
+  cat(sprintf('\n"%s" transform applied to drift rates.\n', x$config$drift_transform$name))
+  cat(sprintf('\nED50: %s\n', ED50(x)))
+  cat(sprintf('AUC: %s\n', AUC(x, verbose = F)))
+  cat(sprintf('BIC: %s\n', BIC(x)))
+}
+
+
+#' @export
 print.td_fn <- function(x, ...) {
   obj <- x
   cat(sprintf('\n"%s" temporal discounting function\n\n', obj$name))
@@ -49,12 +61,25 @@ print.td_fn <- function(x, ...) {
   }
 }
 
+predict_indiffs <- function(object, newdata) {
+  
+  # Predict indiffs for an object that has:
+  #   object$config$discount_function$fn
+  #   coef(object)
+  
+  indiff_func <- object$config$discount_function$fn
+  indiffs <- indiff_func(newdata, coef(object))
+  names(indiffs) <- NULL
+  return(indiffs)
+  
+}
+
 #' Model Predictions
 #'
 #' Generate predictions from a temporal discounting binary choice model
 #' @param object A temporal discounting binary choice model. See \code{td_bcnm}.
 #' @param newdata Optionally, a data frame to use for prediction. If omitted, the data used to fit the model will be used for prediction.
-#' @param type The type of prediction required. As in predict.glm, \code{"link"} (default) and \code{"response"} give predictions on the scales of the linear predictors and response variable, respectively. \code{"indiff"} gives predicted indifference points. In this case, \code{newdata} needs only a \code{del} column.
+#' @param type The type of prediction required. As in predict.glm, \code{"link"} (default) and \code{"response"} give predictions on the scales of the linear predictors and response variable, respectively. \code{"indiff"} gives predicted indifference points. For predicting indifference points, \code{newdata} needs only a \code{del} column.
 #' @param ... Additional arguments currently not used.
 #' @return A vector of predictions
 #' @examples
@@ -86,10 +111,12 @@ predict.td_bcnm <- function(object, newdata = NULL, type = c('link', 'response',
     
   } else if (type == 'indiff') {
     
-    indiff_func <- object$config$discount_function$fn
-    indiffs <- indiff_func(newdata, coef(object))
-    names(indiffs) <- NULL
-    return(indiffs)
+    return(predict_indiffs(object, newdata))
+    
+    # indiff_func <- object$config$discount_function$fn
+    # indiffs <- indiff_func(newdata, coef(object))
+    # names(indiffs) <- NULL
+    # return(indiffs)
     
   }
 }
@@ -118,7 +145,7 @@ predict.td_bclm <- function(object, newdata = NULL, type = c('indiff', 'link', '
   type <- match.arg(type)
   if (type == 'indiff') {
     
-    return(predict.td_bcnm(object, newdata = newdata, type = type))
+    return(predict_indiffs(object, newdata))
     
   } else {
     
@@ -171,10 +198,64 @@ predict.td_ipm <- function(object, newdata = NULL, type = c('indiff', 'response'
   
 }
 
+#' Model Predictions
+#'
+#' Generate predictions from a temporal discounting drift diffusion model
+#' @param object A temporal discounting drift diffusion model. See \link{td_ddm}.
+#' @param newdata Optionally, a data frame to use for prediction. If omitted, the data used to fit the model will be used for prediction.
+#' @param type The type of prediction required. As in predict.glm, \code{"link"} (default) and \code{"response"} give predictions on the scales of the linear predictors and response variable, respectively. \code{"indiff"} gives predicted indifference points. For predicting indifference points, \code{newdata} needs only a \code{del} column. \code{"rt"} gives predicted reaction times.
+#' @param ... Additional arguments currently not used.
+#' @return A vector of predictions
+#' @note
+#' When \code{type = 'rt'}, expected RTs are computed irrespective of which reward was selected, per equation 5 in \href{https://doi.org/10.1016/j.jmp.2009.01.006}{Grasman, Wagenmakers, & van der Maas (2009)}.
+#' @examples
+#' \dontrun{
+#' data("td_bc_single_ptpt")
+#' mod <- td_ddm(td_bc_single_ptpt, discount_function = 'exponential')
+#' pred_rts <- predict(mod, type = 'rt')
+#' }
+#' @export
+predict.td_ddm <- function(object, newdata = NULL, type = c('indiff', 'link', 'response', 'rt'), ...) {
+  
+  if (is.null(newdata)) {
+    newdata <- object$data
+  }
+  
+  type <- match.arg(type)
+  if (type == 'indiff') {
+    
+    return(predict_indiffs(object, newdata))
+    
+  } else if (type == 'link') {
+    
+    linpred_func <- do.call(get_linpred_func_ddm, object$config)
+    return(linpred_func(newdata, coef(object)))
+    
+  } else if (type == 'response') {
+    
+    # Compute drift rates
+    linpred_func <- do.call(get_linpred_func_ddm, object$config)
+    drifts <- linpred_func(newdata, coef(object))
+    # Compute probability of immediate reward (i.e., absorption at upper barrier)
+    return(pimm_ddm(drifts, coef(object)))
+    
+  } else if (type == 'rt') {
+
+    # Compute drift rates
+    linpred_func <- do.call(get_linpred_func_ddm, object$config)
+    cf <- coef(object)
+    drifts <- linpred_func(newdata, cf)
+    
+    # Compute expected reaction times
+    return(ddm_predicted_rts(drifts, cf))
+    
+  }
+}
+
 #' Get fitted values
 #' 
 #' Get fitted values of a temporal discounting binary choice model
-#' @param object An object of class \code{td_bcnm}
+#' @param object An object of class \link{td_bcnm}
 #' @param ... Additional arguments currently not used.
 #' @return A named vector of fitted values
 #' @export
@@ -183,11 +264,30 @@ fitted.td_bcnm <- function(object, ...) {predict(object, type = 'response')}
 #' Get fitted values
 #' 
 #' Get fitted values of a temporal discounting indifference point model
-#' @param object An object of class \code{td_ipm}
+#' @param object An object of class \link{td_ipm}
 #' @param ... Additional arguments currently not used.
 #' @return A named vector of fitted values
 #' @export
 fitted.td_ipm <- function(object, ...) {predict(object)}
+
+#' Get fitted values
+#' 
+#' Get fitted values of a temporal discounting drift diffusion model
+#' @param object An object of class \link{td_ddm}
+#' @param ... Additional arguments currently not used.
+#' @return A named vector of fitted values
+#' @export
+fitted.td_ddm <- function(object, ...) {predict(object, type = 'response')}
+
+#' Extract model coefficients
+#' 
+#' Get coefficients of a temporal discounting drift diffusion model
+#' @param object An object of class \link{td_ddm}
+#' @param type A string specifying which coefficients to extract. \code{'all'} extracts them all, \code{'ddm'} extracts only DDM-specific parameters, and \code{'df'} extracts only discount function parameters
+#' @param ... Additional arguments currently not used.
+#' @return A named vector of coefficients
+#' @export
+coef.td_ddm <- function(object, type = 'all', ...) {object$optim$par}
 
 #' Extract model coefficients
 #' 
@@ -345,12 +445,42 @@ logLik.td_ipm <- function(mod) {
   return(val)
 }
 
+#' Extract log-likelihood
+#' 
+#' Compute log-likelihood for a temporal discounting drift diffusion model
+#' @param mod An object of class \code{td_bcnm}
+#' @param type Should probabilities /probability densities be computed for responses and RTs (\code{'resp_rt'}, default) or responses only (\code{'resp'})?
+#' @export
+logLik.td_ddm <- function(mod, type = c('resp_rt', 'resp', 'rt')) {
+  type <- match.arg(type)
+  if (type == 'resp_rt') {
+    prob_func <- do.call(get_prob_func_ddm, mod$config)
+    p <- prob_func(mod$data, coef(mod))
+    val <- sum(log(p))
+  } else if (type == 'resp') {
+    p <- laplace_smooth(predict(mod, type = 'response'))
+    x <- mod$data$imm_chosen
+    val <- sum(ll(p, x))
+  }
+  attr(val, "nobs") <- nrow(mod$data)
+  attr(val, "df") <- length(coef(mod))
+  class(val) <- "logLik"
+  return(val)
+}
+
 #' Model deviance
 #' 
 #' Compute deviance for a temporal discounting binary choice model.
 #' @param mod An object of class \code{td_bcnm}
 #' @export
 deviance.td_bcnm <- function(mod) return(-2*logLik.td_bcnm(mod))
+
+#' Model deviance
+#' 
+#' Compute deviance for a temporal discounting drift diffusion model
+#' @param mod An object of class \code{td_ddm}
+#' @export
+deviance.td_ddm <- function(mod) return(-2*logLik.td_ddm(mod))
 
 #' Plot models
 #'
@@ -359,8 +489,9 @@ deviance.td_bcnm <- function(mod) return(-2*logLik.td_bcnm(mod))
 #' @param type Type of plot to generate
 #' @param del Plots data for a particular delay
 #' @param val_del Plots data for a particular delayed value
-#' @param legend Logical: display a legend? Ignored if \code{type != 'summary'}
-#' @param verbose Whether to print info about, e.g., setting del = ED50 when type == 'endpoints'
+#' @param legend Logical: display a legend? Only relevant for \code{type = 'summary'} and \code{type = 'rt'}
+#' @param verbose Whether to print info about, e.g., setting del = ED50 when \code{type = 'endpoints'}
+#' @param confint When \code{type = 'rt'}, what confidence interval should be plotted for RTs? Default is 0.95 (95\% confidence interval)
 #' @param ... Additional arguments to \code{plot()}
 #' @examples
 #' \dontrun{
@@ -370,7 +501,14 @@ deviance.td_bcnm <- function(mod) return(-2*logLik.td_bcnm(mod))
 #' plot(mod, type = 'endpoints')
 #' }
 #' @export
-plot.td_um <- function(x, type = c('summary', 'endpoints', 'link'), legend = T, verbose = T, del = NULL, val_del = NULL, ...) {
+plot.td_um <- function(x,
+                       type = c('summary', 'endpoints', 'link', 'rt'),
+                       legend = T,
+                       verbose = T,
+                       del = NULL,
+                       val_del = NULL,
+                       confint = 0.95,
+                       ...) {
   
   type <- match.arg(type)
 
@@ -504,27 +642,100 @@ plot.td_um <- function(x, type = c('summary', 'endpoints', 'link'), legend = T, 
           scores <- score_func(x$data, coef(x))
         } else if (is(x, 'td_bclm')) {
           scores <- x$linear.predictors
+        } else if (is(x, 'td_ddm')) {
+          linpred_func <- do.call(get_linpred_func_ddm, x$config)
+          scores <- linpred_func(x$data, coef(x))
         }
         lim <- max(abs(min(scores)), abs(max(scores)))
         # Plot choices
         plot(x$data$imm_chosen ~ scores,
              ylim = c(0, 1),
              xlim = c(-lim, lim),
-             ylab = 'imm_chosen',
+             ylab = 'Reward',
              xlab = 'Linear predictor',
+             yaxt = "n",
              ...)
+        # Custom y axis ticks
+        n_yticks <- 5
+        yticks <- seq(0, 1, length.out = n_yticks)
+        ytick_labs <- sprintf('%s', round(yticks, 2))
+        ytick_labs[1] <- sprintf('Del.\n0')
+        ytick_labs[n_yticks] <- sprintf('Imm.\n1')
+        axis(2, at = yticks, labels = ytick_labs)
         # Plot probabilities
         plotting_scores <- seq(-lim, lim, length.out = 1000)
-        if (is(x, 'td_bcnm')) {
-          prob_func <- do.call(get_prob_func_frame, x$config)
-          p <- prob_func(plotting_scores, coef(x))
-        } else if (is(x, 'td_bclm')) {
-          p <- x$family$linkinv(plotting_scores)
+        pimm <- switch(class(x)[1],
+                       'td_bcnm' = {
+                         prob_func <- do.call(get_prob_func_frame, x$config)
+                         prob_func(plotting_scores, coef(x))
+                       },
+                       'td_bclm' = {
+                         x$family$linkinv(plotting_scores)
+                       },
+                       'td_ddm' = {
+                         pimm_ddm(plotting_scores, coef(x))
+                       }
+        )
+        lines(pimm ~ plotting_scores)
+        
+      } else if (type == 'rt') {
+        
+        if (!is(x, 'td_ddm')) {
+          stop('type = "rt" is only applicable for models of class td_ddm')
         }
-        lines(p ~ plotting_scores)
+        
+        # Get range of linear predictors
+        linpred_func <- do.call(get_linpred_func_ddm, x$config)
+        linpreds <- linpred_func(x$data, coef(x))
+        x$data$linpreds <- linpreds
+        linpred_lim <- max(abs(min(linpreds)), abs(max(linpreds)))
+        
+        # Plot RTs against linear predictors
+        plot(rt ~ linpreds, data = x$data,
+             type = 'n', # Don't show for now, just setting up axes
+             # ylim = c(min(x$data$rt), max(x$data$rt)),
+             xlim = c(-linpred_lim, linpred_lim),
+             xlab = 'Drift rate',
+             ylab = 'RT (s)',
+             ...)
+        
+        # Plot model predictions
+        plotting_linpreds <- seq(-linpred_lim, linpred_lim, length.out = 1000)
+        
+        # Plot predicted RTs
+        cf <- coef(x)
+        pred_rts <- ddm_predicted_rts(plotting_linpreds, cf)
+        lines(pred_rts ~ plotting_linpreds)
+        
+        # Plot confidence interval
+        conf_extremum <- (1 - confint)/2
+        for (p in c(conf_extremum, 1 - conf_extremum)) {
+          bounds <- sapply(plotting_linpreds, function(drift) {
+            RWiener::qwiener(p = p, delta = drift,
+                             alpha = cf['alpha'], tau = cf['tau'], beta = cf['beta'],
+                             resp = 'both')
+          })
+          lines(bounds ~ plotting_linpreds, lty = 'dashed')
+        }
+        
+        # Overlay actual data
+        points(rt ~ linpreds, col = 'red',
+               data = x$data[x$data$imm_chosen, ])
+        points(rt ~ linpreds, col = 'blue',
+               data = x$data[!x$data$imm_chosen, ])
+        
+        if (legend) {
+          legend("topright",
+                 inset = 0.02,
+                 title = 'Choices',
+                 legend = c("Imm.", "Del."),
+                 col = c("red", "blue"),
+                 pch = 1,
+                 box.lty = 0, # No border
+                 bg = rgb(1, 1, 1, 0.5)) # Background color with transparency
+        }
         
       }
     }
   }
 }
-
