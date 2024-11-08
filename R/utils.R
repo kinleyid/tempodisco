@@ -285,3 +285,70 @@ wileyto_score <- function(data) {
   return(mod)
   
 }
+
+#' Experimental method for computing indifference points
+#' 
+#' @param data Responses to score
+#' @export
+most_consistent_indiffs <- function(data) {
+  
+  dc <- delwise_consistencies(data)
+  rows <- list()
+  for (sdf in dc) {
+    max_consistency <- max(sdf$consistency)
+    most_consistent <- which(sdf$consistency == max_consistency)
+    rows[[length(rows) + 1]] <- data.frame(
+      del = sdf$del[1],
+      indiff = mean(sdf$indiff[most_consistent]),
+      consistency = max_consistency
+    )
+  }
+  out <- do.call(rbind, rows)
+  return(out)
+  
+}
+
+delwise_consistencies <- function(data) {
+  
+  require_columns(data, c('val_del', 'val_imm', 'imm_chosen', 'del'))
+  
+  data$val_rel <- data$val_imm / data$val_del
+  
+  rows <- by(data, data$del, function(sdf) {
+    # Get candidate indifference points
+    cand_indiffs <- filter(c(0, sort(sdf$val_rel), 1), rep(0.5, 2))[1:(nrow(sdf) + 1)]
+    consistencies <- sapply(cand_indiffs, function(ci) {
+      mean(
+        c(!sdf[sdf$val_rel <= ci, 'imm_chosen'],
+          sdf[sdf$val_rel >= ci, 'imm_chosen'])
+      )
+    })
+    return(
+      data.frame(
+        del = sdf$del[1],
+        indiff = cand_indiffs,
+        consistency = consistencies
+      )
+    )
+    # filter(sdf$val_rel, rep(0.5, 0.5))
+    # sdf <- sdf[order(sdf$val_rel), ]
+    # if (!(0 %in% sdf$val_rel)) {
+    #   
+    # }
+    # sdf$consistency <- sapply(1:nrow(sdf), function(idx) {
+    #   mean(c(!sdf$imm_chosen[0:(idx-1)],
+    #          sdf$imm_chosen[(idx):(nrow(sdf)+1)]),
+    #        na.rm = T)
+    # })
+    # return(sdf)
+    # browser()
+    # data.frame(
+    #   del = sdf$del[1],
+    #   consistency = max(sdf$consistency)
+    # )
+  }, simplify = F)
+  
+  return(rows)
+  # do.call(rbind, rows)
+  
+}
