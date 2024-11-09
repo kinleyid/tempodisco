@@ -490,6 +490,7 @@ deviance.td_ddm <- function(mod) return(-2*logLik.td_ddm(mod))
 #' @param del Plots data for a particular delay
 #' @param val_del Plots data for a particular delayed value
 #' @param legend Logical: display a legend? Only relevant for \code{type = 'summary'} and \code{type = 'rt'}
+#' @param p_lines Numerical vector. When \code{type = 'summary'} the discount curve, where the probability of selecting the immediate reward is 0.5, is plotted. \code{p_lines} allows you to specify other probabilities for which similar lines should be plotted (only applicable for probabilistic models, e.g. \code{td_bcnm}, \code{td_bclm} and \code{td_ddm}).
 #' @param verbose Whether to print info about, e.g., setting del = ED50 when \code{type = 'endpoints'}
 #' @param confint When \code{type = 'rt'}, what confidence interval should be plotted for RTs? Default is 0.95 (95\% confidence interval)
 #' @param ... Additional arguments to \code{plot()}
@@ -497,13 +498,14 @@ deviance.td_ddm <- function(mod) return(-2*logLik.td_ddm(mod))
 #' \dontrun{
 #' data("td_bc_single_ptpt")
 #' mod <- td_bclm(td_bc_single_ptpt, model = 'hyperbolic.1')
-#' plot(mod, type = 'summary')
+#' plot(mod, type = 'summary', p_lines = c(0.25, 0.75), log = 'x')
 #' plot(mod, type = 'endpoints')
 #' }
 #' @export
 plot.td_um <- function(x,
                        type = c('summary', 'endpoints', 'link', 'rt'),
                        legend = T,
+                       p_lines = NULL,
                        verbose = T,
                        del = NULL,
                        val_del = NULL,
@@ -541,17 +543,29 @@ plot.td_um <- function(x,
     # Plot indifference curve
     lines(pred_indiffs ~ plotting_delays)
     
-    # Visualize stochasticity---goal for later. For now, don't know how to do this for td_bclm
-    # if (x$config$gamma_scale != 'none') {
-    #   if (verbose) {
-    #     cat(sprintf('gamma parameter (steepness of curve) is scaled by val_del.\nThus, the curve will have different steepness for a different value of val_del.\nDefaulting to val_del = %s (mean of val_del from data used to fit model).\nUse the `val_del` argument to specify a custom value.\n\n', val_del))
-    #   }
-    # }
-    # p_range <- args$p_range %def% c(0.4, 0.6)
-    # lower <- invert_decision_function(x, prob = p_range[1], del = plotting_delays)
-    # upper <- invert_decision_function(x, prob = p_range[2], del = plotting_delays)
-    # lines(lower ~ plotting_delays, lty = 'dashed')
-    # lines(upper ~ plotting_delays, lty = 'dashed')
+    # Get inverse of function that computes probability of selecting immediate reward
+    pimm_func <- function(data) predict(x, data, type = 'response')
+    # pimm_func <- get_pimm_func(x)
+    inv_pimm_func <- function(p, del) {
+      df <- data.frame(data.frame(val_imm = NA, val_del = val_del, del = del))
+      f <- function(val_imm) {
+        df$val_imm <- val_imm
+        p - pimm_func(df)
+      }
+      if (f(0) <= 0 | f(val_del) >= 0) {
+        val <- NA
+      } else {
+        sol <- uniroot(f = f,
+                       interval = c(0, val_del),
+                       f.lower = p - 0, tol = 0.01)
+        val <- sol$root / val_del
+      }
+      return(val)
+    }
+    for (p in p_lines) {
+      y <- sapply(plotting_delays, function(del) inv_pimm_func(p, del))
+      lines(y ~ plotting_delays, lty = 'dashed')
+    }
     
     if ('indiff' %in% colnames(data)) {
       # Plot empirical indifference points
