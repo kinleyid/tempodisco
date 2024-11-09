@@ -561,7 +561,7 @@ plot.td_um <- function(x,
       # Split the grid by delay
       # Using split() with a numerical index is faster than calling tapply() or similar
       split_idx <- rep(1:length(plotting_delays), each = length(val_imm_cands))
-      subgrid_list <- split(newdata, split_idx)
+      subgrid_list <- split(grid, split_idx)
       for (p in p_lines) {
         # Get the val_imm producing (close to) the desired p at each delay
         val_imm <- sapply(subgrid_list, function(subgrid) {
