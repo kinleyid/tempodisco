@@ -9,8 +9,7 @@
 [![codecov](https://codecov.io/github/kinleyid/tempodisco/graph/badge.svg?token=CCQXS3SNGB)](https://codecov.io/github/kinleyid/tempodisco)
 <!-- badges: end -->
 
-The goal of tempodisco is to provide easy access to common methods for
-working with temporal discounting data.
+`tempodisco` is an R package for working with delay discounting data.
 
 ## Installation
 
@@ -44,11 +43,10 @@ head(indiff_data)
 #> 5 360 0.015625
 ```
 
-This returns a data frame with a column for each delay and a column for
-the corresponding indifference points. The function `td_ipm` can then be
-used to identify the best-fitting discount function (according to the
-Bayesian information criterion) from any subset of the following
-options:
+This returns a data frame containing the delays and corresponding
+indifference points. The function `td_ipm` can then be used to identify
+the best-fitting discount function (according to the Bayesian
+information criterion) from any subset of the following options:
 
 | Name                                                                                         | Functional form                                         |
 |----------------------------------------------------------------------------------------------|---------------------------------------------------------|
@@ -224,7 +222,7 @@ plot(mod, log = 'x', verbose = F, p_lines = c(0.05, 0.95))
 
 To model reaction times using a drift diffusion model, we can use
 `td_ddm` (here, for speed, we are starting the optimization near optimal
-values):
+values for this dataset):
 
 ``` r
 ddm <- td_ddm(td_bc_single_ptpt, discount_function = 'exponential',
