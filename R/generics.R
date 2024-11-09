@@ -490,8 +490,8 @@ deviance.td_ddm <- function(mod) return(-2*logLik.td_ddm(mod))
 #' @param del Plots data for a particular delay
 #' @param val_del Plots data for a particular delayed value
 #' @param legend Logical: display a legend? Only relevant for \code{type = 'summary'} and \code{type = 'rt'}
-#' @param p_lines Numerical vector. When \code{type = 'summary'} the discount curve, where the probability of selecting the immediate reward is 0.5, is plotted. \code{p_lines} allows you to specify other probabilities for which similar lines should be plotted (only applicable for probabilistic models, e.g. \code{td_bcnm}, \code{td_bclm} and \code{td_ddm}).
-#' @param p_tol Numerical vector. When \code{type = 'summary'} the discount curve, where the probability of selecting the immediate reward is 0.5, is plotted. \code{p_lines} allows you to specify other probabilities for which similar lines should be plotted (only applicable for probabilistic models, e.g. \code{td_bcnm}, \code{td_bclm} and \code{td_ddm}).
+#' @param p_lines Numerical vector. When \code{type = 'summary'} the discount curve, where the probability of selecting the immediate reward is 0.5, is plotted. \code{p_lines} allows you to specify other probabilities for which similar curves should be plotted (only applicable for probabilistic models, e.g. \code{td_bcnm}, \code{td_bclm} and \code{td_ddm})
+#' @param p_tol If \code{p_lines} is not \code{NULL}, what is the maximum distance that estimated probabilities can be from their true values? Smaller values results in slower plot generation
 #' @param verbose Whether to print info about, e.g., setting del = ED50 when \code{type = 'endpoints'}
 #' @param confint When \code{type = 'rt'}, what confidence interval should be plotted for RTs? Default is 0.95 (95\% confidence interval)
 #' @param ... Additional arguments to \code{plot()}
