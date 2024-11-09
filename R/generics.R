@@ -546,6 +546,11 @@ plot.td_um <- function(x,
     lines(pred_indiffs ~ plotting_delays)
     
     if (!is.null(p_lines)) {
+      classes <- c('td_bcnm', 'td_bclm', 'td_ddm')
+      if (!inherits(x, classes)) {
+        stop(sprintf('p_lines can only be used for models of the following classes:\n%s',
+                     paste('-', classes, collapse = '\n')))
+      }
       # Plot curves for other probabilities
       
       # Because of the overhead of individual calls to predict(), exhaustive grid search

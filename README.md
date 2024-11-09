@@ -215,7 +215,7 @@ all of the following models are tested and the best-fitting one
 
 ``` r
 mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'all')
-plot(mod, log = 'x', verbose = F)
+plot(mod, log = 'x', verbose = F, p_lines = c(0.05, 0.95))
 ```
 
 <img src="man/figures/README-unnamed-chunk-13-1.png" width="100%" />

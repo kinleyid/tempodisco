@@ -8,6 +8,8 @@
   x,
   type = c("summary", "endpoints", "link", "rt"),
   legend = T,
+  p_lines = NULL,
+  p_tol = 0.001,
   verbose = T,
   del = NULL,
   val_del = NULL,
@@ -21,6 +23,10 @@
 \item{type}{Type of plot to generate}
 
 \item{legend}{Logical: display a legend? Only relevant for \code{type = 'summary'} and \code{type = 'rt'}}
+
+\item{p_lines}{Numerical vector. When \code{type = 'summary'} the discount curve, where the probability of selecting the immediate reward is 0.5, is plotted. \code{p_lines} allows you to specify other probabilities for which similar curves should be plotted (only applicable for probabilistic models, e.g. \code{td_bcnm}, \code{td_bclm} and \code{td_ddm})}
+
+\item{p_tol}{If \code{p_lines} is not \code{NULL}, what is the maximum distance that estimated probabilities can be from their true values? Smaller values results in slower plot generation}
 
 \item{verbose}{Whether to print info about, e.g., setting del = ED50 when \code{type = 'endpoints'}}
 
@@ -39,7 +45,7 @@ Plot delay discounting models
 \dontrun{
 data("td_bc_single_ptpt")
 mod <- td_bclm(td_bc_single_ptpt, model = 'hyperbolic.1')
-plot(mod, type = 'summary')
+plot(mod, type = 'summary', p_lines = c(0.25, 0.75), log = 'x')
 plot(mod, type = 'endpoints')
 }
 }
