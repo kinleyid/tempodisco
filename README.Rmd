@@ -103,7 +103,7 @@ We can explore an even wider range of discount functions using nonlinear modelin
 
 ```{r}
 mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'all')
-plot(mod, log = 'x', verbose = F)
+plot(mod, log = 'x', verbose = F, p_lines = c(0.05, 0.95))
 ```
 
 ### Drift diffusion models

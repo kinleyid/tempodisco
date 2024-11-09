@@ -490,6 +490,8 @@ deviance.td_ddm <- function(mod) return(-2*logLik.td_ddm(mod))
 #' @param del Plots data for a particular delay
 #' @param val_del Plots data for a particular delayed value
 #' @param legend Logical: display a legend? Only relevant for \code{type = 'summary'} and \code{type = 'rt'}
+#' @param p_lines Numerical vector. When \code{type = 'summary'} the discount curve, where the probability of selecting the immediate reward is 0.5, is plotted. \code{p_lines} allows you to specify other probabilities for which similar curves should be plotted (only applicable for probabilistic models, e.g. \code{td_bcnm}, \code{td_bclm} and \code{td_ddm})
+#' @param p_tol If \code{p_lines} is not \code{NULL}, what is the maximum distance that estimated probabilities can be from their true values? Smaller values results in slower plot generation
 #' @param verbose Whether to print info about, e.g., setting del = ED50 when \code{type = 'endpoints'}
 #' @param confint When \code{type = 'rt'}, what confidence interval should be plotted for RTs? Default is 0.95 (95\% confidence interval)
 #' @param ... Additional arguments to \code{plot()}
@@ -497,13 +499,15 @@ deviance.td_ddm <- function(mod) return(-2*logLik.td_ddm(mod))
 #' \dontrun{
 #' data("td_bc_single_ptpt")
 #' mod <- td_bclm(td_bc_single_ptpt, model = 'hyperbolic.1')
-#' plot(mod, type = 'summary')
+#' plot(mod, type = 'summary', p_lines = c(0.25, 0.75), log = 'x')
 #' plot(mod, type = 'endpoints')
 #' }
 #' @export
 plot.td_um <- function(x,
                        type = c('summary', 'endpoints', 'link', 'rt'),
                        legend = T,
+                       p_lines = NULL,
+                       p_tol = 0.001,
                        verbose = T,
                        del = NULL,
                        val_del = NULL,
@@ -541,17 +545,42 @@ plot.td_um <- function(x,
     # Plot indifference curve
     lines(pred_indiffs ~ plotting_delays)
     
-    # Visualize stochasticity---goal for later. For now, don't know how to do this for td_bclm
-    # if (x$config$gamma_scale != 'none') {
-    #   if (verbose) {
-    #     cat(sprintf('gamma parameter (steepness of curve) is scaled by val_del.\nThus, the curve will have different steepness for a different value of val_del.\nDefaulting to val_del = %s (mean of val_del from data used to fit model).\nUse the `val_del` argument to specify a custom value.\n\n', val_del))
-    #   }
-    # }
-    # p_range <- args$p_range %def% c(0.4, 0.6)
-    # lower <- invert_decision_function(x, prob = p_range[1], del = plotting_delays)
-    # upper <- invert_decision_function(x, prob = p_range[2], del = plotting_delays)
-    # lines(lower ~ plotting_delays, lty = 'dashed')
-    # lines(upper ~ plotting_delays, lty = 'dashed')
+    if (!is.null(p_lines)) {
+      classes <- c('td_bcnm', 'td_bclm', 'td_ddm')
+      if (!inherits(x, classes)) {
+        stop(sprintf('p_lines can only be used for models of the following classes:\n%s',
+                     paste('-', classes, collapse = '\n')))
+      }
+      # Plot curves for other probabilities
+      
+      # Because of the overhead of individual calls to predict(), exhaustive grid search
+      # is faster than uniroot() or similar to invert predict()
+      
+      # Call predict() once on a big grid
+      val_imm_cands <- seq(0, val_del, length.out = ceiling(1/p_tol + 1))
+      grid <- data.frame(val_del = val_del,
+                         del = rep(plotting_delays, each = length(val_imm_cands)),
+                         val_imm = rep(val_imm_cands, times = length(plotting_delays)))
+      grid$p <- predict(x, grid, type = 'response')
+      
+      # Split the grid by delay
+      # Using split() with a numerical index is faster than calling tapply() or similar
+      split_idx <- rep(1:length(plotting_delays), each = length(val_imm_cands))
+      subgrid_list <- split(grid, split_idx)
+      for (p in p_lines) {
+        # Get the val_imm producing (close to) the desired p at each delay
+        val_imm <- sapply(subgrid_list, function(subgrid) {
+          if (max(subgrid$p) < p | min(subgrid$p) > p) {
+            return(NA)
+          } else {
+            return(subgrid$val_imm[which.min((subgrid$p - p)**2)])
+          }
+        })
+        # Plot
+        y <- val_imm / val_del
+        lines(y ~ plotting_delays, lty = 'dashed')
+      }
+    }
     
     if ('indiff' %in% colnames(data)) {
       # Plot empirical indifference points

@@ -41,6 +41,7 @@ test_that('plots', {
   pdf(NULL) # Don't actually produce plots
   expect_no_error(plot(mod, type = 'summary', verbose = F))
   expect_no_error(plot(mod, type = 'summary', verbose = F, log = 'x'))
+  expect_no_error(plot(mod, type = 'summary', verbose = F, log = 'x', p_lines = 0.1, p_tol = 0.1))
   expect_no_error(plot(mod, type = 'endpoints', verbose = F))
   expect_output(plot(mod, type = 'summary', verbose = T))
   expect_output(plot(mod, type = 'endpoints', verbose = T))

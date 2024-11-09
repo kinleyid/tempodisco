@@ -34,3 +34,23 @@ get_candidate_discount_functions <- function(arg) {
   return(unique(candidates))
 }
 
+get_pimm_func <- function(mod) {
+  # Get a function to compute the probability of selecting the immediate reward
+  
+  if (is(mod, 'td_bcnm')) {
+    frame <- do.call(get_prob_mod_frame, mod$config)
+  } else if (is(mod, 'td_ddm')) {
+    linpred_func <- do.call(get_linpred_func_ddm, mod$config)
+    frame <- function(data, par) {
+      drift <- linpred_func(data, par)
+      return(pimm_ddm(drift, par))
+    }
+  }
+  # Get a function where the parameter values are fixed
+  func <- function(data) {
+    frame(data, coef(mod))
+  }
+  
+  return(func)
+  
+}

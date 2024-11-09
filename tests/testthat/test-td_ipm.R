@@ -80,4 +80,5 @@ test_that('errors', {
   expect_error(td_ipm(data.frame(del = 1:10)))
   expect_error(td_ipm(df, discount_function = 'new'))
   expect_error(plot(mod, type = 'endpoints'))
+  expect_error(plot(mod, p_lines = 0.1))
 })

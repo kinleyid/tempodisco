@@ -36,6 +36,12 @@ The plotting function prints some info, telling us it is plotting the discount c
 plot(mod, type = 'summary', verbose = F, log = 'x')
 ```
 
+Additionally, we can plot some information about how stochastic the individual's decision making was. The discount curve shows where the probability of selecting the immediate reward is predicted to be 50%, but we can plot curves for other probabilities as well. For example, we can show where the probability of selecting the immediate reward is 10% and 90% by setting `p_lines = c(0.1, 0.9)`. For more stochastic decision makers, there will be a greater separation between these (note that this is *not* a confidence interval for the discount curve itself):
+
+```{r}
+plot(mod, type = 'summary', verbose = F, log = 'x', p_lines = c(0.1, 0.9))
+```
+
 For an indifference point model, the discount function is usually plotted alongside the empirical indifference points:
 
 ```{r}

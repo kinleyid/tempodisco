@@ -68,6 +68,7 @@ while (arg_combo_idx <= nrow(arg_combos)) {
   test_that('plots', {
     expect_no_error(plot(mod, type = 'summary', verbose = F))
     expect_no_error(plot(mod, type = 'summary', verbose = F, log = 'x'))
+    expect_no_error(plot(mod, type = 'summary', verbose = F, log = 'x', p_lines = 0.1, p_tol = 0.1))
     expect_no_error(plot(mod, type = 'endpoints', verbose = F))
     expect_output(plot(mod, type = 'endpoints', verbose = T))
     expect_no_error(plot(mod, type = 'endpoints', verbose = F, del = 100, val_del = 50))
