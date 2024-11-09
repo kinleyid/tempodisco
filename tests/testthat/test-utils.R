@@ -56,3 +56,8 @@ data("td_bc_single_ptpt")
 test_that('wileyto scoring', {
   expect_s3_class(wileyto_score(td_bc_single_ptpt), 'td_bclm')
 })
+
+test_that('experimental indiff scoring function', {
+  expect_no_error(most_consistent_indiffs(td_bc_single_ptpt))
+  expect_no_error(delwise_consistencies(td_bc_single_ptpt))
+})
