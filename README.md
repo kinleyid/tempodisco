@@ -252,7 +252,7 @@ Following [Peters & D’Esposito
 sigmoidal transform to the drift rate $\delta$ to improve model fit
 using the argument `drift_transform = "sigmoid"`:
 
-$$\delta' = v_\text{max} \left(\frac{2}{1 + \exp\{-\delta\}} - 1\right)$$
+$$\delta' = v_\text{max} \left(\frac{2}{1 + e^{-\delta}} - 1\right)$$
 
 ``` r
 ddm_sig <- td_ddm(td_bc_single_ptpt, discount_function = 'exponential',
