@@ -307,7 +307,6 @@ get_nll_fn <- function(data, prob_mod_frame) {
   # "frame" with structural aspects specified but parameters unspecified
   
   nll_fn <- function(par) {
-    browser()
     p <- laplace_smooth(prob_mod_frame(data, par))
     return(sum(-ll(p, data$imm_chosen)))
   }
