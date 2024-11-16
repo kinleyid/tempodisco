@@ -106,7 +106,7 @@ run_optimization <- function(fn, par_starts, par_lims, optim_args, silent = F) {
   # Try each combination of parameter starting values
   best_value <- Inf
   best_optimized <- list()
-  for (combo_idx in 1:nrow(par_start_combos)) {
+  for (combo_idx in seq_len(nrow(par_start_combos))) {
     try( # Optimization may fail
       {
         args <- c(
