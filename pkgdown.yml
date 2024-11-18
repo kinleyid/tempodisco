@@ -1,0 +1,17 @@
+pandoc: 3.1.11
+pkgdown: 2.1.1
+pkgdown_sha: ~
+articles:
+  adjusting-amounts: adjusting-amounts.html
+  analyzing-study: analyzing-study.html
+  comparing-models: comparing-models.html
+  custom-discount-functions: custom-discount-functions.html
+  drift-diffusion-models: drift-diffusion-models.html
+  model-free-auc: model-free-auc.html
+  modeling-binary-choice-data: modeling-binary-choice-data.html
+  nonsystematic-discounting: nonsystematic-discounting.html
+  visualizing-models: visualizing-models.html
+last_built: 2024-11-18T23:51Z
+urls:
+  reference: https://kinleyid.github.io/tempodisco/reference
+  article: https://kinleyid.github.io/tempodisco/articles
