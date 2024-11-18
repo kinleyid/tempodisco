@@ -7,7 +7,7 @@
 \method{predict}{td_bcnm}(object, newdata = NULL, type = c("link", "response", "indiff"), ...)
 }
 \arguments{
-\item{object}{A temporal discounting binary choice model. See \code{td_bcnm}.}
+\item{object}{A temporal discounting binary choice model. See \code{\link{td_bcnm}}.}
 
 \item{newdata}{Optionally, a data frame to use for prediction. If omitted, the data used to fit the model will be used for prediction.}
 
@@ -28,3 +28,13 @@ mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'hyperbolic')
 indiffs <- predict(mod, newdata = data.frame(del = 1:100), type = 'indiff')
 }
 }
+\seealso{
+Other nonlinear binary choice model functions: 
+\code{\link{coef.td_bcnm}()},
+\code{\link{deviance.td_bcnm}()},
+\code{\link{fitted.td_bcnm}()},
+\code{\link{logLik.td_bcnm}()},
+\code{\link{residuals.td_bcnm}()},
+\code{\link{td_bcnm}()}
+}
+\concept{nonlinear binary choice model functions}

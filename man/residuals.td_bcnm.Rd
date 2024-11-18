@@ -19,3 +19,13 @@ A vector of residuals
 \description{
 Get residuals from a temporal discounting binary choice model
 }
+\seealso{
+Other nonlinear binary choice model functions: 
+\code{\link{coef.td_bcnm}()},
+\code{\link{deviance.td_bcnm}()},
+\code{\link{fitted.td_bcnm}()},
+\code{\link{logLik.td_bcnm}()},
+\code{\link{predict.td_bcnm}()},
+\code{\link{td_bcnm}()}
+}
+\concept{nonlinear binary choice model functions}

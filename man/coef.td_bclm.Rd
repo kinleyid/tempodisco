@@ -19,3 +19,9 @@ A named vector of coefficients
 \description{
 Get coefficients of a temporal discounting binary choice model
 }
+\seealso{
+Other linear binary choice model functions: 
+\code{\link{predict.td_bclm}()},
+\code{\link{td_bclm}()}
+}
+\concept{linear binary choice model functions}

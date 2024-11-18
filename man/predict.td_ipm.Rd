@@ -29,3 +29,12 @@ indiffs <- predict(mod, del = 1:100)
 indiffs <- predict(mod, newdata = data.frame(del = 1:100))
 }
 }
+\seealso{
+Other indifference point model functions: 
+\code{\link{coef.td_ipm}()},
+\code{\link{fitted.td_ipm}()},
+\code{\link{logLik.td_ipm}()},
+\code{\link{residuals.td_ipm}()},
+\code{\link{td_ipm}()}
+}
+\concept{indifference point model functions}

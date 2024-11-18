@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 [![codecov](https://codecov.io/github/kinleyid/tempodisco/graph/badge.svg?token=CCQXS3SNGB)](https://codecov.io/github/kinleyid/tempodisco)
 <!-- badges: end -->
 
-`tempodisco` is an R package for working with delay discounting data.
+`tempodisco` is an R package for behavioural researchers working with delay discounting data (also known as temporal discounting intertemporal choice data). It is intended to simplify common tasks such as scoring responses (e.g. computing indifference points from an adjusting amounts procedure, computing the "area under the curve", or computing $k$ values as in the Monetary Choice Questionnaire; [Kirby et al., 1999](https://doi.org/10.1037//0096-3445.128.1.78)), identifying poor-quality data (e.g. non-systematic responding and failed attention checks), modelling choice data using multiple discount functions (e.g. hyperbolic, exponential, etc.---see below), and modelling reaction times using drift diffusion models.
 
 ## Installation
 
@@ -165,3 +165,11 @@ We can also measure the model-free area under the curve (AUC), a useful model-ag
 ```{r}
 print(AUC(mod))
 ```
+
+## Reporting issues and requesting features
+
+If you encounter problems with the software or would like to it to have additional functionality, please open a new issue on the GitHub repository. Try to include as much detail as possible, especially how to reproduce any errors/incorrect results. GitHub has instructions on opening an issue [here](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/creating-an-issue).
+
+## Contributing
+
+If you would like to contribute to `tempodisco`, you're more than welcome! Please follow the instructions [here](https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project) on how to contribute to a project on GitHub. Feel free to [contact me](https://kinleyid.github.io) if you'd like help with any contributions.

@@ -64,3 +64,13 @@ custom_discount_function <- td_fn(
 mod <- td_bcnm(td_bc_single_ptpt, discount_function = custom_discount_function, fit_err_rate = T)
 }
 }
+\seealso{
+Other nonlinear binary choice model functions: 
+\code{\link{coef.td_bcnm}()},
+\code{\link{deviance.td_bcnm}()},
+\code{\link{fitted.td_bcnm}()},
+\code{\link{logLik.td_bcnm}()},
+\code{\link{predict.td_bcnm}()},
+\code{\link{residuals.td_bcnm}()}
+}
+\concept{nonlinear binary choice model functions}

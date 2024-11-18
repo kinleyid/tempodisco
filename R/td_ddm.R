@@ -29,6 +29,7 @@
 #' @param optim_args Additional arguments to pass to \code{optim()}. Default is \code{list(silent = T)}.
 #' @param silent Boolean (true by default). The call to \code{optim()} occurs within a \code{try()} wrapper. The value of \code{silent} is passed along to \code{try()}.
 #' @param na.action Action to take when data contains \code{NA} values. Default is \code{na.omit}.
+#' @family drift diffusion model functions
 #' @return An object of class \code{td_bcnm} with components \code{data} (containing the data used for fitting), \code{config} (containing the internal configuration of the model, including the \code{discount_function}), and \code{optim} (the output of \code{optim()}).
 #' @note
 #' Drift rates are computed based on the difference in subjective values between the immediate and delayed rewards. In theory, when they are equally valued, they should have equal probability of being chosen. However, this is only true when the bias parameter of the drift diffusion model (\code{beta}) is 0.5 (i.e., no bias). To make sure the immediate and delayed reward have equal probability of being chosen when they are equally valued, we can set \code{drift_transform = "bias-correct"} to add a bias correction factor to the drift rate. However, this feature is experimental and its effects on model fit etc. have not been tested.

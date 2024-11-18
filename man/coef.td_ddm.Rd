@@ -7,7 +7,7 @@
 \method{coef}{td_ddm}(object, type = "all", ...)
 }
 \arguments{
-\item{object}{An object of class \link{td_ddm}}
+\item{object}{An object of class \code{\link{td_ddm}}.}
 
 \item{type}{A string specifying which coefficients to extract. \code{'all'} extracts them all, \code{'ddm'} extracts only DDM-specific parameters, and \code{'df'} extracts only discount function parameters}
 
@@ -19,3 +19,12 @@ A named vector of coefficients
 \description{
 Get coefficients of a temporal discounting drift diffusion model
 }
+\seealso{
+Other drift diffusion model functions: 
+\code{\link{deviance.td_ddm}()},
+\code{\link{fitted.td_ddm}()},
+\code{\link{logLik.td_ddm}()},
+\code{\link{predict.td_ddm}()},
+\code{\link{td_ddm}()}
+}
+\concept{drift diffusion model functions}

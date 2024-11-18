@@ -77,10 +77,11 @@ predict_indiffs <- function(object, newdata) {
 #' Model Predictions
 #'
 #' Generate predictions from a temporal discounting binary choice model
-#' @param object A temporal discounting binary choice model. See \code{td_bcnm}.
+#' @param object A temporal discounting binary choice model. See \code{\link{td_bcnm}}.
 #' @param newdata Optionally, a data frame to use for prediction. If omitted, the data used to fit the model will be used for prediction.
 #' @param type The type of prediction required. As in predict.glm, \code{"link"} (default) and \code{"response"} give predictions on the scales of the linear predictors and response variable, respectively. \code{"indiff"} gives predicted indifference points. For predicting indifference points, \code{newdata} needs only a \code{del} column.
 #' @param ... Additional arguments currently not used.
+#' @family nonlinear binary choice model functions
 #' @return A vector of predictions
 #' @examples
 #' \dontrun{
@@ -126,8 +127,9 @@ predict.td_bcnm <- function(object, newdata = NULL, type = c('link', 'response',
 #' Generate predictions from a temporal discounting binary choice linear model
 #' @param object A temporal discounting binary choice linear model. See \code{td_bclm}.
 #' @param newdata Optionally, a data frame to use for prediction. If omitted, the data used to fit the model will be used for prediction.
-#' @param type The type of prediction required. For \code{'indiff'} (default) gives predicted indifference points. In this case, \code{newdata} needs only a \code{del} column. For all other values (e.g. \code{"link"}, \code{"response"}), this function is just a wrapper to \code{predict.glm()}
+#' @param type The type of prediction required. For \code{'indiff'} (default) gives predicted indifference points. In this case, \code{newdata} needs only a \code{del} column. For all other values (e.g. \code{"link"}, \code{"response"}), this function is just a wrapper to \code{\link{predict.glm()}}.
 #' @param ... Additional arguments passed to predict.glm if type != \code{'indiff'}
+#' @family linear binary choice model functions
 #' @return A vector of predictions
 #' @examples
 #' \dontrun{
@@ -163,6 +165,7 @@ predict.td_bclm <- function(object, newdata = NULL, type = c('indiff', 'link', '
 #' @param newdata A data frame to use for prediction. If omitted, the data used to fit the model will be used for prediction.
 #' @param type Type of prediction, either \code{'indiff'} (indifference points) or \code{'response'} (whether the participants would is predicted to choose the immediate (1) or delayed reward (0))
 #' @param ... Additional arguments currently not used.
+#' @family indifference point model functions
 #' @return A vector of predictions
 #' @examples
 #' \dontrun{
@@ -201,10 +204,11 @@ predict.td_ipm <- function(object, newdata = NULL, type = c('indiff', 'response'
 #' Model Predictions
 #'
 #' Generate predictions from a temporal discounting drift diffusion model
-#' @param object A temporal discounting drift diffusion model. See \link{td_ddm}.
+#' @param object A temporal discounting drift diffusion model. See \code{\link{td_ddm}}.
 #' @param newdata Optionally, a data frame to use for prediction. If omitted, the data used to fit the model will be used for prediction.
 #' @param type The type of prediction required. As in predict.glm, \code{"link"} (default) and \code{"response"} give predictions on the scales of the linear predictors and response variable, respectively. \code{"indiff"} gives predicted indifference points. For predicting indifference points, \code{newdata} needs only a \code{del} column. \code{"rt"} gives predicted reaction times.
 #' @param ... Additional arguments currently not used.
+#' @family drift diffusion model functions
 #' @return A vector of predictions
 #' @note
 #' When \code{type = 'rt'}, expected RTs are computed irrespective of which reward was selected, per equation 5 in \href{https://doi.org/10.1016/j.jmp.2009.01.006}{Grasman, Wagenmakers, & van der Maas (2009)}.
@@ -255,8 +259,9 @@ predict.td_ddm <- function(object, newdata = NULL, type = c('indiff', 'link', 'r
 #' Get fitted values
 #' 
 #' Get fitted values of a temporal discounting binary choice model
-#' @param object An object of class \link{td_bcnm}
+#' @param object An object of class \code{\link{td_bcnm}}.
 #' @param ... Additional arguments currently not used.
+#' @family nonlinear binary choice model functions
 #' @return A named vector of fitted values
 #' @export
 fitted.td_bcnm <- function(object, ...) {predict(object, type = 'response')}
@@ -264,8 +269,9 @@ fitted.td_bcnm <- function(object, ...) {predict(object, type = 'response')}
 #' Get fitted values
 #' 
 #' Get fitted values of a temporal discounting indifference point model
-#' @param object An object of class \link{td_ipm}
+#' @param object An object of class \code{\link{td_ipm}}.
 #' @param ... Additional arguments currently not used.
+#' @family indifference point model functions
 #' @return A named vector of fitted values
 #' @export
 fitted.td_ipm <- function(object, ...) {predict(object)}
@@ -273,8 +279,9 @@ fitted.td_ipm <- function(object, ...) {predict(object)}
 #' Get fitted values
 #' 
 #' Get fitted values of a temporal discounting drift diffusion model
-#' @param object An object of class \link{td_ddm}
+#' @param object An object of class \code{\link{td_ddm}}.
 #' @param ... Additional arguments currently not used.
+#' @family drift diffusion model functions
 #' @return A named vector of fitted values
 #' @export
 fitted.td_ddm <- function(object, ...) {predict(object, type = 'response')}
@@ -282,9 +289,10 @@ fitted.td_ddm <- function(object, ...) {predict(object, type = 'response')}
 #' Extract model coefficients
 #' 
 #' Get coefficients of a temporal discounting drift diffusion model
-#' @param object An object of class \link{td_ddm}
+#' @param object An object of class \code{\link{td_ddm}}.
 #' @param type A string specifying which coefficients to extract. \code{'all'} extracts them all, \code{'ddm'} extracts only DDM-specific parameters, and \code{'df'} extracts only discount function parameters
 #' @param ... Additional arguments currently not used.
+#' @family drift diffusion model functions
 #' @return A named vector of coefficients
 #' @export
 coef.td_ddm <- function(object, type = 'all', ...) {object$optim$par}
@@ -294,6 +302,7 @@ coef.td_ddm <- function(object, type = 'all', ...) {object$optim$par}
 #' Get coefficients of a temporal discounting binary choice model
 #' @param object An object of class \code{td_bcnm}
 #' @param ... Additional arguments currently not used.
+#' @family nonlinear binary choice model functions
 #' @return A named vector of coefficients
 #' @export
 coef.td_bcnm <- function(object, ...) {object$optim$par}
@@ -304,6 +313,7 @@ coef.td_bcnm <- function(object, ...) {object$optim$par}
 #' @param object An object of class \code{td_bcnm}
 #' @param df_par Boolean specifying whether the coefficients returned should be the parameters of a discount function (versus the beta parameters from the regression)
 #' @param ... Additional arguments currently not used.
+#' @family linear binary choice model functions
 #' @return A named vector of coefficients
 #' @export
 coef.td_bclm <- function(object, df_par = T, ...) {
@@ -344,6 +354,7 @@ coef.td_bclm <- function(object, df_par = T, ...) {
 #' Get coefficients of a temporal discounting indifference point model
 #' @param object An object of class \code{td_ipm}
 #' @param ... Additional arguments currently not used.
+#' @family indifference point model functions
 #' @return A named vector of coefficients
 #' @export
 coef.td_ipm <- function(object, ...) {object$optim$par}
@@ -354,6 +365,7 @@ coef.td_ipm <- function(object, ...) {object$optim$par}
 #' @param object A temporal discounting binary choice model. See \code{td_bcnm}.
 #' @param type The type of residuals to be returned. See \code{residuals.glm}.
 #' @param ... Additional arguments currently not used.
+#' @family nonlinear binary choice model functions
 #' @return A vector of residuals
 #' @export
 residuals.td_bcnm <- function(object, type = c('deviance', 'pearson', 'response'), ...) {
@@ -381,6 +393,7 @@ residuals.td_bcnm <- function(object, type = c('deviance', 'pearson', 'response'
 #' @param object A temporal discounting model. See \code{td_bcnm}.
 #' @param type The type of residuals to be returned. See \code{residuals.nls}.
 #' @param ... Additional arguments currently not used.
+#' @family indifference point model functions
 #' @return A vector of residuals
 #' @export
 residuals.td_ipm <- function(object, type = c('response', 'pearson'), ...) {
@@ -412,8 +425,9 @@ residuals.td_ipm <- function(object, type = c('response', 'pearson'), ...) {
 #' 
 #' Compute log-likelihood for a temporal discounting binary choice model.
 #' @param mod An object of class \code{td_bcnm}
+#' @family nonlinear binary choice model functions
 #' @export
-logLik.td_bcnm <- function(mod) {
+logLik.td_bcnm <- function(mod, ...) {
   p <- laplace_smooth(predict(mod, type = 'response'))
   x <- mod$data$imm_chosen
   val <- sum(ll(p, x))
@@ -427,8 +441,9 @@ logLik.td_bcnm <- function(mod) {
 #' 
 #' Compute log-likelihood for a temporal discounting indifference point model.
 #' @param mod An object of class \code{td_ipm}
+#' @family indifference point model functions
 #' @export
-logLik.td_ipm <- function(mod) {
+logLik.td_ipm <- function(mod, ...) {
   
   # From logLik.nls
   res <- residuals(mod)
@@ -450,8 +465,9 @@ logLik.td_ipm <- function(mod) {
 #' Compute log-likelihood for a temporal discounting drift diffusion model
 #' @param mod An object of class \code{td_bcnm}
 #' @param type Should probabilities /probability densities be computed for responses and RTs (\code{'resp_rt'}, default) or responses only (\code{'resp'})?
+#' @family drift diffusion model functions
 #' @export
-logLik.td_ddm <- function(mod, type = c('resp_rt', 'resp', 'rt')) {
+logLik.td_ddm <- function(mod, type = c('resp_rt', 'resp', 'rt'), ...) {
   type <- match.arg(type)
   if (type == 'resp_rt') {
     prob_func <- do.call(get_prob_func_ddm, mod$config)
@@ -472,15 +488,17 @@ logLik.td_ddm <- function(mod, type = c('resp_rt', 'resp', 'rt')) {
 #' 
 #' Compute deviance for a temporal discounting binary choice model.
 #' @param mod An object of class \code{td_bcnm}
+#' @family nonlinear binary choice model functions
 #' @export
-deviance.td_bcnm <- function(mod) return(-2*logLik.td_bcnm(mod))
+deviance.td_bcnm <- function(mod, ...) return(-2*logLik.td_bcnm(mod))
 
 #' Model deviance
 #' 
 #' Compute deviance for a temporal discounting drift diffusion model
 #' @param mod An object of class \code{td_ddm}
+#' @family drift diffusion model functions
 #' @export
-deviance.td_ddm <- function(mod) return(-2*logLik.td_ddm(mod))
+deviance.td_ddm <- function(mod, ...) return(-2*logLik.td_ddm(mod))
 
 #' Plot models
 #'

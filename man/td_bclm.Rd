@@ -40,3 +40,9 @@ mod <- td_bclm(td_bc_single_ptpt, model = 'hyperbolic.1')
 print(coef(mod))
 }
 }
+\seealso{
+Other linear binary choice model functions: 
+\code{\link{coef.td_bclm}()},
+\code{\link{predict.td_bclm}()}
+}
+\concept{linear binary choice model functions}

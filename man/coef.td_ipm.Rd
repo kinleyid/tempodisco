@@ -17,3 +17,12 @@ A named vector of coefficients
 \description{
 Get coefficients of a temporal discounting indifference point model
 }
+\seealso{
+Other indifference point model functions: 
+\code{\link{fitted.td_ipm}()},
+\code{\link{logLik.td_ipm}()},
+\code{\link{predict.td_ipm}()},
+\code{\link{residuals.td_ipm}()},
+\code{\link{td_ipm}()}
+}
+\concept{indifference point model functions}

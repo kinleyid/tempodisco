@@ -7,7 +7,7 @@
 \method{fitted}{td_ipm}(object, ...)
 }
 \arguments{
-\item{object}{An object of class \link{td_ipm}}
+\item{object}{An object of class \code{\link{td_ipm}}.}
 
 \item{...}{Additional arguments currently not used.}
 }
@@ -17,3 +17,12 @@ A named vector of fitted values
 \description{
 Get fitted values of a temporal discounting indifference point model
 }
+\seealso{
+Other indifference point model functions: 
+\code{\link{coef.td_ipm}()},
+\code{\link{logLik.td_ipm}()},
+\code{\link{predict.td_ipm}()},
+\code{\link{residuals.td_ipm}()},
+\code{\link{td_ipm}()}
+}
+\concept{indifference point model functions}

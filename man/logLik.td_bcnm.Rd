@@ -4,7 +4,7 @@
 \alias{logLik.td_bcnm}
 \title{Extract log-likelihood}
 \usage{
-\method{logLik}{td_bcnm}(mod)
+\method{logLik}{td_bcnm}(mod, ...)
 }
 \arguments{
 \item{mod}{An object of class \code{td_bcnm}}
@@ -12,3 +12,13 @@
 \description{
 Compute log-likelihood for a temporal discounting binary choice model.
 }
+\seealso{
+Other nonlinear binary choice model functions: 
+\code{\link{coef.td_bcnm}()},
+\code{\link{deviance.td_bcnm}()},
+\code{\link{fitted.td_bcnm}()},
+\code{\link{predict.td_bcnm}()},
+\code{\link{residuals.td_bcnm}()},
+\code{\link{td_bcnm}()}
+}
+\concept{nonlinear binary choice model functions}

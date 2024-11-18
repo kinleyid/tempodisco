@@ -7,7 +7,7 @@
 \method{fitted}{td_bcnm}(object, ...)
 }
 \arguments{
-\item{object}{An object of class \link{td_bcnm}}
+\item{object}{An object of class \code{\link{td_bcnm}}.}
 
 \item{...}{Additional arguments currently not used.}
 }
@@ -17,3 +17,13 @@ A named vector of fitted values
 \description{
 Get fitted values of a temporal discounting binary choice model
 }
+\seealso{
+Other nonlinear binary choice model functions: 
+\code{\link{coef.td_bcnm}()},
+\code{\link{deviance.td_bcnm}()},
+\code{\link{logLik.td_bcnm}()},
+\code{\link{predict.td_bcnm}()},
+\code{\link{residuals.td_bcnm}()},
+\code{\link{td_bcnm}()}
+}
+\concept{nonlinear binary choice model functions}

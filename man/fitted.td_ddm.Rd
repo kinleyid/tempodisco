@@ -7,7 +7,7 @@
 \method{fitted}{td_ddm}(object, ...)
 }
 \arguments{
-\item{object}{An object of class \link{td_ddm}}
+\item{object}{An object of class \code{\link{td_ddm}}.}
 
 \item{...}{Additional arguments currently not used.}
 }
@@ -17,3 +17,12 @@ A named vector of fitted values
 \description{
 Get fitted values of a temporal discounting drift diffusion model
 }
+\seealso{
+Other drift diffusion model functions: 
+\code{\link{coef.td_ddm}()},
+\code{\link{deviance.td_ddm}()},
+\code{\link{logLik.td_ddm}()},
+\code{\link{predict.td_ddm}()},
+\code{\link{td_ddm}()}
+}
+\concept{drift diffusion model functions}

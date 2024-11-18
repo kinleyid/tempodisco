@@ -4,4 +4,5 @@
 #' @importFrom methods is
 #' @importFrom grDevices rgb
 #' @importFrom RWiener dwiener
-NULL
+#' @keywords internal 
+"_PACKAGE"

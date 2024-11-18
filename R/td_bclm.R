@@ -14,6 +14,7 @@
 #' where \eqn{\sigma^{-1}[\cdot]} is the quantile function of the standard logistic distribution \eqn{G^{-1}[\cdot]} is the quantile function of the standard Gumbel distribution
 #' @param data A data frame with columns \code{val_imm} and \code{val_del} for the values of the immediate and delayed rewards, \code{del} for the delay, and \code{imm_chosen} (Boolean) for whether the immediate reward was chosen. Other columns can also be present but will be ignored.
 #' @param ... Additional arguments passed to \code{glm}
+#' @family linear binary choice model functions
 #' @return An object of class \code{td_bclm}, nearly identical to a \code{glm} but with an additional \code{config} component.
 #' @examples
 #' \dontrun{

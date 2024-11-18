@@ -53,3 +53,12 @@ data("td_bc_single_ptpt")
 mod <- td_ddm(td_bc_single_ptpt, discount_function = "hyperbolic")
 }
 }
+\seealso{
+Other drift diffusion model functions: 
+\code{\link{coef.td_ddm}()},
+\code{\link{deviance.td_ddm}()},
+\code{\link{fitted.td_ddm}()},
+\code{\link{logLik.td_ddm}()},
+\code{\link{predict.td_ddm}()}
+}
+\concept{drift diffusion model functions}

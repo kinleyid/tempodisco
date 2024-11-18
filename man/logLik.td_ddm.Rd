@@ -4,7 +4,7 @@
 \alias{logLik.td_ddm}
 \title{Extract log-likelihood}
 \usage{
-\method{logLik}{td_ddm}(mod, type = c("resp_rt", "resp", "rt"))
+\method{logLik}{td_ddm}(mod, type = c("resp_rt", "resp", "rt"), ...)
 }
 \arguments{
 \item{mod}{An object of class \code{td_bcnm}}
@@ -14,3 +14,12 @@
 \description{
 Compute log-likelihood for a temporal discounting drift diffusion model
 }
+\seealso{
+Other drift diffusion model functions: 
+\code{\link{coef.td_ddm}()},
+\code{\link{deviance.td_ddm}()},
+\code{\link{fitted.td_ddm}()},
+\code{\link{predict.td_ddm}()},
+\code{\link{td_ddm}()}
+}
+\concept{drift diffusion model functions}

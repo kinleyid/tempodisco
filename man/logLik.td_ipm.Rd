@@ -4,7 +4,7 @@
 \alias{logLik.td_ipm}
 \title{Extract log-likelihood}
 \usage{
-\method{logLik}{td_ipm}(mod)
+\method{logLik}{td_ipm}(mod, ...)
 }
 \arguments{
 \item{mod}{An object of class \code{td_ipm}}
@@ -12,3 +12,12 @@
 \description{
 Compute log-likelihood for a temporal discounting indifference point model.
 }
+\seealso{
+Other indifference point model functions: 
+\code{\link{coef.td_ipm}()},
+\code{\link{fitted.td_ipm}()},
+\code{\link{predict.td_ipm}()},
+\code{\link{residuals.td_ipm}()},
+\code{\link{td_ipm}()}
+}
+\concept{indifference point model functions}

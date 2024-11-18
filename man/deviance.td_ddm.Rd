@@ -4,7 +4,7 @@
 \alias{deviance.td_ddm}
 \title{Model deviance}
 \usage{
-\method{deviance}{td_ddm}(mod)
+\method{deviance}{td_ddm}(mod, ...)
 }
 \arguments{
 \item{mod}{An object of class \code{td_ddm}}
@@ -12,3 +12,12 @@
 \description{
 Compute deviance for a temporal discounting drift diffusion model
 }
+\seealso{
+Other drift diffusion model functions: 
+\code{\link{coef.td_ddm}()},
+\code{\link{fitted.td_ddm}()},
+\code{\link{logLik.td_ddm}()},
+\code{\link{predict.td_ddm}()},
+\code{\link{td_ddm}()}
+}
+\concept{drift diffusion model functions}

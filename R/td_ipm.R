@@ -17,6 +17,7 @@ get_rss_fn <- function(data, discount_function) {
 #' @param na.action Action to take when data contains \code{NA} values. Default is \code{na.omit}.
 #' @param optim_args A list of additional args to pass to \code{optim}
 #' @param silent A Boolean specifying whether the call to \code{optim} (which occurs in a \code{try} block) should be silent on error
+#' @family indifference point model functions
 #' @return A list from \code{optim} with additional components specifying the AIC, the ED50, the discount function, and the probabilistic model
 #' @examples
 #' \dontrun{

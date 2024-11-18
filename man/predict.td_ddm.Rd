@@ -12,7 +12,7 @@
 )
 }
 \arguments{
-\item{object}{A temporal discounting drift diffusion model. See \link{td_ddm}.}
+\item{object}{A temporal discounting drift diffusion model. See \code{\link{td_ddm}}.}
 
 \item{newdata}{Optionally, a data frame to use for prediction. If omitted, the data used to fit the model will be used for prediction.}
 
@@ -36,3 +36,12 @@ mod <- td_ddm(td_bc_single_ptpt, discount_function = 'exponential')
 pred_rts <- predict(mod, type = 'rt')
 }
 }
+\seealso{
+Other drift diffusion model functions: 
+\code{\link{coef.td_ddm}()},
+\code{\link{deviance.td_ddm}()},
+\code{\link{fitted.td_ddm}()},
+\code{\link{logLik.td_ddm}()},
+\code{\link{td_ddm}()}
+}
+\concept{drift diffusion model functions}
