@@ -7,10 +7,10 @@
 \method{plot}{td_um}(
   x,
   type = c("summary", "endpoints", "link", "rt"),
-  legend = T,
+  legend = TRUE,
   p_lines = NULL,
   p_tol = 0.001,
-  verbose = T,
+  verbose = TRUE,
   del = NULL,
   val_del = NULL,
   confint = 0.95,

@@ -257,8 +257,8 @@ get_prob_func_ddm <- function(discount_function, drift_transform) {
     # Compute densities
     q <- data$rt
     resp <- ifelse(data$imm_chosen, 'upper', 'lower')
-    d <- sapply(
-      1:nrow(data),
+    d <- vapply(
+      seq_len(nrow(data)),
       function(i) {
         RWiener::dwiener(q = data$rt[i], delta = drift[i], resp = resp[i],
                          alpha = par['alpha'], tau = par['tau'], beta = par['beta'])

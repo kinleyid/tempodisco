@@ -316,7 +316,7 @@ coef.td_bcnm <- function(object, ...) {object$optim$par}
 #' @family linear binary choice model functions
 #' @return A named vector of coefficients
 #' @export
-coef.td_bclm <- function(object, df_par = T, ...) {
+coef.td_bclm <- function(object, df_par = TRUE, ...) {
   if (df_par) {
     # In terms of discount function parameters
     p <- object$coefficients
@@ -528,10 +528,10 @@ deviance.td_ddm <- function(mod, ...) return(-2*logLik.td_ddm(mod))
 #' @export
 plot.td_um <- function(x,
                        type = c('summary', 'endpoints', 'link', 'rt'),
-                       legend = T,
+                       legend = TRUE,
                        p_lines = NULL,
                        p_tol = 0.001,
-                       verbose = T,
+                       verbose = TRUE,
                        del = NULL,
                        val_del = NULL,
                        confint = 0.95,
@@ -548,7 +548,7 @@ plot.td_um <- function(x,
     min_del <- min(data$del)
     plotting_delays <- seq(min_del, max_del, length.out = 1000)
     if (is.null(val_del) & ('val_del' %in% names(x$data))) {
-      val_del = mean(x$data$val_del)
+      val_del <- mean(x$data$val_del)
       if (verbose) {
         cat(sprintf('Plotting indifference curve for val_del = %s (mean of val_del from data used to fit model). Override this behaviour by setting the `val_del` argument to plot() or set verbose = F to suppress this message.\n', val_del))
       }
@@ -588,11 +588,11 @@ plot.td_um <- function(x,
       
       # Split the grid by delay
       # Using split() with a numerical index is faster than calling tapply() or similar
-      split_idx <- rep(1:length(plotting_delays), each = length(val_imm_cands))
+      split_idx <- rep(seq_along(plotting_delays), each = length(val_imm_cands))
       subgrid_list <- split(grid, split_idx)
       for (p in p_lines) {
         # Get the val_imm producing (close to) the desired p at each delay
-        val_imm <- sapply(subgrid_list, function(subgrid) {
+        val_imm <- vapply(subgrid_list, function(subgrid) {
           if (max(subgrid$p) < p | min(subgrid$p) > p) {
             return(NA)
           } else {
@@ -640,7 +640,7 @@ plot.td_um <- function(x,
         # Plot of psychometric curve
         
         if (is.null(val_del)) {
-          val_del = mean(x$data$val_del)
+          val_del <- mean(x$data$val_del)
           if (x$config$gamma_scale %def% 'none' != 'none') {
             if (verbose) {
               cat(sprintf('gamma parameter (steepness of psychometric curve curve) is scaled by val_del.\nThus, the curve will have different steepness for a different value of val_del.\nDefaulting to val_del = %s (mean of val_del from data used to fit model).\nUse the `val_del` argument to specify a custom value or use verbose = F to suppress this message.\n', val_del))
@@ -762,7 +762,7 @@ plot.td_um <- function(x,
         # Plot confidence interval
         conf_extremum <- (1 - confint)/2
         for (p in c(conf_extremum, 1 - conf_extremum)) {
-          bounds <- sapply(plotting_linpreds, function(drift) {
+          bounds <- vapply(plotting_linpreds, function(drift) {
             RWiener::qwiener(p = p, delta = drift,
                              alpha = cf['alpha'], tau = cf['tau'], beta = cf['beta'],
                              resp = 'both')

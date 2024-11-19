@@ -106,7 +106,7 @@ run_optimization <- function(fn, par_starts, par_lims, optim_args, silent = F) {
   # Try each combination of parameter starting values
   best_value <- Inf
   best_optimized <- list()
-  for (combo_idx in 1:nrow(par_start_combos)) {
+  for (combo_idx in seq_len(nrow(par_start_combos))) {
     try( # Optimization may fail
       {
         args <- c(
@@ -206,7 +206,7 @@ kirby_score <- function(data, discount_function = c('hyperbolic', 'exponential')
   }
   most_consistent <- which(data$consistency == max_consistency)
   
-  cands <- sapply(most_consistent, function(cand) {
+  cands <- vapply(most_consistent, function(cand) {
     geomean(data$k[(cand-1) : cand])
   })
   if (length(cands) > 1) {
@@ -229,7 +229,7 @@ kirby_score <- function(data, discount_function = c('hyperbolic', 'exponential')
 
 #' Compute consistency score
 #'
-#' Compute the consistency score per the method of \href{https://doi.org/10.1037//0096-3445.128.1.78}{Kirby et al. (1999)}. This is described in detail in \href{https://doi.org/10.1007/s40614-016-0070-9}{Kaplan et al. (2016)}, where it's suggested that a consistency score below 0.75 might be a sign of inattentive responding.
+#' Compute the consistency score per the method of \href{10.1037//0096-3445.128.1.78}{Kirby et al. (1999)}. This is described in detail in \href{https://doi.org/10.1007/s40614-016-0070-9}{Kaplan et al. (2016)}, where it's suggested that a consistency score below 0.75 might be a sign of inattentive responding.
 #' @param data Responses to score.
 #' @param discount_function Should \eqn{k} values be computed according to the hyperbolic or exponential discount function? The original method uses the hyperbolic, but in principle the exponential is also possible.
 #' @return A consistency score
@@ -258,7 +258,7 @@ kirby_preproc <- function(data, discount_function = c('hyperbolic', 'exponential
   
   data <- data[order(data$k), ]
   
-  data$consistency <- sapply(1:nrow(data), function(idx) {
+  data$consistency <- vapply(seq_len(nrow(data)), function(idx) {
     mean(c(data$imm_chosen[0:(idx-1)],
            !data$imm_chosen[(idx):(nrow(data)+1)]),
          na.rm = T)
@@ -317,7 +317,7 @@ delwise_consistencies <- function(data) {
   rows <- by(data, data$del, function(sdf) {
     # Get candidate indifference points
     cand_indiffs <- filter(c(0, sort(sdf$val_rel), 1), rep(0.5, 2))[1:(nrow(sdf) + 1)]
-    consistencies <- sapply(cand_indiffs, function(ci) {
+    consistencies <- vapply(cand_indiffs, function(ci) {
       mean(
         c(!sdf[sdf$val_rel <= ci, 'imm_chosen'],
           sdf[sdf$val_rel >= ci, 'imm_chosen'])

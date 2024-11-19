@@ -4,7 +4,7 @@
 \alias{coef.td_bclm}
 \title{Extract model coefficients}
 \usage{
-\method{coef}{td_bclm}(object, df_par = T, ...)
+\method{coef}{td_bclm}(object, df_par = TRUE, ...)
 }
 \arguments{
 \item{object}{An object of class \code{td_bcnm}}

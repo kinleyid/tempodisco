@@ -99,7 +99,7 @@ td_fn <- function(predefined = c('hyperbolic',
                             return(interp_result$y)
                           }
                         }
-                        yout <- sapply(xout, get_yout)
+                        yout <- vapply(xout, get_yout)
                         return(yout)
                       }
     )

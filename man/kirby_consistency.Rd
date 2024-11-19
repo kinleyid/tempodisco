@@ -15,7 +15,7 @@ kirby_consistency(data, discount_function = c("hyperbolic", "exponential"))
 A consistency score
 }
 \description{
-Compute the consistency score per the method of \href{https://doi.org/10.1037//0096-3445.128.1.78}{Kirby et al. (1999)}. This is described in detail in \href{https://doi.org/10.1007/s40614-016-0070-9}{Kaplan et al. (2016)}, where it's suggested that a consistency score below 0.75 might be a sign of inattentive responding.
+Compute the consistency score per the method of \href{10.1037//0096-3445.128.1.78}{Kirby et al. (1999)}. This is described in detail in \href{https://doi.org/10.1007/s40614-016-0070-9}{Kaplan et al. (2016)}, where it's suggested that a consistency score below 0.75 might be a sign of inattentive responding.
 }
 \examples{
 \dontrun{

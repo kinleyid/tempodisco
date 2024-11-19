@@ -79,12 +79,12 @@ td_bcnm <- function(
         config$transform <- 'identity'
       }
     } else if (choice_rule == 'power') {
-      config$noise_dist = 'logis'
-      config$gamma_scale = 'none'
+      config$noise_dist <- 'logis'
+      config$gamma_scale <- 'none'
       if (fixed_ends) {
-        config$transform = 'noise_dist_quantile'
+        config$transform <- 'noise_dist_quantile'
       } else {
-        config$transform = 'log'
+        config$transform <- 'log'
       }
     }
     

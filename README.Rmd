@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/kinleyid/tempodisco/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/kinleyid/tempodisco/actions/workflows/R-CMD-check.yaml)
-[![codecov](https://codecov.io/github/kinleyid/tempodisco/graph/badge.svg?token=CCQXS3SNGB)](https://codecov.io/github/kinleyid/tempodisco)
+[![codecov](https://codecov.io/github/kinleyid/tempodisco/graph/badge.svg?token=CCQXS3SNGB)](https://app.codecov.io/github/kinleyid/tempodisco)
 <!-- badges: end -->
 
 `tempodisco` is an R package for behavioural researchers working with delay discounting data (also known as temporal discounting intertemporal choice data). It is intended to simplify common tasks such as scoring responses (e.g. computing indifference points from an adjusting amounts procedure, computing the "area under the curve", or computing $k$ values as in the Monetary Choice Questionnaire; [Kirby et al., 1999](https://doi.org/10.1037//0096-3445.128.1.78)), identifying poor-quality data (e.g. non-systematic responding and failed attention checks), modelling choice data using multiple discount functions (e.g. hyperbolic, exponential, etc.---see below), and modelling reaction times using drift diffusion models.
