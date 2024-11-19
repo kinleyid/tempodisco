@@ -45,7 +45,7 @@ attention_checks <- function(data, warn = F, ppn = F) {
 
 #' Check for invariant responding
 #' 
-#' Check whether participants always chose the immediate reward or always chose the delayed reward
+#' Check whether participants always chose the immediate reward or always chose the delayed reward.
 #' @param data A \code{data.frame} with columns \code{val_imm}, \code{val_del} and \code{del_chosen}, representing data from a single participant.
 #' @param warn Logical: give a warning for invariant responding?
 #' @returns Named vector specifying whether the participant chose only immediate rewards (\code{all_imm}) or chose all delayed rewards (\code{all_del}).

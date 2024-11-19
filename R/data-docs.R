@@ -20,7 +20,7 @@ NULL
 
 #' Simulated indifference point data for a single participant
 #' 
-#' A dataframe containing simulated indifference points from a single participant exhibiting approximately hyperbolic discounting
+#' A dataframe containing simulated indifference points from a single participant exhibiting approximately hyperbolic discounting.
 #' @name td_ip_simulated_ptpt
 #' @docType data
 #' @author Isaac Kinley \email{isaac.kinley@gmail.com}
@@ -29,7 +29,7 @@ NULL
 
 #' Simulated adjusting amount procedure
 #' 
-#' A minimal example of data from a single participant for an adjusting amount procedure
+#' A minimal example of data from a single participant for an adjusting amount procedure.
 #' @name adj_amt_sim
 #' @docType data
 #' @author Isaac Kinley \email{isaac.kinley@gmail.com}

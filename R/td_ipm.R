@@ -11,14 +11,14 @@ get_rss_fn <- function(data, discount_function) {
 
 #' Temporal discounting indifference point model
 #'
-#' Compute a model of a single subject's indifference points
-#' @param data A data frame with columns \code{indiff} for the pre-computed indifference points and \code{del} for the delay
+#' Compute a model of a single subject's indifference points.
+#' @param data A data frame with columns \code{indiff} for the pre-computed indifference points and \code{del} for the delay.
 #' @param discount_function A vector of strings specifying the name of the discount functions to use, or an object of class \code{td_fn} (used for creating custom discount functions), or a list of objects of class \code{td_fn}.
 #' @param na.action Action to take when data contains \code{NA} values. Default is \code{na.omit}.
-#' @param optim_args A list of additional args to pass to \code{optim}
-#' @param silent A Boolean specifying whether the call to \code{optim} (which occurs in a \code{try} block) should be silent on error
-#' @family indifference point model functions
-#' @return A list from \code{optim} with additional components specifying the AIC, the ED50, the discount function, and the probabilistic model
+#' @param optim_args A list of additional args to pass to \code{optim}.
+#' @param silent A Boolean specifying whether the call to \code{optim} (which occurs in a \code{try} block) should be silent on error.
+#' @family indifference point model functions.
+#' @return An object of class \code{td_ipm} with components \code{data} (containing the data used for fitting), \code{config} (containing the internal configuration of the model, including the \code{discount_function}), and \code{optim} (the output of \code{optim()}).
 #' @examples
 #' \dontrun{
 #' # Basic usage

@@ -1,10 +1,10 @@
 
 #' Median effective delay
 #'
-#' Compute the median effective delay
+#' Compute the median effective delay.
 #' @param mod A temporal discounting model.
-#' @param val_del Delayed value, if applicable (i.e., if magnitude effects are accounted for)
-#' @return A vector of predictions
+#' @param val_del Delayed value, if applicable (i.e., if magnitude effects are accounted for).
+#' @return A vector of predictions.
 #' @examples
 #' \dontrun{
 #' data("td_bc_single_ptpt")
@@ -38,14 +38,14 @@ ED50 <- function(mod, val_del = NULL) {
 
 #' Area under the curve (AUC)
 #'
-#' Compute the area under the curve using numerical integration
-#' @param mod A temporal discounting model. See `td_gnlm`
-#' @param min_del Lower limit to use for integration
-#' @param max_del Upper limit to use for integration
-#' @param val_del Delayed value to use for computing the indifference curve, if applicable
-#' @param verbose Specifies whether to provide extra detail, if applicable
-#' @param ... Further arguments passed to `integrate()`
-#' @return AUC value
+#' Compute the area under the curve using numerical integration.
+#' @param mod A temporal discounting model. See \code{\link{td_bcnm}} and related functions.
+#' @param min_del Lower limit to use for integration.
+#' @param max_del Upper limit to use for integration.
+#' @param val_del Delayed value to use for computing the indifference curve, if applicable.
+#' @param verbose Specifies whether to provide extra detail, if applicable.
+#' @param ... Further arguments passed to `integrate()`.
+#' @return AUC value.
 #' @examples
 #' \dontrun{
 #' data("td_bc_single_ptpt")
@@ -159,9 +159,9 @@ nonsys <- function(obj) {
 
 #' Get discount function
 #' 
-#' Access the name of the discount function of a model
-#' @param mod A temporal discounting model
-#' @returns The name of the discount function
+#' Access the name of the discount function of a model.
+#' @param mod A temporal discounting model.
+#' @returns The name of the discount function.
 #' @examples
 #' \dontrun{
 #' data("td_bc_single_ptpt")

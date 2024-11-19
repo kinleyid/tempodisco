@@ -133,11 +133,11 @@ run_optimization <- function(fn, par_starts, par_lims, optim_args, silent = F) {
 
 #' Indifference points from adjusting amount procedure
 #' 
-#' Compute indifference points for data from an adjusting amount procedure (also called a "titrating procedure"). 
+#' Compute indifference points for data from an adjusting amount procedure (also called a "titrating procedure").
 #' @param data A dataframe where each row corresponds to a binary choice, with at least columns \code{val_imm}, \code{val_del}, and \code{imm_chosen}, along with a block indicator and (if applicable) an order indicator.
 #' @param block_indic Column name of the block indicator---i.e., the column that will identify a block of trials for which an indifference point should be computed. If unspecified, defaults to \code{'del'}, which assumes that each block corresponds to a different delay.
 #' @param order_indic Column name of the order indicator---i.e., the column that specifies the order in which trials were completed. Sorting by this column within a block should sort the rows in chronological order. If unspecified, the rows are assumed to already be in chronological order.
-#' @returns A dataframe with two columns: one for the block indicator and another for the corresponding indifference point
+#' @returns A dataframe with two columns: one for the block indicator and another for the corresponding indifference point.
 #' @examples
 #' \dontrun{
 #' data("adj_amt_sim")
@@ -233,7 +233,7 @@ kirby_score <- function(data, discount_function = c('hyperbolic', 'exponential')
 #' Compute the consistency score per the method of \href{10.1037//0096-3445.128.1.78}{Kirby et al. (1999)}. This is described in detail in \href{https://doi.org/10.1007/s40614-016-0070-9}{Kaplan et al. (2016)}, where it's suggested that a consistency score below 0.75 might be a sign of inattentive responding.
 #' @param data Responses to score.
 #' @param discount_function Should \eqn{k} values be computed according to the hyperbolic or exponential discount function? The original method uses the hyperbolic, but in principle the exponential is also possible.
-#' @return A consistency score
+#' @return A consistency score between 0 and 1.
 #' @examples
 #' \dontrun{
 #' data("td_bc_single_ptpt")
@@ -290,7 +290,8 @@ wileyto_score <- function(data) {
 
 #' Experimental method for computing indifference points
 #' 
-#' @param data Responses to score
+#' @param data Responses to score.
+#' @returns A dataframe with two columns: one for the block indicator and another for the corresponding indifference point.
 #' @export
 most_consistent_indiffs <- function(data) {
   
