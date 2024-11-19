@@ -63,7 +63,7 @@
 </h1></div>
 <!-- badges: start -->
 
-<p><code>tempodisco</code> is an R package for working with delay discounting data.</p>
+<p><code>tempodisco</code> is an R package for behavioural researchers working with delay discounting data (also known as temporal discounting intertemporal choice data). It is intended to simplify common tasks such as scoring responses (e.g. computing indifference points from an adjusting amounts procedure, computing the “area under the curve”, or computing <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math> values as in the Monetary Choice Questionnaire; <a href="https://doi.org/10.1037//0096-3445.128.1.78" class="external-link">Kirby et al., 1999</a>), identifying poor-quality data (e.g. non-systematic responding and failed attention checks), modelling choice data using multiple discount functions (e.g. hyperbolic, exponential, etc.—see below), and modelling reaction times using drift diffusion models.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -94,8 +94,8 @@
 <p>This returns a data frame containing the delays and corresponding indifference points. The function <code>td_ipm</code> can then be used to identify the best-fitting discount function (according to the Bayesian information criterion) from any subset of the following options:</p>
 <table class="table">
 <colgroup>
-<col width="62%">
-<col width="37%">
+<col width="50%">
+<col width="50%">
 </colgroup>
 <thead><tr class="header">
 <th>Name</th>
@@ -197,10 +197,10 @@
 <p>We can extend this approach to a number of other discount functions using the <code>method</code> argument to <code>td_bclm</code>:</p>
 <table class="table">
 <colgroup>
-<col width="9%">
-<col width="36%">
-<col width="32%">
-<col width="21%">
+<col width="25%">
+<col width="25%">
+<col width="25%">
+<col width="25%">
 </colgroup>
 <thead><tr class="header">
 <th>Name</th>
@@ -295,8 +295,8 @@
 <p>We can explore an even wider range of discount functions using nonlinear modeling with <code>td_bcnm</code>. When <code>discount_function = "all"</code> (the default), all of the following models are tested and the best-fitting one (according to the Bayesian information criterion) is returned:</p>
 <table class="table">
 <colgroup>
-<col width="62%">
-<col width="37%">
+<col width="50%">
+<col width="50%">
 </colgroup>
 <thead><tr class="header">
 <th>Name</th>
@@ -420,6 +420,16 @@
 <span><span class="co">#&gt; Defaulting to val_del = 198.314285714286</span></span>
 <span><span class="co">#&gt; [1] 0.03146756</span></span></code></pre></div>
 </div>
+</div>
+<div class="section level2">
+<h2 id="reporting-issues-and-requesting-features">Reporting issues and requesting features<a class="anchor" aria-label="anchor" href="#reporting-issues-and-requesting-features"></a>
+</h2>
+<p>If you encounter problems with the software or would like to it to have additional functionality, please open a new issue on the GitHub repository. Try to include as much detail as possible, especially how to reproduce any errors/incorrect results. GitHub has instructions on opening an issue <a href="https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/creating-an-issue" class="external-link">here</a>.</p>
+</div>
+<div class="section level2">
+<h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
+</h2>
+<p>If you would like to contribute to <code>tempodisco</code>, you’re more than welcome! Please follow the instructions <a href="https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project" class="external-link">here</a> on how to contribute to a project on GitHub. Feel free to <a href="https://kinleyid.github.io" class="external-link">contact me</a> if you’d like help with any contributions.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">
