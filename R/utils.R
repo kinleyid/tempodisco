@@ -312,7 +312,8 @@ most_consistent_indiffs <- function(data) {
 
 delwise_consistencies <- function(data) {
   
-  require_columns(data, c('val_del', 'val_imm', 'imm_chosen', 'del'))
+  validate_td_data(data,
+                   required_columns = c('val_del', 'val_imm', 'imm_chosen', 'del'))
   
   data$val_rel <- data$val_imm / data$val_del
   

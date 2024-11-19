@@ -44,15 +44,15 @@ validate_td_data <- function(data, required_columns) {
   }
   
   expectations <- list(
-    'del' = list(type = c('numeric', 'factor'),
+    'del' = list(type = c('numeric', 'integer', 'factor'),
                  lims = c(0, Inf)),
-    'indiff' = list(type = 'numeric',
+    'indiff' = list(type = c('numeric', 'integer'),
                     lims = c(0, 1)),
     'val_imm' = list(type = c('numeric', 'integer'),
                      lims = c(0, Inf)),
     'val_del' = list(type = c('numeric', 'integer'),
                      lims = c(0, Inf)),
-    'imm_chosen' = list(type = c('numeric', 'logical'),
+    'imm_chosen' = list(type = c('numeric', 'integer', 'logical'),
                         lims = c(0, 1)),
     'rt' = list(type = 'numeric',
                 lims = c(0, Inf))

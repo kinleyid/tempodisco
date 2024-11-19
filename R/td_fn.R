@@ -65,7 +65,6 @@ td_fn <- function(predefined = c('hyperbolic',
     if (is.null(par_lims)) {
       par_lims <- list()
     } else {
-      browser()
       if (is.null(names(par_lims)) | any(names(par_lims) == '')) {
         stop('Every element of par_lims must have a name corresponding to a different parameter')
       } else if (!all(vapply(par_lims, length, numeric(1)) == 2)) {

@@ -193,7 +193,8 @@ predict.td_ipm <- function(object, newdata = NULL, type = c('indiff', 'response'
   if (type == 'indiff') {
     out <- indiffs
   } else if (type == 'response') {
-    require_columns(newdata, c('val_imm', 'val_del'))
+    validate_td_data(newdata,
+                     required_columns = c('val_imm', 'val_del'))
     out <- as.numeric((newdata$val_imm / newdata$val_del) > indiffs)
   }
   

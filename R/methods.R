@@ -124,7 +124,8 @@ AUC <- function(mod, min_del = 0, max_del = NULL, val_del = NULL, verbose = T, .
 nonsys <- function(obj) {
   
   if (is(obj, 'data.frame')) {
-    require_columns(obj, c('indiff', 'del'))
+    validate_td_data(obj,
+                     required_columns = c('indiff', 'del'))
     indiffs <- obj$indiff
     delays <- obj$del
   } else if (inherits(obj, c('td_bcnm', 'td_ipm', 'td_ddm'))) {
