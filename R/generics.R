@@ -127,7 +127,7 @@ predict.td_bcnm <- function(object, newdata = NULL, type = c('link', 'response',
 #' Generate predictions from a temporal discounting binary choice linear model
 #' @param object A temporal discounting binary choice linear model. See \code{td_bclm}.
 #' @param newdata Optionally, a data frame to use for prediction. If omitted, the data used to fit the model will be used for prediction.
-#' @param type The type of prediction required. For \code{'indiff'} (default) gives predicted indifference points. In this case, \code{newdata} needs only a \code{del} column. For all other values (e.g. \code{"link"}, \code{"response"}), this function is just a wrapper to \code{\link{predict.glm()}}.
+#' @param type The type of prediction required. For \code{'indiff'} (default) gives predicted indifference points. In this case, \code{newdata} needs only a \code{del} column. For all other values (e.g. \code{"link"}, \code{"response"}), this function is just a wrapper to \code{predict.glm()}.
 #' @param ... Additional arguments passed to predict.glm if type != \code{'indiff'}
 #' @family linear binary choice model functions
 #' @return A vector of predictions
