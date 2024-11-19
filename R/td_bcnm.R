@@ -105,9 +105,8 @@ td_bcnm <- function(
   }
   
   # Required data columns
-  req_cols <- c('val_imm', 'val_del', 'del', 'imm_chosen')
-  require_columns(data, req_cols)
-  data <- data[req_cols]
+  validate_td_data(data,
+                   required_columns = c('val_imm', 'val_del', 'del', 'imm_chosen'))
   data <- na.action(data)
   
   # Ensure imm_chosen is logical

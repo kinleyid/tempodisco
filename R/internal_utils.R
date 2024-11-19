@@ -87,4 +87,9 @@ validate_td_data <- function(data, required_columns) {
     stop('Data failed validation; see messages above.')
   }
   
+  # Convert imm_chosen to logical, if applicable
+  if ('imm_chosen' %in% names(data)) {
+    data$imm_chosen <- as.logical(data$imm_chosen)
+  }
+  
 }

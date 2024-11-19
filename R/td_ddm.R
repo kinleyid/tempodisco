@@ -53,16 +53,14 @@ td_ddm <- function(
   # Input validation--------------------------
   
   # Required data columns
-  require_columns(data, c('val_imm', 'val_del', 'del', 'imm_chosen', 'rt'))
+  validate_td_data(data,
+                   required_columns = c('val_imm', 'val_del', 'del', 'imm_chosen', 'rt'))
   data <- na.action(data)
   
   # Check that RTs are in seconds vs milliseconds
   if (median(data$rt) > 500) {
     warning('Median RT is greater than 500, meaning RTs are likely in units of milliseconds (or smaller). They should be in units of seconds.')
   }
-  
-  # Ensure imm_chosen is logical
-  data$imm_chosen <- as.logical(data$imm_chosen)
   
   # Attention checks
   attention_checks(data, warn = T)
