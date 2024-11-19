@@ -200,7 +200,15 @@ actual data:</p>
 <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> the DDM wiht the argument
 <code>type = "rt"</code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ddm</span>, type <span class="op">=</span> <span class="st">'rt'</span>, confint <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ddm</span>, type <span class="op">=</span> <span class="st">'rt'</span>, confint <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in plot.window(...): "confint" is not a graphical parameter</span></span>
+<span><span class="co">#&gt; Warning in plot.xy(xy, type, ...): "confint" is not a graphical parameter</span></span>
+<span><span class="co">#&gt; Warning in axis(side = side, at = at, labels = labels, ...): "confint" is not a</span></span>
+<span><span class="co">#&gt; graphical parameter</span></span>
+<span><span class="co">#&gt; Warning in axis(side = side, at = at, labels = labels, ...): "confint" is not a</span></span>
+<span><span class="co">#&gt; graphical parameter</span></span>
+<span><span class="co">#&gt; Warning in box(...): "confint" is not a graphical parameter</span></span>
+<span><span class="co">#&gt; Warning in title(...): "confint" is not a graphical parameter</span></span></code></pre></div>
 <p><img src="drift-diffusion-models_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 <p>This displays both the predicted RTs from the model and a 90%
 confidence interval</p>
