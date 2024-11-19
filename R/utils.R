@@ -249,7 +249,8 @@ kirby_consistency <- function(data, discount_function = c('hyperbolic', 'exponen
 kirby_preproc <- function(data, discount_function = c('hyperbolic', 'exponential')) {
   # Compute k and consistency scores
   discount_function <- match.arg(discount_function)
-  require_columns(data, c('val_imm', 'val_del', 'del', 'imm_chosen'))
+  validate_td_data(data,
+                   required_columns = c('val_imm', 'val_del', 'del', 'imm_chosen'))
   
   data$k <- switch (discount_function,
                     'hyperbolic' = (data$val_del/data$val_imm - 1) / data$del,

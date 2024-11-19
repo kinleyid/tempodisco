@@ -46,18 +46,35 @@ td_fn <- function(predefined = c('hyperbolic',
   
   if (missing(predefined)) {
     
+    if (missing(name) | missing(fn) | missing(par_starts)) {
+      stop('To create a custom discount funciton, "name", "fn", and "par_starts" must all be provided to td_fn')
+    }
     out$name <- name
-    out$fn <- fn
-    out$par_starts <- as.list(par_starts)
+    if (!all(names(formals(fn)) == c('data', 'p'))) {
+      stop('fn must take 2 arguments: data (a dataframe) and p (a vector of named parameters)')
+    } else {
+      out$fn <- fn
+    }
+    
+    if (is.null(names(par_starts))) {
+      stop('par_starts must be a named list')
+    } else {
+      out$par_starts <- as.list(par_starts)
+    }
     
     if (is.null(par_lims)) {
       par_lims <- list()
-      par_lims[names(par_starts)] <- c(-Inf, Inf)
     } else {
-      for (par_name in names(par_starts)) {
-        if (!(par_name %in% names(par_lims))) {
-          par_lims[[par_name]] <- c(-Inf, Inf)
-        }
+      browser()
+      if (is.null(names(par_lims)) | any(names(par_lims) == '')) {
+        stop('Every element of par_lims must have a name corresponding to a different parameter')
+      } else if (!all(vapply(par_lims, length, numeric(1)) == 2)) {
+        stop('par_lims must be a list of 2-element vectors')
+      }
+    }
+    for (par_name in names(par_starts)) {
+      if (!(par_name %in% names(par_lims))) {
+        par_lims[[par_name]] <- c(-Inf, Inf)
       }
     }
     

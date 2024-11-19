@@ -37,6 +37,8 @@ td_bclm <- function(data,
                     ...) {
   
   # Validate data
+  validate_td_data(data,
+                   required_columns = c('val_imm', 'val_del', 'del', 'imm_chosen'))
   req_cols <- c('val_imm', 'val_del', 'del', 'imm_chosen')
   require_columns(data, req_cols)
   data <- data[req_cols]

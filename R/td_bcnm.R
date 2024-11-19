@@ -1,5 +1,5 @@
 
-#' Temporal discounting binary choice model
+#' Temporal discounting binary choice nonlinear model
 #'
 #' Compute a binary choice model for a single subject
 #' @param data A data frame with columns \code{val_imm} and \code{val_del} for the values of the immediate and delayed rewards, \code{del} for the delay, and \code{imm_chosen} (Boolean) for whether the immediate reward was chosen. Other columns can also be present but will be ignored.

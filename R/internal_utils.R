@@ -33,3 +33,58 @@ get_candidate_discount_functions <- function(arg) {
   
   return(unique(candidates))
 }
+
+validate_td_data <- function(data, required_columns) {
+  
+  # Validate columns in dataframe
+  
+  missing_cols <- setdiff(columns, names(data))
+  if (length(missing_cols) > 0) {
+    stop(sprintf('Missing required data column(s): %s', paste(missing_cols, collapse = ', ')))
+  }
+  
+  expectations <- list(
+    'del' = list(type = c('numeric', 'factor'),
+                 lims = c(0, Inf)),
+    'indiff' = list(type = 'numeric',
+                    lims = c(0, 1)),
+    'val_imm' = list(type = 'numeric',
+                     lims = c(0, Inf)),
+    'val_del' = list(type = 'numeric',
+                     lims = c(0, Inf)),
+    'imm_chosen' = list(type = c('numeric', 'logical'),
+                        lims = c(0, 1)),
+    'rt' = list(type = 'numeric',
+                lims = c(0, Inf)),
+  )
+  # Rather than stopping when a column fails validation, run the validation
+  # for all columns and print out all the failures so the user can fix them
+  # all.
+  stop_flag <- F
+  for (colname in expectations) {
+    if (colname %in% names(data)) {
+      
+      curr_col <- data[[colname]]
+      expected <- expectations[[colname]]
+      
+      if (!inherits(curr_col, expected$type)) {
+        message('%s should be of type %s',
+                colname,
+                paste(expected$type, collapse = ' or '))
+        stop_flag <- T
+      }
+      
+      if (!(curr_col >= expected$lims[1]) || !(curr_col <= expected$lims[2])) {
+        message('%s should be >= %s, <= %s',
+                colname,
+                expected$lims[1],
+                expected$lims[2])
+        stop_flag <- T
+      }
+    }
+  }
+  if (stop_flag) {
+    stop('Data failed validation; see messages above.')
+  }
+  
+}

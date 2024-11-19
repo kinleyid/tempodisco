@@ -9,7 +9,7 @@ get_rss_fn <- function(data, discount_function) {
   return(rss_fn)
 }
 
-#' Indifference point model
+#' Temporal discounting indifference point model
 #'
 #' Compute a model of a single subject's indifference points
 #' @param data A data frame with columns \code{indiff} for the pre-computed indifference points and \code{del} for the delay
@@ -58,9 +58,7 @@ td_ipm <- function(
   }
   
   # Required data columns
-  req_cols <- c('indiff', 'del')
-  require_columns(data, req_cols)
-  data <- data[req_cols]
+  validate_td_data(data, required_columns = c('indiff', 'del'))
   data <- na.action(data)
   
   # Valid discount function name

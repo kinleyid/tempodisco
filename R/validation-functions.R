@@ -1,13 +1,4 @@
 
-require_columns <- function(data, columns) {
-  
-  missing_cols <- setdiff(columns, names(data))
-  if (length(missing_cols) > 0) {
-    stop(sprintf('Missing required data column(s): %s', paste(missing_cols, collapse = ', ')))
-  }
-  
-}
-
 #' Run attention checks
 #' 
 #' Check whether participants failed attention checks, either choosing an immediate reward of 0 or choosing a delayed reward equal in face value to an immediate reward. If the participant was never offered either choice, a warning is given.
