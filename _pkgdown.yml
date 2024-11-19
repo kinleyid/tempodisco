@@ -2,3 +2,54 @@ url: https://kinleyid.github.io/tempodisco/
 template:
   bootstrap: 5
 
+reference:
+- title: Temporal discounting models
+  contents:
+  - td_bclm
+  - td_bcnm
+  - td_ddm
+  - td_ipm
+  
+- title: Discount functions
+  contents:
+  - discount_function
+  - td_fn
+  
+- title: Data preparation
+  contents:
+  - adj_amt_indiffs
+  
+- title: Scoring response data
+  contents:
+  - kirby_score
+  - wileyto_score
+  
+- title: Consistency of response data
+  contents:
+  - attention_checks
+  - invariance_checks
+  - kirby_consistency
+  - most_consistent_indiffs
+  - nonsys
+  
+- title: Summarize models
+  contents:
+  - AUC
+  - ED50
+  
+- title: Methods
+  contents:
+  - starts_with("coef")
+  - starts_with("deviance")
+  - starts_with("fitted")
+  - starts_with("logLik")
+  - plot.td_um
+  - starts_with("predict")
+  - starts_with("residuals")
+  
+- title: Datasets
+  contents:
+  - adj_amt_sim
+  - td_bc_single_ptpt
+  - td_bc_study
+  - td_ip_simulated_ptpt
