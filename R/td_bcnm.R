@@ -119,7 +119,7 @@ td_bcnm <- function(
   invariance_checks(data, warn = T)
   
   # Valid discount function
-  validate_discount_function(discount_function)
+  # validate_discount_function(discount_function)
   
   # Get arguments as a list
   args <- c(
@@ -129,20 +129,23 @@ td_bcnm <- function(
     )
   )
   
-  # Get a list of candidate td_fn objects to test
-  if (is.character(discount_function)) {
-    # Vector of characters
-    cand_fns <- list()
-    for (fn_name in discount_function) {
-      cand_fns <- c(cand_fns, list(td_fn(fn_name)))
-    }
-  } else {
-    if (is(discount_function, 'td_fn')) {
-      cand_fns <- list(discount_function) # List containing only one td_fn object
-    } else {
-      cand_fns <- discount_function # assumed to already be a list of td_fn objects, ensured by validation above
-    }
-  }
+  # # Get a list of candidate td_fn objects to test
+  # if (is.character(discount_function)) {
+  #   # Vector of characters
+  #   cand_fns <- list()
+  #   for (fn_name in discount_function) {
+  #     cand_fns <- c(cand_fns, list(td_fn(fn_name)))
+  #   }
+  # } else {
+  #   if (is(discount_function, 'td_fn')) {
+  #     cand_fns <- list(discount_function) # List containing only one td_fn object
+  #   } else {
+  #     cand_fns <- discount_function # assumed to already be a list of td_fn objects, ensured by validation above
+  #   }
+  # }
+  # 
+  
+  cand_fns <- get_candidate_discount_functions(discount_function)
   
   # Run optimization for each discount function
   best_crit <- Inf

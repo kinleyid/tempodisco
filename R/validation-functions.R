@@ -71,23 +71,3 @@ invariance_checks <- function(data, warn = F) {
   return(c(all_imm = all_imm, all_del = all_del))
   
 }
-
-validate_discount_function <- function(discount_function) {
-  
-  if (is.character(discount_function)) {
-    valids <- eval(formals(td_fn)$predefined)
-    invalids <- setdiff(discount_function, valids)
-    if (length(invalids) > 0) {
-      stop(sprintf('Invalid discount function name(s): %s\n\nValid options are: %s',
-                   paste(sprintf('\n- "%s"', invalids), collapse = ''),
-                   paste(sprintf('\n- "%s"', valids), collapse = '')))
-    }
-  } else {
-    if (!is(discount_function, 'td_fn')) {
-      if (!all(sapply(discount_function, class) == 'td_fn')) {
-        stop('Discount function must be an object of class td_fn or a list of such objects.')
-      }
-    }
-  }
-  
-}
