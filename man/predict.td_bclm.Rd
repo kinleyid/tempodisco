@@ -16,7 +16,7 @@
 
 \item{newdata}{Optionally, a data frame to use for prediction. If omitted, the data used to fit the model will be used for prediction.}
 
-\item{type}{The type of prediction required. For \code{'indiff'} (default) gives predicted indifference points. In this case, \code{newdata} needs only a \code{del} column. For all other values (e.g. \code{"link"}, \code{"response"}), this function is just a wrapper to \code{\link{predict.glm()}}.}
+\item{type}{The type of prediction required. For \code{'indiff'} (default) gives predicted indifference points. In this case, \code{newdata} needs only a \code{del} column. For all other values (e.g. \code{"link"}, \code{"response"}), this function is just a wrapper to \code{predict.glm()}.}
 
 \item{...}{Additional arguments passed to predict.glm if type != \code{'indiff'}}
 }
