@@ -425,6 +425,7 @@ residuals.td_ipm <- function(object, type = c('response', 'pearson'), ...) {
 #' 
 #' Compute log-likelihood for a temporal discounting binary choice model.
 #' @param mod An object of class \code{td_bcnm}
+#' @param ... Additional arguments currently not used.
 #' @family nonlinear binary choice model functions
 #' @export
 logLik.td_bcnm <- function(mod, ...) {
@@ -441,6 +442,7 @@ logLik.td_bcnm <- function(mod, ...) {
 #' 
 #' Compute log-likelihood for a temporal discounting indifference point model.
 #' @param mod An object of class \code{td_ipm}
+#' @param ... Additional arguments currently not used.
 #' @family indifference point model functions
 #' @export
 logLik.td_ipm <- function(mod, ...) {
@@ -465,6 +467,7 @@ logLik.td_ipm <- function(mod, ...) {
 #' Compute log-likelihood for a temporal discounting drift diffusion model
 #' @param mod An object of class \code{td_bcnm}
 #' @param type Should probabilities /probability densities be computed for responses and RTs (\code{'resp_rt'}, default) or responses only (\code{'resp'})?
+#' @param ... Additional arguments currently not used.
 #' @family drift diffusion model functions
 #' @export
 logLik.td_ddm <- function(mod, type = c('resp_rt', 'resp', 'rt'), ...) {
@@ -488,6 +491,7 @@ logLik.td_ddm <- function(mod, type = c('resp_rt', 'resp', 'rt'), ...) {
 #' 
 #' Compute deviance for a temporal discounting binary choice model.
 #' @param mod An object of class \code{td_bcnm}
+#' @param ... Additional arguments currently not used.
 #' @family nonlinear binary choice model functions
 #' @export
 deviance.td_bcnm <- function(mod, ...) return(-2*logLik.td_bcnm(mod))
@@ -496,6 +500,7 @@ deviance.td_bcnm <- function(mod, ...) return(-2*logLik.td_bcnm(mod))
 #' 
 #' Compute deviance for a temporal discounting drift diffusion model
 #' @param mod An object of class \code{td_ddm}
+#' @param ... Additional arguments currently not used.
 #' @family drift diffusion model functions
 #' @export
 deviance.td_ddm <- function(mod, ...) return(-2*logLik.td_ddm(mod))

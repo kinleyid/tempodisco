@@ -9,7 +9,17 @@
 [![codecov](https://codecov.io/github/kinleyid/tempodisco/graph/badge.svg?token=CCQXS3SNGB)](https://codecov.io/github/kinleyid/tempodisco)
 <!-- badges: end -->
 
-`tempodisco` is an R package for working with delay discounting data.
+`tempodisco` is an R package for behavioural researchers working with
+delay discounting data (also known as temporal discounting intertemporal
+choice data). It is intended to simplify common tasks such as scoring
+responses (e.g. computing indifference points from an adjusting amounts
+procedure, computing the “area under the curve”, or computing $k$ values
+as in the Monetary Choice Questionnaire; [Kirby et al.,
+1999](https://doi.org/10.1037//0096-3445.128.1.78)), identifying
+poor-quality data (e.g. non-systematic responding and failed attention
+checks), modelling choice data using multiple discount functions
+(e.g. hyperbolic, exponential, etc.—see below), and modelling reaction
+times using drift diffusion models.
 
 ## Installation
 
@@ -48,15 +58,15 @@ indifference points. The function `td_ipm` can then be used to identify
 the best-fitting discount function (according to the Bayesian
 information criterion) from any subset of the following options:
 
-| Name                                                                                         | Functional form                                         |
-|----------------------------------------------------------------------------------------------|---------------------------------------------------------|
-| Exponential ([Samuelson, 1937](https://doi.org/10.2307/2967612))                             | $f(t; k) = e^{-k t}$                                    |
-| Scaled exponential (beta-delta; [Laibson, 1997](https://doi.org/10.1162/003355397555253))    | $f(t; k, w) = w e^{-k t}$                               |
-| Nonlinear-time exponential ([Ebert & Prelec, 2007](https://doi.org/10.1287/mnsc.1060.0671))  | $f(t; k, s) = e^{-k t^s}$                               |
-| Dual-systems exponential ([Ven den Bos & McClure, 2013](https://doi.org/10.1002/jeab.6))     | $f(t; k_1, k_2, w) = w e^{-k_1 t} + (1 - w) e^{-k_2 t}$ |
-| Inverse q-exponential ([Green & Myerson, 2004](https://doi.org/10.1037/0033-2909.130.5.769)) | $f(t; k, s) = \frac{1}{(1 + k t)^s}$                    |
-| Hyperbolic ([Mazur, 1987](https://doi.org/10.4324/9781315825502))                            | $f(t; k) = \frac{1}{1 + kt}$                            |
-| Nonlinear-time hyperbolic ([Rachlin, 2006](https://doi.org/10.1901/jeab.2006.85-05))         | $f(t; k, s) = \frac{1}{1 + k t^s}$                      |
+| Name | Functional form |
+|----|----|
+| Exponential ([Samuelson, 1937](https://doi.org/10.2307/2967612)) | $f(t; k) = e^{-k t}$ |
+| Scaled exponential (beta-delta; [Laibson, 1997](https://doi.org/10.1162/003355397555253)) | $f(t; k, w) = w e^{-k t}$ |
+| Nonlinear-time exponential ([Ebert & Prelec, 2007](https://doi.org/10.1287/mnsc.1060.0671)) | $f(t; k, s) = e^{-k t^s}$ |
+| Dual-systems exponential ([Ven den Bos & McClure, 2013](https://doi.org/10.1002/jeab.6)) | $f(t; k_1, k_2, w) = w e^{-k_1 t} + (1 - w) e^{-k_2 t}$ |
+| Inverse q-exponential ([Green & Myerson, 2004](https://doi.org/10.1037/0033-2909.130.5.769)) | $f(t; k, s) = \frac{1}{(1 + k t)^s}$ |
+| Hyperbolic ([Mazur, 1987](https://doi.org/10.4324/9781315825502)) | $f(t; k) = \frac{1}{1 + kt}$ |
+| Nonlinear-time hyperbolic ([Rachlin, 2006](https://doi.org/10.1901/jeab.2006.85-05)) | $f(t; k, s) = \frac{1}{1 + k t^s}$ |
 
 For example:
 
@@ -149,15 +159,15 @@ print(mod)
 We can extend this approach to a number of other discount functions
 using the `method` argument to `td_bclm`:
 
-| Name                         | Discount function                                                                                                  | Linear predictor                                                                                       | Parameters                                                        |
-|------------------------------|--------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------|
-| `hyperbolic.1`               | Hyperbolic ([Mazur, 1987](https://doi.org/10.4324/9781315825502)):<br><br>$\frac{1}{1 + kt}$                       | $\beta_1 \left(1 - \frac{v_D}{v_I} \right) + \beta_2 t$                                                | $k = \frac{\beta_2}{\beta_1}$                                     |
-| `hyperbolic.2`               | ([Mazur, 1987](https://doi.org/10.4324/9781315825502)):<br><br>$\frac{1}{1 + kt}$                                  | $\beta_1\left( \sigma^{-1}\left[\frac{v_\mathcal{I}}{v_\mathcal{D}}\right] + \log t \right) + \beta_2$ | $k = e^\frac{\beta_2}{\beta_1}$                                   |
-| `exponential.1`              | Exponential ([Samuelson, 1937](https://doi.org/10.2307/2967612)):<br><br>$e^{-kt}$                                 | $\beta_1 \log \frac{v_I}{v_D} + \beta_2 t$                                                             | $k = \frac{\beta_2}{\beta_1}$                                     |
-| `exponential.2`              | Exponential ([Samuelson, 1937](https://doi.org/10.2307/2967612)):<br><br>$e^{-kt}$                                 | $\beta_1\left( G^{-1}\left[\frac{v_\mathcal{I}}{v_\mathcal{D}}\right] + \log t \right) + \beta_2$      | $k = e^\frac{\beta_2}{\beta_1}$                                   |
-| `scaled-exponential`         | Scaled exponential (beta-delta; [Laibson, 1997](https://doi.org/10.1162/003355397555253)):<br><br>$w e^{-kt}$      | $\beta_1\log\frac{v_{I}}{v_{D}} + \beta_2 t + \beta_3$                                                 | $k = \frac{\beta_2}{\beta_1}$, $w = e^{-\frac{\beta_3}{\beta_1}}$ |
-| `nonlinear-time-hyperbolic`  | Nonlinear-time hyperbolic ([Rachlin, 2006](https://doi.org/10.1901/jeab.2006.85-05)):<br><br>$\frac{1}{1 + k t^s}$ | $\beta_1 \sigma^{-1}\left[\frac{v_{I}}{v_{D}}\right] + \beta_2\log t + \beta_3$                        | $k = e^\frac{\beta_3}{\beta_1}$, $s = \frac{\beta_2}{\beta_1}$    |
-| `nonlinear-time-exponential` | Nonlinear-time exponential ([Ebert & Prelec, 2007](https://doi.org/10.1287/mnsc.1060.0671)):<br><br>$e^{-kt^s}$    | $\beta_1 G^{-1}\left[\frac{v_\mathcal{I}}{v_\mathcal{D}}\right] + \beta_2\log t + \beta_3$             | $k = e^\frac{\beta_3}{\beta_1}$, $s = \frac{\beta_2}{\beta_1}$    |
+| Name | Discount function | Linear predictor | Parameters |
+|----|----|----|----|
+| `hyperbolic.1` | Hyperbolic ([Mazur, 1987](https://doi.org/10.4324/9781315825502)):<br><br>$\frac{1}{1 + kt}$ | $\beta_1 \left(1 - \frac{v_D}{v_I} \right) + \beta_2 t$ | $k = \frac{\beta_2}{\beta_1}$ |
+| `hyperbolic.2` | ([Mazur, 1987](https://doi.org/10.4324/9781315825502)):<br><br>$\frac{1}{1 + kt}$ | $\beta_1\left( \sigma^{-1}\left[\frac{v_\mathcal{I}}{v_\mathcal{D}}\right] + \log t \right) + \beta_2$ | $k = e^\frac{\beta_2}{\beta_1}$ |
+| `exponential.1` | Exponential ([Samuelson, 1937](https://doi.org/10.2307/2967612)):<br><br>$e^{-kt}$ | $\beta_1 \log \frac{v_I}{v_D} + \beta_2 t$ | $k = \frac{\beta_2}{\beta_1}$ |
+| `exponential.2` | Exponential ([Samuelson, 1937](https://doi.org/10.2307/2967612)):<br><br>$e^{-kt}$ | $\beta_1\left( G^{-1}\left[\frac{v_\mathcal{I}}{v_\mathcal{D}}\right] + \log t \right) + \beta_2$ | $k = e^\frac{\beta_2}{\beta_1}$ |
+| `scaled-exponential` | Scaled exponential (beta-delta; [Laibson, 1997](https://doi.org/10.1162/003355397555253)):<br><br>$w e^{-kt}$ | $\beta_1\log\frac{v_{I}}{v_{D}} + \beta_2 t + \beta_3$ | $k = \frac{\beta_2}{\beta_1}$, $w = e^{-\frac{\beta_3}{\beta_1}}$ |
+| `nonlinear-time-hyperbolic` | Nonlinear-time hyperbolic ([Rachlin, 2006](https://doi.org/10.1901/jeab.2006.85-05)):<br><br>$\frac{1}{1 + k t^s}$ | $\beta_1 \sigma^{-1}\left[\frac{v_{I}}{v_{D}}\right] + \beta_2\log t + \beta_3$ | $k = e^\frac{\beta_3}{\beta_1}$, $s = \frac{\beta_2}{\beta_1}$ |
+| `nonlinear-time-exponential` | Nonlinear-time exponential ([Ebert & Prelec, 2007](https://doi.org/10.1287/mnsc.1060.0671)):<br><br>$e^{-kt^s}$ | $\beta_1 G^{-1}\left[\frac{v_\mathcal{I}}{v_\mathcal{D}}\right] + \beta_2\log t + \beta_3$ | $k = e^\frac{\beta_3}{\beta_1}$, $s = \frac{\beta_2}{\beta_1}$ |
 
 Where $\sigma^{-1}[\cdot]$ is the logit function, or the quantile
 function of a standard logistic distribution, and $G^{-1}[\cdot]$ is the
@@ -201,15 +211,15 @@ modeling with `td_bcnm`. When `discount_function = "all"` (the default),
 all of the following models are tested and the best-fitting one
 (according to the Bayesian information criterion) is returned:
 
-| Name                                                                                         | Functional form                                         |
-|----------------------------------------------------------------------------------------------|---------------------------------------------------------|
-| Exponential ([Samuelson, 1937](https://doi.org/10.2307/2967612))                             | $f(t; k) = e^{-k t}$                                    |
-| Scaled exponential (beta-delta; [Laibson, 1997](https://doi.org/10.1162/003355397555253))    | $f(t; k, w) = w e^{-k t}$                               |
-| Nonlinear-time exponential ([Ebert & Prelec, 2007](https://doi.org/10.1287/mnsc.1060.0671))  | $f(t; k, s) = e^{-k t^s}$                               |
-| Dual-systems exponential ([Ven den Bos & McClure, 2013](https://doi.org/10.1002/jeab.6))     | $f(t; k_1, k_2, w) = w e^{-k_1 t} + (1 - w) e^{-k_2 t}$ |
-| Inverse q-exponential ([Green & Myerson, 2004](https://doi.org/10.1037/0033-2909.130.5.769)) | $f(t; k, s) = \frac{1}{(1 + k t)^s}$                    |
-| Hyperbolic ([Mazur, 1987](https://doi.org/10.4324/9781315825502))                            | $f(t; k) = \frac{1}{1 + kt}$                            |
-| Nonlinear-time hyperbolic ([Rachlin, 2006](https://doi.org/10.1901/jeab.2006.85-05))         | $f(t; k, s) = \frac{1}{1 + k t^s}$                      |
+| Name | Functional form |
+|----|----|
+| Exponential ([Samuelson, 1937](https://doi.org/10.2307/2967612)) | $f(t; k) = e^{-k t}$ |
+| Scaled exponential (beta-delta; [Laibson, 1997](https://doi.org/10.1162/003355397555253)) | $f(t; k, w) = w e^{-k t}$ |
+| Nonlinear-time exponential ([Ebert & Prelec, 2007](https://doi.org/10.1287/mnsc.1060.0671)) | $f(t; k, s) = e^{-k t^s}$ |
+| Dual-systems exponential ([Ven den Bos & McClure, 2013](https://doi.org/10.1002/jeab.6)) | $f(t; k_1, k_2, w) = w e^{-k_1 t} + (1 - w) e^{-k_2 t}$ |
+| Inverse q-exponential ([Green & Myerson, 2004](https://doi.org/10.1037/0033-2909.130.5.769)) | $f(t; k, s) = \frac{1}{(1 + k t)^s}$ |
+| Hyperbolic ([Mazur, 1987](https://doi.org/10.4324/9781315825502)) | $f(t; k) = \frac{1}{1 + kt}$ |
+| Nonlinear-time hyperbolic ([Rachlin, 2006](https://doi.org/10.1901/jeab.2006.85-05)) | $f(t; k, s) = \frac{1}{1 + k t^s}$ |
 
 ``` r
 mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'all')
@@ -331,3 +341,21 @@ print(AUC(mod))
 #> Defaulting to val_del = 198.314285714286
 #> [1] 0.03146756
 ```
+
+## Reporting issues and requesting features
+
+If you encounter problems with the software or would like to it to have
+additional functionality, please open a new issue on the GitHub
+repository. Try to include as much detail as possible, especially how to
+reproduce any errors/incorrect results. GitHub has instructions on
+opening an issue
+[here](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/creating-an-issue).
+
+## Contributing
+
+If you would like to contribute to `tempodisco`, you’re more than
+welcome! Please follow the instructions
+[here](https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project)
+on how to contribute to a project on GitHub. Feel free to [contact
+me](https://kinleyid.github.io) if you’d like help with any
+contributions.
