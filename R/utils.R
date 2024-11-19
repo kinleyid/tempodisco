@@ -147,8 +147,9 @@ run_optimization <- function(fn, par_starts, par_lims, optim_args, silent = F) {
 #' @export
 adj_amt_indiffs <- function(data, block_indic = 'del', order_indic = NULL) {
 
-  require_columns(data, c('val_imm', 'val_del', 'imm_chosen',
-                          block_indic, order_indic))
+  validate_td_data(data,
+                   required_columns = c('val_imm', 'val_del', 'imm_chosen',
+                                        block_indic, order_indic))
                   
   rows <- by(data, INDICES = data[[block_indic]], simplify = F, FUN = function(block) {
 
