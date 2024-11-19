@@ -2,7 +2,7 @@
 % Please edit documentation in R/td_bcnm.R
 \name{td_bcnm}
 \alias{td_bcnm}
-\title{Temporal discounting binary choice model}
+\title{Temporal discounting binary choice nonlinear model}
 \usage{
 td_bcnm(
   data,

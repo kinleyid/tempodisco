@@ -2,7 +2,7 @@
 % Please edit documentation in R/td_ipm.R
 \name{td_ipm}
 \alias{td_ipm}
-\title{Indifference point model}
+\title{Temporal discounting indifference point model}
 \usage{
 td_ipm(
   data,

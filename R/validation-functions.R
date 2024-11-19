@@ -15,7 +15,8 @@
 #' @export
 attention_checks <- function(data, warn = F, ppn = F) {
   
-  require_columns(data, c('val_imm', 'val_del', 'imm_chosen'))
+  validate_td_data(data,
+                   required_columns = c('val_imm', 'val_del', 'imm_chosen'))
   
   imm_0 <- data$val_imm == 0 
   D1 <- imm_0 & data$imm_chosen
