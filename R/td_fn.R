@@ -48,7 +48,7 @@ td_fn <- function(predefined = c('hyperbolic',
     
     out$name <- name
     out$fn <- fn
-    out$par_starts <- par_starts
+    out$par_starts <- as.list(par_starts)
     
     if (is.null(par_lims)) {
       par_lims <- list()

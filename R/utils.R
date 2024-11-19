@@ -96,7 +96,7 @@ run_optimization <- function(fn, par_starts, par_lims, optim_args, silent = F) {
   par_names <- colnames(par_start_combos)
   lower <- numeric(n_par)
   upper <- numeric(n_par)
-  for (par_idx in 1:n_par) {
+  for (par_idx in seq_len(n_par)) {
     lower[par_idx] <- par_lims[[par_names[par_idx]]][1]
     upper[par_idx] <- par_lims[[par_names[par_idx]]][2]
   }
