@@ -1,26 +1,6 @@
 
 # Internal utility functions, e.g., input validation functions that are frequently reused
 
-validate_discount_function <- function(discount_function) {
-  
-  if (is.character(discount_function)) {
-    valids <- eval(formals(td_fn)$predefined)
-    invalids <- setdiff(discount_function, valids)
-    if (length(invalids) > 0) {
-      stop(sprintf('Invalid discount function name(s): %s\n\nValid options are: %s',
-                   paste(sprintf('\n- "%s"', invalids), collapse = ''),
-                   paste(sprintf('\n- "%s"', valids), collapse = '')))
-    }
-  } else {
-    if (!is(discount_function, 'td_fn')) {
-      if (!all(sapply(discount_function, class) == 'td_fn')) {
-        stop('Discount function must be an object of class td_fn or a list of such objects.')
-      }
-    }
-  }
-  
-}
-
 get_candidate_discount_functions <- function(arg) {
   # Get a list of candidate td_fn objects to test
   # `arg` can be:
