@@ -598,7 +598,7 @@ plot.td_um <- function(x,
           } else {
             return(subgrid$val_imm[which.min((subgrid$p - p)**2)])
           }
-        })
+        }, numeric(1))
         # Plot
         y <- val_imm / val_del
         lines(y ~ plotting_delays, lty = 'dashed')
@@ -766,7 +766,7 @@ plot.td_um <- function(x,
             RWiener::qwiener(p = p, delta = drift,
                              alpha = cf['alpha'], tau = cf['tau'], beta = cf['beta'],
                              resp = 'both')
-          })
+          }, numeric(1))
           lines(bounds ~ plotting_linpreds, lty = 'dashed')
         }
         

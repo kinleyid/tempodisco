@@ -262,7 +262,8 @@ get_prob_func_ddm <- function(discount_function, drift_transform) {
       function(i) {
         RWiener::dwiener(q = data$rt[i], delta = drift[i], resp = resp[i],
                          alpha = par['alpha'], tau = par['tau'], beta = par['beta'])
-      }
+      },
+      numeric(1)
     )
 
     return(d)

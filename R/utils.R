@@ -204,11 +204,11 @@ kirby_score <- function(data, discount_function = c('hyperbolic', 'exponential')
   if (max_consistency < 0.75) {
     warning('Maximum consistency score is below 0.75. Inattentive responding?')
   }
-  most_consistent <- which(data$consistency == max_consistency)
+  most_consistent_idx <- which(data$consistency == max_consistency)
   
-  cands <- vapply(most_consistent, function(cand) {
+  cands <- vapply(most_consistent_idx, function(cand) {
     geomean(data$k[(cand-1) : cand])
-  })
+  }, numeric(1))
   if (length(cands) > 1) {
     best_k <- geomean(cands)
   } else {
@@ -262,7 +262,7 @@ kirby_preproc <- function(data, discount_function = c('hyperbolic', 'exponential
     mean(c(data$imm_chosen[0:(idx-1)],
            !data$imm_chosen[(idx):(nrow(data)+1)]),
          na.rm = T)
-  })
+  }, numeric(1))
   
   return(data)
   
@@ -322,7 +322,7 @@ delwise_consistencies <- function(data) {
         c(!sdf[sdf$val_rel <= ci, 'imm_chosen'],
           sdf[sdf$val_rel >= ci, 'imm_chosen'])
       )
-    })
+    }, numeric(1))
     return(
       data.frame(
         del = sdf$del[1],
