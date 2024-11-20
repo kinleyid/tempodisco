@@ -35,11 +35,11 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/adjusting-amounts.html">Working with data from an adjusting amount procedure</a></li>
     <li><a class="dropdown-item" href="../articles/analyzing-study.html">Analyzing data from multiple participants</a></li>
+    <li><a class="dropdown-item" href="../articles/area-under-curve.html">Computing area under the curve (AUC)</a></li>
     <li><a class="dropdown-item" href="../articles/comparing-models.html">Comparing discounting across different discount functions</a></li>
     <li><a class="dropdown-item" href="../articles/custom-discount-functions.html">Creating custom discount functions</a></li>
     <li><a class="dropdown-item" href="../articles/drift-diffusion-models.html">Drift diffusion models</a></li>
     <li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
-    <li><a class="dropdown-item" href="../articles/model-free-auc.html">Computing model-free area under the curve (AUC)</a></li>
     <li><a class="dropdown-item" href="../articles/modeling-binary-choice-data.html">Modeling binary choice data</a></li>
     <li><a class="dropdown-item" href="../articles/nonsystematic-discounting.html">Indentifying non-systematic discounting</a></li>
     <li><a class="dropdown-item" href="../articles/visualizing-models.html">Visualizing models</a></li>
@@ -160,7 +160,7 @@ function.</p>
 <span><span class="co">#&gt; "none" transform applied to drift rates.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ED50: 72.8187765186714</span></span>
-<span><span class="co">#&gt; AUC: 0.0287625702305513</span></span>
+<span><span class="co">#&gt; AUC: integrate() failed to compute AUC with error: "unused argument (verbose = FALSE)"</span></span>
 <span><span class="co">#&gt; BIC: 236.382759846412</span></span></code></pre></div>
 <p>As we can see, parameters are estimated not only for the discount
 function
@@ -176,7 +176,7 @@ group-level analysis (see the vignette <a href="analyzling-study.html">“Analyz
 participants”</a>). As with other model classes (<code>td_bcnm</code>,
 <code>td_bclm</code>), we can plot the resulting discount function:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ddm</span>, log <span class="op">=</span> <span class="st">'x'</span>, verbose <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ddm</span>, log <span class="op">=</span> <span class="st">'x'</span>, verbose <span class="op">=</span> <span class="cn">F</span>, p_lines <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.75</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="drift-diffusion-models_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
 <p>Here the gaps correspond to very fast or slow decisions that we
 excluded.</p>
@@ -197,21 +197,13 @@ actual data:</p>
 <span><span class="co">#&gt;       cor </span></span>
 <span><span class="co">#&gt; 0.3136161</span></span></code></pre></div>
 <p>As expected, they are correlated. To compare these visually, we can
-<code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> the DDM wiht the argument
+<code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> the DDM with the argument
 <code>type = "rt"</code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ddm</span>, type <span class="op">=</span> <span class="st">'rt'</span>, confint <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in plot.window(...): "confint" is not a graphical parameter</span></span>
-<span><span class="co">#&gt; Warning in plot.xy(xy, type, ...): "confint" is not a graphical parameter</span></span>
-<span><span class="co">#&gt; Warning in axis(side = side, at = at, labels = labels, ...): "confint" is not a</span></span>
-<span><span class="co">#&gt; graphical parameter</span></span>
-<span><span class="co">#&gt; Warning in axis(side = side, at = at, labels = labels, ...): "confint" is not a</span></span>
-<span><span class="co">#&gt; graphical parameter</span></span>
-<span><span class="co">#&gt; Warning in box(...): "confint" is not a graphical parameter</span></span>
-<span><span class="co">#&gt; Warning in title(...): "confint" is not a graphical parameter</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ddm</span>, type <span class="op">=</span> <span class="st">'rt'</span>, q_lines <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.95</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">9</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="drift-diffusion-models_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 <p>This displays both the predicted RTs from the model and a 90%
-confidence interval</p>
+quantile-based confidence interval</p>
 <p><a href="https://doi.org/10.3758/s13423-018-1554-2" class="external-link">Fontanesi et
 al. (2019)</a> suggest applying a sigmoid transform to drift rates
 according the the following equation, which is reported by <a href="https://doi.org/10.1371/journal.pcbi.1007615" class="external-link">Peters &amp;

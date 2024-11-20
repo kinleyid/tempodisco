@@ -20,11 +20,11 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/adjusting-amounts.html">Working with data from an adjusting amount procedure</a></li>
     <li><a class="dropdown-item" href="../articles/analyzing-study.html">Analyzing data from multiple participants</a></li>
+    <li><a class="dropdown-item" href="../articles/area-under-curve.html">Computing area under the curve (AUC)</a></li>
     <li><a class="dropdown-item" href="../articles/comparing-models.html">Comparing discounting across different discount functions</a></li>
     <li><a class="dropdown-item" href="../articles/custom-discount-functions.html">Creating custom discount functions</a></li>
     <li><a class="dropdown-item" href="../articles/drift-diffusion-models.html">Drift diffusion models</a></li>
     <li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
-    <li><a class="dropdown-item" href="../articles/model-free-auc.html">Computing model-free area under the curve (AUC)</a></li>
     <li><a class="dropdown-item" href="../articles/modeling-binary-choice-data.html">Modeling binary choice data</a></li>
     <li><a class="dropdown-item" href="../articles/nonsystematic-discounting.html">Indentifying non-systematic discounting</a></li>
     <li><a class="dropdown-item" href="../articles/visualizing-models.html">Visualizing models</a></li>
@@ -71,7 +71,7 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"td_bc_single_ptpt"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu">wileyto_score</span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu">wileyto_score</span><span class="op">(</span><span class="va">td_bc_single_ptpt</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

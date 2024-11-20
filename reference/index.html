@@ -20,11 +20,11 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/adjusting-amounts.html">Working with data from an adjusting amount procedure</a></li>
     <li><a class="dropdown-item" href="../articles/analyzing-study.html">Analyzing data from multiple participants</a></li>
+    <li><a class="dropdown-item" href="../articles/area-under-curve.html">Computing area under the curve (AUC)</a></li>
     <li><a class="dropdown-item" href="../articles/comparing-models.html">Comparing discounting across different discount functions</a></li>
     <li><a class="dropdown-item" href="../articles/custom-discount-functions.html">Creating custom discount functions</a></li>
     <li><a class="dropdown-item" href="../articles/drift-diffusion-models.html">Drift diffusion models</a></li>
     <li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
-    <li><a class="dropdown-item" href="../articles/model-free-auc.html">Computing model-free area under the curve (AUC)</a></li>
     <li><a class="dropdown-item" href="../articles/modeling-binary-choice-data.html">Modeling binary choice data</a></li>
     <li><a class="dropdown-item" href="../articles/nonsystematic-discounting.html">Indentifying non-systematic discounting</a></li>
     <li><a class="dropdown-item" href="../articles/visualizing-models.html">Visualizing models</a></li>
@@ -102,7 +102,7 @@
         </dt>
         <dd>Temporal discount function</dd>
       </dl></div><div class="section level2">
-      <h2 id="data-preparation">Data preparation<a class="anchor" aria-label="anchor" href="#data-preparation"></a></h2>
+      <h2 id="scoring-response-data">Scoring response data<a class="anchor" aria-label="anchor" href="#scoring-response-data"></a></h2>
 
 
 
@@ -118,18 +118,7 @@
 
         </dt>
         <dd>Indifference points from adjusting amount procedure</dd>
-      </dl></div><div class="section level2">
-      <h2 id="scoring-response-data">Scoring response data<a class="anchor" aria-label="anchor" href="#scoring-response-data"></a></h2>
-
-
-
-
-    </div><div class="section level2">
-
-
-
-
-      <dl><dt>
+      </dl><dl><dt>
 
           <code><a href="kirby_score.html">kirby_score()</a></code>
 
@@ -141,6 +130,12 @@
 
         </dt>
         <dd>Wileyto score a questionnaire</dd>
+      </dl><dl><dt>
+
+          <code><a href="indiffs.html">indiffs()</a></code>
+
+        </dt>
+        <dd>Get model-free indifference points</dd>
       </dl></div><div class="section level2">
       <h2 id="consistency-of-response-data">Consistency of response data<a class="anchor" aria-label="anchor" href="#consistency-of-response-data"></a></h2>
 

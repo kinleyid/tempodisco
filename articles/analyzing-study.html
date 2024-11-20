@@ -35,11 +35,11 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/adjusting-amounts.html">Working with data from an adjusting amount procedure</a></li>
     <li><a class="dropdown-item" href="../articles/analyzing-study.html">Analyzing data from multiple participants</a></li>
+    <li><a class="dropdown-item" href="../articles/area-under-curve.html">Computing area under the curve (AUC)</a></li>
     <li><a class="dropdown-item" href="../articles/comparing-models.html">Comparing discounting across different discount functions</a></li>
     <li><a class="dropdown-item" href="../articles/custom-discount-functions.html">Creating custom discount functions</a></li>
     <li><a class="dropdown-item" href="../articles/drift-diffusion-models.html">Drift diffusion models</a></li>
     <li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
-    <li><a class="dropdown-item" href="../articles/model-free-auc.html">Computing model-free area under the curve (AUC)</a></li>
     <li><a class="dropdown-item" href="../articles/modeling-binary-choice-data.html">Modeling binary choice data</a></li>
     <li><a class="dropdown-item" href="../articles/nonsystematic-discounting.html">Indentifying non-systematic discounting</a></li>
     <li><a class="dropdown-item" href="../articles/visualizing-models.html">Visualizing models</a></li>
@@ -103,7 +103,7 @@ discounting:</p>
 <span>  <span class="co"># Return a one-row dataframe containing model-agnostic measures of discounting</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>    id <span class="op">=</span> <span class="va">ptpt</span><span class="op">$</span><span class="va">id</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
-<span>    AUC <span class="op">=</span> <span class="fu"><a href="../reference/AUC.html">AUC</a></span><span class="op">(</span><span class="va">mod</span>, verbose <span class="op">=</span> <span class="cn">F</span><span class="op">)</span>,</span>
+<span>    AUC <span class="op">=</span> <span class="fu"><a href="../reference/AUC.html">AUC</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span>,</span>
 <span>    ED50 <span class="op">=</span> <span class="fu"><a href="../reference/ED50.html">ED50</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span>, simplify <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>

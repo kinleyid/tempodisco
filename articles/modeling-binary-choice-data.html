@@ -35,11 +35,11 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/adjusting-amounts.html">Working with data from an adjusting amount procedure</a></li>
     <li><a class="dropdown-item" href="../articles/analyzing-study.html">Analyzing data from multiple participants</a></li>
+    <li><a class="dropdown-item" href="../articles/area-under-curve.html">Computing area under the curve (AUC)</a></li>
     <li><a class="dropdown-item" href="../articles/comparing-models.html">Comparing discounting across different discount functions</a></li>
     <li><a class="dropdown-item" href="../articles/custom-discount-functions.html">Creating custom discount functions</a></li>
     <li><a class="dropdown-item" href="../articles/drift-diffusion-models.html">Drift diffusion models</a></li>
     <li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
-    <li><a class="dropdown-item" href="../articles/model-free-auc.html">Computing model-free area under the curve (AUC)</a></li>
     <li><a class="dropdown-item" href="../articles/modeling-binary-choice-data.html">Modeling binary choice data</a></li>
     <li><a class="dropdown-item" href="../articles/nonsystematic-discounting.html">Indentifying non-systematic discounting</a></li>
     <li><a class="dropdown-item" href="../articles/visualizing-models.html">Visualizing models</a></li>
@@ -96,7 +96,7 @@ the Monetary Choice Questionnaire <a href="https://doi.org/10.1037//0096-3445.12
 <span><span class="co">#&gt; 0.02176563 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ED50: 45.9439876371218</span></span>
-<span><span class="co">#&gt; AUC: 0.0551987542147013</span></span></code></pre></div>
+<span><span class="co">#&gt; AUC: integrate() failed to compute AUC with error: "unused argument (verbose = FALSE)"</span></span></code></pre></div>
 <p>Although this method computes
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
 values according to the hyperbolic discount function, in principle it’s
@@ -113,7 +113,7 @@ possible to use the exponential discount function:</p>
 <span><span class="co">#&gt; 0.008170247 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ED50: 84.8379742026149</span></span>
-<span><span class="co">#&gt; AUC: 0.0335100135964859</span></span></code></pre></div>
+<span><span class="co">#&gt; AUC: integrate() failed to compute AUC with error: "unused argument (verbose = FALSE)"</span></span></code></pre></div>
 <p>Another option is to use the logistic regression method of <a href="https://doi.org/10.3758/BF03195548" class="external-link">Wileyto et al. (2004)</a>,
 where we can solve for the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
@@ -325,7 +325,7 @@ follows:</p>
 <span><span class="co">#&gt;  transform: identity</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ED50: 63.7895168684722</span></span>
-<span><span class="co">#&gt; AUC: 0.025196117630896</span></span>
+<span><span class="co">#&gt; AUC: integrate() failed to compute AUC with error: "unused argument (verbose = FALSE)"</span></span>
 <span><span class="co">#&gt; BIC: 25.9543389305639</span></span></code></pre></div>
 <p>Several additional arguments can be used to customize the model. For
 example, we can use different choice rules—the “logistic” choice rule is

@@ -35,11 +35,11 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/adjusting-amounts.html">Working with data from an adjusting amount procedure</a></li>
     <li><a class="dropdown-item" href="../articles/analyzing-study.html">Analyzing data from multiple participants</a></li>
+    <li><a class="dropdown-item" href="../articles/area-under-curve.html">Computing area under the curve (AUC)</a></li>
     <li><a class="dropdown-item" href="../articles/comparing-models.html">Comparing discounting across different discount functions</a></li>
     <li><a class="dropdown-item" href="../articles/custom-discount-functions.html">Creating custom discount functions</a></li>
     <li><a class="dropdown-item" href="../articles/drift-diffusion-models.html">Drift diffusion models</a></li>
     <li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
-    <li><a class="dropdown-item" href="../articles/model-free-auc.html">Computing model-free area under the curve (AUC)</a></li>
     <li><a class="dropdown-item" href="../articles/modeling-binary-choice-data.html">Modeling binary choice data</a></li>
     <li><a class="dropdown-item" href="../articles/nonsystematic-discounting.html">Indentifying non-systematic discounting</a></li>
     <li><a class="dropdown-item" href="../articles/visualizing-models.html">Visualizing models</a></li>
@@ -188,18 +188,10 @@ predictions:</p>
 <span>              beta_par_starts <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>              alpha_par_starts <span class="op">=</span> <span class="fl">3.5</span>,</span>
 <span>              tau_par_starts <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ddm</span>, type <span class="op">=</span> <span class="st">'rt'</span>, confint <span class="op">=</span> <span class="fl">0.9</span>, legend <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in plot.window(...): "confint" is not a graphical parameter</span></span>
-<span><span class="co">#&gt; Warning in plot.xy(xy, type, ...): "confint" is not a graphical parameter</span></span>
-<span><span class="co">#&gt; Warning in axis(side = side, at = at, labels = labels, ...): "confint" is not a</span></span>
-<span><span class="co">#&gt; graphical parameter</span></span>
-<span><span class="co">#&gt; Warning in axis(side = side, at = at, labels = labels, ...): "confint" is not a</span></span>
-<span><span class="co">#&gt; graphical parameter</span></span>
-<span><span class="co">#&gt; Warning in box(...): "confint" is not a graphical parameter</span></span>
-<span><span class="co">#&gt; Warning in title(...): "confint" is not a graphical parameter</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ddm</span>, type <span class="op">=</span> <span class="st">'rt'</span>, q_lines <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.95</span><span class="op">)</span>, legend <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <p><img src="visualizing-models_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
-<p>Here, we have selected to also view a 90% confidence interval around
-the model’s predictions.</p>
+<p>Here, we have selected to also view a 90% quantile-based confidence
+interval around the model’s predictions.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

@@ -35,11 +35,11 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/adjusting-amounts.html">Working with data from an adjusting amount procedure</a></li>
     <li><a class="dropdown-item" href="../articles/analyzing-study.html">Analyzing data from multiple participants</a></li>
+    <li><a class="dropdown-item" href="../articles/area-under-curve.html">Computing area under the curve (AUC)</a></li>
     <li><a class="dropdown-item" href="../articles/comparing-models.html">Comparing discounting across different discount functions</a></li>
     <li><a class="dropdown-item" href="../articles/custom-discount-functions.html">Creating custom discount functions</a></li>
     <li><a class="dropdown-item" href="../articles/drift-diffusion-models.html">Drift diffusion models</a></li>
     <li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
-    <li><a class="dropdown-item" href="../articles/model-free-auc.html">Computing model-free area under the curve (AUC)</a></li>
     <li><a class="dropdown-item" href="../articles/modeling-binary-choice-data.html">Modeling binary choice data</a></li>
     <li><a class="dropdown-item" href="../articles/nonsystematic-discounting.html">Indentifying non-systematic discounting</a></li>
     <li><a class="dropdown-item" href="../articles/visualizing-models.html">Visualizing models</a></li>
@@ -107,8 +107,8 @@ is 50% of its face value. This can be computed using the
 <p>Another option is to use the model-based area under the curve (AUC)
 with the <code>AUC</code> function:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">auc1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AUC.html">AUC</a></span><span class="op">(</span><span class="va">mod1</span>, verbose <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
-<span><span class="va">auc2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AUC.html">AUC</a></span><span class="op">(</span><span class="va">mod2</span>, verbose <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">auc1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AUC.html">AUC</a></span><span class="op">(</span><span class="va">mod1</span><span class="op">)</span></span>
+<span><span class="va">auc2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AUC.html">AUC</a></span><span class="op">(</span><span class="va">mod2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">'Percentage difference in AUC values: %.2f%%\n'</span>, <span class="fl">100</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">auc1</span> <span class="op">-</span> <span class="va">auc2</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="op">(</span><span class="va">auc1</span> <span class="op">+</span> <span class="va">auc2</span><span class="op">)</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Percentage difference in AUC values: 18.36%</span></span></code></pre></div>
 <p>This latter method has the advantage of being well-defined for the

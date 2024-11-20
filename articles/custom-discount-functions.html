@@ -35,11 +35,11 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/adjusting-amounts.html">Working with data from an adjusting amount procedure</a></li>
     <li><a class="dropdown-item" href="../articles/analyzing-study.html">Analyzing data from multiple participants</a></li>
+    <li><a class="dropdown-item" href="../articles/area-under-curve.html">Computing area under the curve (AUC)</a></li>
     <li><a class="dropdown-item" href="../articles/comparing-models.html">Comparing discounting across different discount functions</a></li>
     <li><a class="dropdown-item" href="../articles/custom-discount-functions.html">Creating custom discount functions</a></li>
     <li><a class="dropdown-item" href="../articles/drift-diffusion-models.html">Drift diffusion models</a></li>
     <li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
-    <li><a class="dropdown-item" href="../articles/model-free-auc.html">Computing model-free area under the curve (AUC)</a></li>
     <li><a class="dropdown-item" href="../articles/modeling-binary-choice-data.html">Modeling binary choice data</a></li>
     <li><a class="dropdown-item" href="../articles/nonsystematic-discounting.html">Indentifying non-systematic discounting</a></li>
     <li><a class="dropdown-item" href="../articles/visualizing-models.html">Visualizing models</a></li>
@@ -155,7 +155,7 @@ with a call to <code><a href="../reference/td_fn.html">td_fn()</a></code>:</p>
 <span><span class="co">#&gt;  transform: identity</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ED50: 57.7394519246891</span></span>
-<span><span class="co">#&gt; AUC: 0.0658081315115585</span></span>
+<span><span class="co">#&gt; AUC: integrate() failed to compute AUC with error: "unused argument (verbose = FALSE)"</span></span>
 <span><span class="co">#&gt; BIC: 39.8740195369945</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -226,7 +226,7 @@ model defined, we can fit it to our data:</p>
 <span><span class="co">#&gt;  transform: identity</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ED50: 57.8818909718295</span></span>
-<span><span class="co">#&gt; AUC: 0.0659320948311096</span></span>
+<span><span class="co">#&gt; AUC: integrate() failed to compute AUC with error: "unused argument (verbose = FALSE)"</span></span>
 <span><span class="co">#&gt; BIC: 44.1751992280079</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

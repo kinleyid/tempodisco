@@ -3,12 +3,12 @@
 <url><loc>https://kinleyid.github.io/tempodisco/LICENSE.html</loc></url>
 <url><loc>https://kinleyid.github.io/tempodisco/articles/adjusting-amounts.html</loc></url>
 <url><loc>https://kinleyid.github.io/tempodisco/articles/analyzing-study.html</loc></url>
+<url><loc>https://kinleyid.github.io/tempodisco/articles/area-under-curve.html</loc></url>
 <url><loc>https://kinleyid.github.io/tempodisco/articles/comparing-models.html</loc></url>
 <url><loc>https://kinleyid.github.io/tempodisco/articles/custom-discount-functions.html</loc></url>
 <url><loc>https://kinleyid.github.io/tempodisco/articles/drift-diffusion-models.html</loc></url>
 <url><loc>https://kinleyid.github.io/tempodisco/articles/getting-started.html</loc></url>
 <url><loc>https://kinleyid.github.io/tempodisco/articles/index.html</loc></url>
-<url><loc>https://kinleyid.github.io/tempodisco/articles/model-free-auc.html</loc></url>
 <url><loc>https://kinleyid.github.io/tempodisco/articles/modeling-binary-choice-data.html</loc></url>
 <url><loc>https://kinleyid.github.io/tempodisco/articles/nonsystematic-discounting.html</loc></url>
 <url><loc>https://kinleyid.github.io/tempodisco/articles/visualizing-models.html</loc></url>
@@ -30,6 +30,7 @@
 <url><loc>https://kinleyid.github.io/tempodisco/reference/fitted.td_ddm.html</loc></url>
 <url><loc>https://kinleyid.github.io/tempodisco/reference/fitted.td_ipm.html</loc></url>
 <url><loc>https://kinleyid.github.io/tempodisco/reference/index.html</loc></url>
+<url><loc>https://kinleyid.github.io/tempodisco/reference/indiffs.html</loc></url>
 <url><loc>https://kinleyid.github.io/tempodisco/reference/invariance_checks.html</loc></url>
 <url><loc>https://kinleyid.github.io/tempodisco/reference/kirby_consistency.html</loc></url>
 <url><loc>https://kinleyid.github.io/tempodisco/reference/kirby_score.html</loc></url>
