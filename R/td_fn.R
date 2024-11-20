@@ -57,31 +57,37 @@ td_fn <- function(predefined = c('hyperbolic',
       out$fn <- fn
     }
     
-    if (is.null(par_starts)) {
-      stop('par_starts must ')
-    }
-    if (is.null(names(par_starts))) {
-      stop('par_starts must be a named list')
+    if (is.function(par_starts)) {
+      out$par_starts <- par_starts
     } else {
-      out$par_starts <- as.list(par_starts)
+      if (is.null(names(par_starts))) {
+        stop('par_starts must be a named list')
+      } else {
+        out$par_starts <- as.list(par_starts)
+      }
     }
     
     if (is.null(par_lims)) {
       par_lims <- list()
     } else {
-      if (is.null(names(par_lims)) | any(names(par_lims) == '')) {
-        stop('Every element of par_lims must have a name corresponding to a different parameter')
-      } else if (!all(vapply(par_lims, length, numeric(1)) == 2)) {
-        stop('par_lims must be a list of 2-element vectors')
+      if (is.function(par_lims)) {
+        out$par_lims <- par_lims
+      } else {
+        if (is.null(names(par_lims)) | any(names(par_lims) == '')) {
+          stop('Every element of par_lims must have a name corresponding to a different parameter')
+        } else if (!all(vapply(par_lims, length, numeric(1)) == 2)) {
+          stop('par_lims must be a list of 2-element vectors')
+        }
+        
+        for (par_name in names(par_starts)) {
+          if (!(par_name %in% names(par_lims))) {
+            par_lims[[par_name]] <- c(-Inf, Inf)
+          }
+        }
+        
+        out$par_lims <- par_lims
       }
     }
-    for (par_name in names(par_starts)) {
-      if (!(par_name %in% names(par_lims))) {
-        par_lims[[par_name]] <- c(-Inf, Inf)
-      }
-    }
-    
-    out$par_lims <- par_lims
     
     if (is.null(ED50)) {
       out$ED50 <- function(...) 'non-analytic'
