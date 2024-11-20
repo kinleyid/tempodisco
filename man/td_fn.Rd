@@ -5,7 +5,7 @@
 \title{Predefined or custom discount function}
 \usage{
 td_fn(
-  predefined = c("hyperbolic", "exponential", "inverse-q-exponential",
+  predefined = c("hyperbolic", "exponential", "power", "inverse-q-exponential",
     "nonlinear-time-hyperbolic", "scaled-exponential", "dual-systems-exponential",
     "nonlinear-time-exponential", "model-free", "constant"),
   name = NULL,
