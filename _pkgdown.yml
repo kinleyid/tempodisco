@@ -15,14 +15,12 @@ reference:
   - discount_function
   - td_fn
   
-- title: Data preparation
-  contents:
-  - adj_amt_indiffs
-  
 - title: Scoring response data
   contents:
+  - adj_amt_indiffs
   - kirby_score
   - wileyto_score
+  - indiffs
   
 - title: Consistency of response data
   contents:
