@@ -277,46 +277,63 @@ nonlinear model by calling <code>td_bcnm</code>. The full list is as
 follows:</p>
 <table class="table">
 <colgroup>
-<col width="26%">
-<col width="73%">
+<col width="16%">
+<col width="47%">
+<col width="36%">
 </colgroup>
 <thead><tr class="header">
 <th>Name</th>
 <th>Functional form</th>
+<th>Other names</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td>Exponential (<a href="https://doi.org/10.2307/2967612" class="external-link">Samuelson,
-1937</a>)</td>
+<td>
+<code>exponential</code> (<a href="https://doi.org/10.2307/2967612" class="external-link">Samuelson, 1937</a>)</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mi>e</mi><mrow><mo>−</mo><mi>k</mi><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">f(t; k) = e^{-k t}</annotation></semantics></math></td>
+<td></td>
 </tr>
 <tr class="even">
-<td>Scaled exponential (beta-delta; <a href="https://doi.org/10.1162/003355397555253" class="external-link">Laibson, 1997</a>)</td>
+<td>
+<code>scaled-exponential</code> (<a href="https://doi.org/10.1162/003355397555253" class="external-link">Laibson, 1997</a>)</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo>,</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>w</mi><msup><mi>e</mi><mrow><mo>−</mo><mi>k</mi><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">f(t; k, w) = w e^{-k t}</annotation></semantics></math></td>
+<td>Quasi-hyperbolic; beta-delta</td>
 </tr>
 <tr class="odd">
-<td>Nonlinear-time exponential (<a href="https://doi.org/10.1287/mnsc.1060.0671" class="external-link">Ebert &amp; Prelec,
+<td>
+<code>nonlinear-time-exponential</code> (<a href="https://doi.org/10.1287/mnsc.1060.0671" class="external-link">Ebert &amp; Prelec,
 2007</a>)</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo>,</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mi>e</mi><mrow><mo>−</mo><mi>k</mi><msup><mi>t</mi><mi>s</mi></msup></mrow></msup></mrow><annotation encoding="application/x-tex">f(t; k, s) = e^{-k t^s}</annotation></semantics></math></td>
+<td>Constant sensitivity</td>
 </tr>
 <tr class="even">
-<td>Dual-systems exponential (<a href="https://doi.org/10.1002/jeab.6" class="external-link">Ven den Bos &amp; McClure,
+<td>
+<code>dual-systems-exponential</code> (<a href="https://doi.org/10.1002/jeab.6" class="external-link">Ven den Bos &amp; McClure,
 2013</a>)</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><msub><mi>k</mi><mn>1</mn></msub><mo>,</mo><msub><mi>k</mi><mn>2</mn></msub><mo>,</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>w</mi><msup><mi>e</mi><mrow><mo>−</mo><msub><mi>k</mi><mn>1</mn></msub><mi>t</mi></mrow></msup><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow><msup><mi>e</mi><mrow><mo>−</mo><msub><mi>k</mi><mn>2</mn></msub><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">f(t; k_1, k_2, w) = w e^{-k_1 t} + (1 - w) e^{-k_2 t}</annotation></semantics></math></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td>Inverse q-exponential (<a href="https://doi.org/10.1037/0033-2909.130.5.769" class="external-link">Green &amp; Myerson,
+<td>
+<code>inverse-q-exponential</code> (<a href="https://doi.org/10.1037/0033-2909.130.5.769" class="external-link">Green &amp; Myerson,
 2004</a>)</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo>,</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>k</mi><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>s</mi></msup></mfrac></mrow><annotation encoding="application/x-tex">f(t; k, s) = \frac{1}{(1 + k t)^s}</annotation></semantics></math></td>
+<td>Generalized hyperbolic <a href="https://doi.org/10.2307/2118482" class="external-link">Loewenstin &amp; Prelec</a>;
+hyperboloid (<a href="https://doi.org/10.1037/0033-2909.130.5.769" class="external-link">Green
+&amp; Myerson, 2004</a>); q-exponential (<a href="https://doi.org/10.1016/j.physa.2012.07.012" class="external-link">Han &amp; Takahashi,
+2012</a>)</td>
 </tr>
 <tr class="even">
-<td>Hyperbolic (<a href="https://doi.org/10.4324/9781315825502" class="external-link">Mazur,
-1987</a>)</td>
+<td>
+<code>hyperbolic</code> (<a href="https://doi.org/10.4324/9781315825502" class="external-link">Mazur, 1987</a>)</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><mi>k</mi><mi>t</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">f(t; k) = \frac{1}{1 + kt}</annotation></semantics></math></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td>Nonlinear-time hyperbolic (<a href="https://doi.org/10.1901/jeab.2006.85-05" class="external-link">Rachlin, 2006</a>)</td>
+<td>
+<code>nonlinear-time-hyperbolic</code> (<a href="https://doi.org/10.1901/jeab.2006.85-05" class="external-link">Rachlin, 2006</a>)</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo>,</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><mi>k</mi><msup><mi>t</mi><mi>s</mi></msup></mrow></mfrac></mrow><annotation encoding="application/x-tex">f(t; k, s) = \frac{1}{1 + k t^s}</annotation></semantics></math></td>
+<td>Power-functin (<a href="https://doi.org/10.1901/jeab.2006.85-05" class="external-link">Rachlin, 2006</a>)</td>
 </tr>
 </tbody>
 </table>
