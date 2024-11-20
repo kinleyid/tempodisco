@@ -2,7 +2,7 @@
 % Please edit documentation in R/validation-functions.R
 \name{attention_checks}
 \alias{attention_checks}
-\title{Run attention checks}
+\title{Test for failed attention checks}
 \usage{
 attention_checks(data, warn = F, ppn = F)
 }
