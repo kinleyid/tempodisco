@@ -1,5 +1,5 @@
 
-#' Run attention checks
+#' Test for failed attention checks
 #' 
 #' Check whether participants failed attention checks, either choosing an immediate reward of 0 or choosing a delayed reward equal in face value to an immediate reward. If the participant was never offered either choice, a warning is given.
 #' @param data A \code{data.frame} with columns \code{val_imm}, \code{val_del} and \code{del_chosen}, representing data from a single participant.

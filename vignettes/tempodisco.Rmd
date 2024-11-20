@@ -64,7 +64,7 @@ To quantify discounting given a set of indifference points, we can use the "area
 
 ```{r}
 AUC(indiff_data)
-AUC(indiff_mod, verbose = F)
+AUC(indiff_mod)
 ```
 
 ## Fitting discount functions

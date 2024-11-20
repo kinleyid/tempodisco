@@ -1,6 +1,40 @@
 url: https://kinleyid.github.io/tempodisco/
 template:
   bootstrap: 5
+  light-switch: true
+  bslib:
+    primary: '#bf6900'
+    base_font: 'Georgia'
+
+navbar:
+ structure:
+   left:  [intro, articles, reference]
+ components:
+   articles:
+    text: Examples
+    menu:
+    - text: Data preprocessing
+    - text: Processing adjusting-amounts data
+      href: articles/adjusting-amounts.html
+    - text: Identifying nonsystematic discounting
+      href: articles/nonsystematic-discounting.html
+    - text: Model fitting
+    - text: Modeling choice-level data
+      href: articles/modeling-binary-choice-data.html
+    - text: Visualizing models
+      href: articles/visualizing-models.html
+    - text: Statistical inference
+    - text: Measuring area under the curve
+      href: articles/area-under-curve.html
+    - text: Comparing across discount functions
+      href: articles/comparing-models.html
+    - text: Analyzing data from multiple participants
+      href: articles/analyzing-study.html
+    - text: Advanced topics
+    - text: Drift diffusion models
+      href: articles/drift-diffusion-models.html
+    - text: Custom discount functions
+      href: articles/custom-discount-functions.html
 
 reference:
 - title: Temporal discounting models
@@ -21,16 +55,16 @@ reference:
   - indiffs
   - kirby_score
   - wileyto_score
+  - most_consistent_indiffs
   
-- title: Consistency of response data
+- title: Data quality checks
   contents:
   - nonsys
   - attention_checks
   - kirby_consistency
   - invariance_checks
-  - most_consistent_indiffs
   
-- title: Summarize models
+- title: Model-agnostic measures of discounting
   contents:
   - AUC
   - ED50
