@@ -20,11 +20,11 @@ knitr::opts_chunk$set(
 [![codecov](https://codecov.io/github/kinleyid/tempodisco/graph/badge.svg?token=CCQXS3SNGB)](https://app.codecov.io/github/kinleyid/tempodisco)
 <!-- badges: end -->
 
-`tempodisco` is an R package for behavioural researchers working with delay discounting data (also known as temporal discounting intertemporal choice data). It is intended to simplify common tasks such as scoring responses (e.g. computing indifference points from an adjusting amounts procedure, computing the "area under the curve", or computing $k$ values as in the Monetary Choice Questionnaire; [Kirby et al., 1999](https://doi.org/10.1037//0096-3445.128.1.78)), identifying poor-quality data (e.g. non-systematic responding and failed attention checks), modelling choice data using multiple discount functions (e.g. hyperbolic, exponential, etc.---see below), and modelling reaction times using drift diffusion models.
+`tempodisco` is an R package for behavioural researchers working with delay discounting data (also known as temporal discounting intertemporal choice data). It implements common tasks such as scoring responses (e.g. computing indifference points from an adjusting amounts procedure, computing the "area under the curve", or computing $k$ values as in the Monetary Choice Questionnaire; [Frye et al., 2016](https://doi.org/10.3791/53584); [Myerson et al., 2001](https://doi.org/10.1901/jeab.2001.76-235); [Kirby et al., 1999](https://doi.org/10.1037//0096-3445.128.1.78)), identifying poor-quality data (e.g. failed attention checks and non-systematic responding; [Johnson & Bickel, 2008](https://doi.org/10.1037/1064-1297.16.3.264)), modelling choice data using multiple discount functions (e.g. hyperbolic, exponential, etc.---see below; [Franck et al., 2015](https://doi.org/10.1002/jeab.128)), and modelling reaction times using drift diffusion models ([Peters & D'Esposito, 2020](https://doi.org/10.1371/journal.pcbi.1007615)).
 
 ## Installation
 
-You can install tempodisco from [GitHub](https://github.com/) with:
+You can install tempodisco from GitHub with:
 
 ``` r
 # install.packages("devtools")
@@ -33,140 +33,27 @@ devtools::install_github("kinleyid/tempodisco")
 
 ## Getting started
 
-See the `getting-started` vignette for example usage.
+See [getting started](https://kinleyid.github.io/tempodisco/docs/articles/tempodisco.html) for example usage.
+
+## Overview
+
+A good practice in delay discounting research is to not assume that the same discount function describes every individual ([Franck et al., 2015](https://doi.org/10.1002/jeab.128)). `tempodisco` implements the following discount functions and can automatically select the best one for a given individual according to the Bayesian information criterion ([Schwartz, 1978](https://doi.org/10.1214/aos/1176344136)):
+
+```{r child="man/fragments/predefined-discount-functions.Rmd"}
+```
+
+These discount functions can be fit to indifference point data (see [`td_ipm`](https://kinleyid.github.io/tempodisco/reference/td_ipm.html)), choice-level data (see [`td_bcnm`](https://kinleyid.github.io/tempodisco/reference/td_bcnm.html)), or reaction time data (see [`td_ddm`](https://kinleyid.github.io/tempodisco/reference/td_ddm.html)).
+
+After fitting a model, we can check to see how well it matches the data using the [`plot()`](https://kinleyid.github.io/tempodisco/reference/plot.td_um.html) function:
 
 ```{r}
 library(tempodisco)
-```
-
-
-### Modeling indifference point data
-
-To compute indifference points from an adjusting amount procedure, we can use the `adj_amt_indiffs` function:
-
-```{r}
-data("adj_amt_sim") # Load simulated data from an adjusting amounts procedure
-indiff_data <- adj_amt_indiffs(adj_amt_sim)
-head(indiff_data)
-```
-
-This returns a data frame containing the delays and corresponding indifference points. The function `td_ipm` can then be used to identify the best-fitting discount function (according to the Bayesian information criterion) from any subset of the following options:
-
-```{r child="man/fragments/predefined-discount-functions.Rmd"}
-```
-
-For example:
-
-```{r}
-mod <- td_ipm(data = indiff_data, discount_function = c('exponential', 'hyperbolic', 'nonlinear-time-hyperbolic'))
-print(mod)
-```
-
-From here, we can extract useful information about the model and visualize it
-
-```{r}
-plot(mod)
-print(coef(mod)) # k value
-print(BIC(mod)) # Bayesian information criterion
-```
-
-### Modeling binary choice data
-
-A traditional method of modeling binary choice data is to compute a value of $k$ using the scoring method introduced for the Kirby Monetary Choice Questionnaire:
-
-```{r}
 data("td_bc_single_ptpt")
+mod <- td_bcnm(td_bc_single_ptpt, discount_function = c('hyperbolic', 'exponential'))
+plot(mod, p_lines = c(0.1, 0.9), log = 'x', verbose = F)
 ```
 
-```{r child="man/fragments/kirby-scoring.Rmd"}
-```
-
-Another option is to use the logistic regression method of Wileyto et al., where we can solve for the $k$ value of the hyperbolic discount function in terms of the regression coefficients:
-
-```{r child="man/fragments/wileyto-scoring.Rmd"}
-```
-
-We can extend this approach to a number of other discount functions using the `method` argument to `td_bclm`:
-
-```{r child="man/fragments/linear-models.Rmd"}
-```
-
-By setting `method = "all"` (the default), `td_bclm` tests all of the above models and returns the best-fitting one, according to the Bayesian information criterion:
-
-```{r}
-mod <- td_bclm(td_bc_single_ptpt, model = 'all')
-print(mod)
-```
-
-We can explore an even wider range of discount functions using nonlinear modeling with `td_bcnm`. When `discount_function = "all"` (the default), all of the following models are tested and the best-fitting one (according to the Bayesian information criterion) is returned:
-
-```{r child="man/fragments/predefined-discount-functions.Rmd"}
-```
-
-```{r}
-mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'all')
-plot(mod, log = 'x', verbose = F, p_lines = c(0.05, 0.95))
-```
-
-### Drift diffusion models
-
-To model reaction times using a drift diffusion model, we can use `td_ddm` (here, for speed, we are starting the optimization near optimal values for this dataset):
-
-```{r}
-ddm <- td_ddm(td_bc_single_ptpt, discount_function = 'exponential',
-              v_par_starts = 0.01,
-              beta_par_starts = 0.5,
-              alpha_par_starts = 3.5,
-              tau_par_starts = 0.9)
-print(ddm)
-```
-
-Following [Peters & D'Esposito (2020)](https://doi.org/10.1371/journal.pcbi.1007615), we can apply a sigmoidal transform to the drift rate $\delta$ to improve model fit using the argument `drift_transform = "sigmoid"`:
-
-$$\delta' = v_\text{max} \left(\frac{2}{1 + e^{-\delta}} - 1\right)$$
-
-```{r}
-ddm_sig <- td_ddm(td_bc_single_ptpt, discount_function = 'exponential',
-              drift_transform = 'sigmoid',
-              v_par_starts = 0.01,
-              beta_par_starts = 0.5,
-              alpha_par_starts = 3.5,
-              tau_par_starts = 0.9)
-coef(ddm_sig)
-```
-
-This introduces a new variable `max_abs_drift` ($v_\text{max}$ in the equation above) controlling the absolute value of the maximum drift rate.
-
-We can use the model to predict reaction times and compare them to the actual data:
-
-```{r}
-pred_rts <- predict(ddm_sig, type = 'rt')
-cor.test(pred_rts, td_bc_single_ptpt$rt)
-```
-
-We can also plot reaction times against the model's predictions:
-
-```{r}
-plot(ddm_sig, type = 'rt', confint = 0.8)
-```
-
-### The "model-free" discount function
-
-In addition to the discount functions listed above, we can fit a "model-free" discount function to the data, meaning we fit each indifference point independently. This enables us to, first, test whether a participant exhibits non-systematic discounting according to the Johnson & Bickel criteria:
-
-```{r child="man/fragments/j-b-criteria.Rmd"}
-```
-
-```{r}
-mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'model-free')
-print(nonsys(mod)) # Model violates neither criterion; no non-systematic discounting detected
-```
-
-We can also measure the model-free area under the curve (AUC), a useful model-agnostic measure of discounting.
-
-```{r}
-print(AUC(mod))
-```
+See "[Visualizing models](https://kinleyid.github.io/tempodisco/articles/visualizing-models.html)" for more examples.
 
 ## Reporting issues and requesting features
 

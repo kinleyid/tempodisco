@@ -771,9 +771,9 @@ plot.td_um <- function(x,
         }
         
         # Overlay actual data
-        points(rt ~ linpreds, col = 'red',
+        points(rt ~ linpreds, col = "#F8766D",
                data = x$data[x$data$imm_chosen, ])
-        points(rt ~ linpreds, col = 'blue',
+        points(rt ~ linpreds, col = "#00BFC4",
                data = x$data[!x$data$imm_chosen, ])
         
         if (legend) {

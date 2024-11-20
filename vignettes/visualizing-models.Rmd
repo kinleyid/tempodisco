@@ -84,7 +84,7 @@ Finally, we can plot the probability of selecting the immediate reward against t
 plot(mod, type = 'link')
 ```
 
-## `rt` plots
+## "`rt`" plots
 
 For drift [diffusion models](drift-diffusion-models.html), we can create a plot of reaction times against the model's predictions:
 
