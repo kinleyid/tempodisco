@@ -8,11 +8,11 @@ articles:
   comparing-models: comparing-models.html
   custom-discount-functions: custom-discount-functions.html
   drift-diffusion-models: drift-diffusion-models.html
-  getting-started: getting-started.html
   modeling-binary-choice-data: modeling-binary-choice-data.html
   nonsystematic-discounting: nonsystematic-discounting.html
+  tempodisco: tempodisco.html
   visualizing-models: visualizing-models.html
-last_built: 2024-11-20T12:49Z
+last_built: 2024-11-20T13:39Z
 urls:
   reference: https://kinleyid.github.io/tempodisco/reference
   article: https://kinleyid.github.io/tempodisco/articles
