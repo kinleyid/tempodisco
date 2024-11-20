@@ -2,7 +2,7 @@
 % Please edit documentation in R/td_fn.R
 \name{td_fn}
 \alias{td_fn}
-\title{Temporal discount function}
+\title{Predefined or custom discount function}
 \usage{
 td_fn(
   predefined = c("hyperbolic", "exponential", "inverse-q-exponential",

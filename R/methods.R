@@ -211,7 +211,7 @@ nonsys <- function(obj) {
   
 }
 
-#' Get discount function
+#' Get discount function from model
 #' 
 #' Access the name of the discount function of a model.
 #' @param mod A temporal discounting model.

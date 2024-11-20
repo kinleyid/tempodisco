@@ -1,5 +1,5 @@
 
-#' Temporal discount function
+#' Predefined or custom discount function
 #'
 #' Get a predefined discount function or create a custom discount function.
 #' @param predefined A string specifying one of the pre-defined discount functions.

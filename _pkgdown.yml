@@ -5,30 +5,30 @@ template:
 reference:
 - title: Temporal discounting models
   contents:
+  - td_ipm
   - td_bclm
   - td_bcnm
   - td_ddm
-  - td_ipm
   
 - title: Discount functions
   contents:
-  - discount_function
   - td_fn
+  - discount_function
   
 - title: Scoring response data
   contents:
   - adj_amt_indiffs
+  - indiffs
   - kirby_score
   - wileyto_score
-  - indiffs
   
 - title: Consistency of response data
   contents:
-  - attention_checks
-  - invariance_checks
-  - kirby_consistency
-  - most_consistent_indiffs
   - nonsys
+  - attention_checks
+  - kirby_consistency
+  - invariance_checks
+  - most_consistent_indiffs
   
 - title: Summarize models
   contents:
@@ -37,17 +37,17 @@ reference:
   
 - title: Methods
   contents:
+  - plot.td_um
   - starts_with("coef")
   - starts_with("deviance")
   - starts_with("fitted")
   - starts_with("logLik")
-  - plot.td_um
   - starts_with("predict")
   - starts_with("residuals")
   
 - title: Datasets
   contents:
-  - adj_amt_sim
   - td_bc_single_ptpt
-  - td_bc_study
+  - adj_amt_sim
   - td_ip_simulated_ptpt
+  - td_bc_study

@@ -2,7 +2,7 @@
 % Please edit documentation in R/methods.R
 \name{discount_function}
 \alias{discount_function}
-\title{Get discount function}
+\title{Get discount function from model}
 \usage{
 discount_function(mod)
 }
