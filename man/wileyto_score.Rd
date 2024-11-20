@@ -13,7 +13,7 @@ wileyto_score(data)
 An object of class \code{td_bclm}.
 }
 \description{
-Score a set of responses according to the method of \href{https://doi.org/10.3758/BF03195548}{Wileyto et al. (2004)}. This function is a thin wrapper to \code{\link{td_bclm}}.
+Score a set of responses according to the method of Wileyto et al. (2004, \doi{10.3758/BF03195548}). This function is a thin wrapper to \code{\link{td_bclm}}.
 }
 \examples{
 \dontrun{

@@ -212,7 +212,7 @@ predict.td_ipm <- function(object, newdata = NULL, type = c('indiff', 'response'
 #' @family drift diffusion model functions
 #' @return A vector of predictions.
 #' @note
-#' When \code{type = 'rt'}, expected RTs are computed irrespective of which reward was selected, per equation 5 in \href{https://doi.org/10.1016/j.jmp.2009.01.006}{Grasman, Wagenmakers, & van der Maas (2009)}.
+#' When \code{type = 'rt'}, expected RTs are computed irrespective of which reward was selected, per equation 5 in Grasman, Wagenmakers, & van der Maas (2009, \doi{10.1016/j.jmp.2009.01.006}).
 #' @examples
 #' \dontrun{
 #' data("td_bc_single_ptpt")

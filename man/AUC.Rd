@@ -22,7 +22,7 @@ AUC(
 
 \item{val_del}{Delayed value to use for computing the indifference curve, if applicable. Defaults to the average \code{del_val} in the data.}
 
-\item{del_transform}{String specifying transformation to apply to the delays (e.g., log10 + 1 transform or ordinal scaling transform; Borges et al., 2016, \doi{https://doi.org/10.1002/jeab.219}). Default is no transform.}
+\item{del_transform}{String specifying transformation to apply to the delays (e.g., log10 + 1 transform or ordinal scaling transform; Borges et al., 2016, \doi{10.1002/jeab.219}). Default is no transform.}
 
 \item{...}{Further arguments passed to `integrate()`.}
 }

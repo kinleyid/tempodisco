@@ -185,7 +185,7 @@ adj_amt_indiffs <- function(data, block_indic = 'del', order_indic = NULL) {
 
 #' Kirby MCQ-style scoring
 #'
-#' Score a set of responses according to the method of \href{https://doi.org/10.1037//0096-3445.128.1.78}{Kirby et al. (1999)}. This is described in detail in \href{https://doi.org/10.1007/s40614-016-0070-9}{Kaplan et al. (2016)}.
+#' Score a set of responses according to the method of Kirby et al. (1999, \doi{10.1037//0096-3445.128.1.78}). This is described in detail in Kaplan et al. (2016, \doi{10.1007/s40614-016-0070-9}).
 #' @param data Responses to score.
 #' @param discount_function Should \eqn{k} values be computed according to the hyperbolic or exponential discount function? The original method uses the hyperbolic, but in principle the exponential is also possible.
 #' @return An object of class \code{\link{td_ipm}}.
@@ -230,7 +230,7 @@ kirby_score <- function(data, discount_function = c('hyperbolic', 'exponential')
 
 #' Compute consistency score
 #'
-#' Compute the consistency score per the method of \href{10.1037//0096-3445.128.1.78}{Kirby et al. (1999)}. This is described in detail in \href{https://doi.org/10.1007/s40614-016-0070-9}{Kaplan et al. (2016)}, where it's suggested that a consistency score below 0.75 might be a sign of inattentive responding.
+#' Compute the consistency score per the method of Kirby et al. (1999, \doi{10.1037//0096-3445.128.1.78}). This is described in detail in Kaplan et al. (2016, \doi{10.1007/s40614-016-0070-9}), where it's suggested that a consistency score below 0.75 might be a sign of inattentive responding.
 #' @param data Responses to score.
 #' @param discount_function Should \eqn{k} values be computed according to the hyperbolic or exponential discount function? The original method uses the hyperbolic, but in principle the exponential is also possible.
 #' @return A consistency score between 0 and 1.
@@ -272,7 +272,7 @@ kirby_preproc <- function(data, discount_function = c('hyperbolic', 'exponential
 
 #' Wileyto score a questionnaire
 #' 
-#' Score a set of responses according to the method of \href{https://doi.org/10.3758/BF03195548}{Wileyto et al. (2004)}. This function is a thin wrapper to \code{\link{td_bclm}}.
+#' Score a set of responses according to the method of Wileyto et al. (2004, \doi{10.3758/BF03195548}). This function is a thin wrapper to \code{\link{td_bclm}}.
 #' @param data Responses to score.
 #' @returns An object of class \code{td_bclm}.
 #' @examples

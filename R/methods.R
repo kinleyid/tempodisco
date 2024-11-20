@@ -43,7 +43,7 @@ ED50 <- function(mod, val_del = NULL) {
 #' @param min_del Lower limit to use for integration. Defaults to 0.
 #' @param max_del Upper limit to use for integration. Defaults to the maximum delay in the data.
 #' @param val_del Delayed value to use for computing the indifference curve, if applicable. Defaults to the average \code{del_val} in the data.
-#' @param del_transform String specifying transformation to apply to the delays (e.g., log10 + 1 transform or ordinal scaling transform; Borges et al., 2016, \doi{https://doi.org/10.1002/jeab.219}). Default is no transform.
+#' @param del_transform String specifying transformation to apply to the delays (e.g., log10 + 1 transform or ordinal scaling transform; Borges et al., 2016, \doi{10.1002/jeab.219}). Default is no transform.
 #' @param ... Further arguments passed to `integrate()`.
 #' @return AUC value.
 #' @note

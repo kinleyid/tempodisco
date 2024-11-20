@@ -25,7 +25,7 @@
 #' @param beta_par_starts A vector of starting values to try for the "beta" parameter (bias) during optimization.
 #' @param alpha_par_starts A vector of starting values to try for the "alpha" parameter (boundary separation) during optimization.
 #' @param tau_par_starts A vector of starting values to try for the "tau" parameter (non-decision time) during optimization.
-#' @param drift_transform A transform to apply to drift rates. Either \code{"none"} (no transform), \code{"sigmoid"} (sigmoidal transform described by \href{https://doi.org/10.1371/journal.pcbi.1007615}{Peters & D'Esposito, 2020} and \href{https://doi.org/10.3758/s13423-018-1554-2}{Fontanesi et al., 2019}), or \code{"bias-correct"} (experimental; see note below).
+#' @param drift_transform A transform to apply to drift rates. Either \code{"none"} (no transform), \code{"sigmoid"} (sigmoidal transform described by Peters & D'Esposito, 2020, \doi{10.1371/journal.pcbi.1007615}, and Fontanesi et al., 2019, \doi{10.3758/s13423-018-1554-2}), or \code{"bias-correct"} (experimental; see note below).
 #' @param optim_args Additional arguments to pass to \code{optim()}. Default is \code{list(silent = T)}.
 #' @param silent Boolean (true by default). The call to \code{optim()} occurs within a \code{try()} wrapper. The value of \code{silent} is passed along to \code{try()}.
 #' @param na.action Action to take when data contains \code{NA} values. Default is \code{na.omit}.

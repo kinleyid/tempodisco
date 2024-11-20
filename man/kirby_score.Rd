@@ -15,7 +15,7 @@ kirby_score(data, discount_function = c("hyperbolic", "exponential"))
 An object of class \code{\link{td_ipm}}.
 }
 \description{
-Score a set of responses according to the method of \href{https://doi.org/10.1037//0096-3445.128.1.78}{Kirby et al. (1999)}. This is described in detail in \href{https://doi.org/10.1007/s40614-016-0070-9}{Kaplan et al. (2016)}.
+Score a set of responses according to the method of Kirby et al. (1999, \doi{10.1037//0096-3445.128.1.78}). This is described in detail in Kaplan et al. (2016, \doi{10.1007/s40614-016-0070-9}).
 }
 \examples{
 \dontrun{

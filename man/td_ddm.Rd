@@ -30,7 +30,7 @@ td_ddm(
 
 \item{tau_par_starts}{A vector of starting values to try for the "tau" parameter (non-decision time) during optimization.}
 
-\item{drift_transform}{A transform to apply to drift rates. Either \code{"none"} (no transform), \code{"sigmoid"} (sigmoidal transform described by \href{https://doi.org/10.1371/journal.pcbi.1007615}{Peters & D'Esposito, 2020} and \href{https://doi.org/10.3758/s13423-018-1554-2}{Fontanesi et al., 2019}), or \code{"bias-correct"} (experimental; see note below).}
+\item{drift_transform}{A transform to apply to drift rates. Either \code{"none"} (no transform), \code{"sigmoid"} (sigmoidal transform described by Peters & D'Esposito, 2020, \doi{10.1371/journal.pcbi.1007615}, and Fontanesi et al., 2019, \doi{10.3758/s13423-018-1554-2}), or \code{"bias-correct"} (experimental; see note below).}
 
 \item{silent}{Boolean (true by default). The call to \code{optim()} occurs within a \code{try()} wrapper. The value of \code{silent} is passed along to \code{try()}.}
 
