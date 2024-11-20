@@ -18,13 +18,13 @@
 
 \item{type}{The type of prediction required. For \code{'indiff'} (default) gives predicted indifference points. In this case, \code{newdata} needs only a \code{del} column. For all other values (e.g. \code{"link"}, \code{"response"}), this function is just a wrapper to \code{predict.glm()}.}
 
-\item{...}{Additional arguments passed to predict.glm if type != \code{'indiff'}}
+\item{...}{Additional arguments passed to predict.glm if type != \code{'indiff'}.}
 }
 \value{
-A vector of predictions
+A vector of predictions.
 }
 \description{
-Generate predictions from a temporal discounting binary choice linear model
+Generate predictions from a temporal discounting binary choice linear model.
 }
 \examples{
 \dontrun{
@@ -35,7 +35,6 @@ indiffs <- predict(mod, newdata = data.frame(del = 1:100), type = 'indiff')
 }
 \seealso{
 Other linear binary choice model functions: 
-\code{\link{coef.td_bclm}()},
 \code{\link{td_bclm}()}
 }
 \concept{linear binary choice model functions}

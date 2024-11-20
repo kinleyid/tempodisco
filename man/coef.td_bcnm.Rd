@@ -7,15 +7,15 @@
 \method{coef}{td_bcnm}(object, ...)
 }
 \arguments{
-\item{object}{An object of class \code{td_bcnm}}
+\item{object}{An object of class \code{td_bcnm}.}
 
 \item{...}{Additional arguments currently not used.}
 }
 \value{
-A named vector of coefficients
+A named vector of coefficients.
 }
 \description{
-Get coefficients of a temporal discounting binary choice model
+Get coefficients of a temporal discounting binary choice nonlinear model.
 }
 \seealso{
 Other nonlinear binary choice model functions: 

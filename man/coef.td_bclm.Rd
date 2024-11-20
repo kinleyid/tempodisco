@@ -7,21 +7,16 @@
 \method{coef}{td_bclm}(object, df_par = TRUE, ...)
 }
 \arguments{
-\item{object}{An object of class \code{td_bcnm}}
+\item{object}{An object of class \code{td_bcnm}.}
 
-\item{df_par}{Boolean specifying whether the coefficients returned should be the parameters of a discount function (versus the beta parameters from the regression)}
+\item{df_par}{Boolean specifying whether the coefficients returned should be the parameters of a discount function (versus the beta parameters from the regression).}
 
 \item{...}{Additional arguments currently not used.}
 }
 \value{
-A named vector of coefficients
+A named vector of coefficients.
 }
 \description{
-Get coefficients of a temporal discounting binary choice model
+Get coefficients of a temporal discounting binary choice linear model.
 }
-\seealso{
-Other linear binary choice model functions: 
-\code{\link{predict.td_bclm}()},
-\code{\link{td_bclm}()}
-}
-\concept{linear binary choice model functions}
+\concept{linear binary choice model functions.}

@@ -7,12 +7,12 @@
 \method{deviance}{td_ddm}(mod, ...)
 }
 \arguments{
-\item{mod}{An object of class \code{td_ddm}}
+\item{mod}{An object of class \code{td_ddm}.}
 
 \item{...}{Additional arguments currently not used.}
 }
 \description{
-Compute deviance for a temporal discounting drift diffusion model
+Compute deviance for a temporal discounting drift diffusion model.
 }
 \seealso{
 Other drift diffusion model functions: 

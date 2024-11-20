@@ -7,7 +7,7 @@
 \method{deviance}{td_bcnm}(mod, ...)
 }
 \arguments{
-\item{mod}{An object of class \code{td_bcnm}}
+\item{mod}{An object of class \code{td_bcnm}.}
 
 \item{...}{Additional arguments currently not used.}
 }

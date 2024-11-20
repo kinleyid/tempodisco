@@ -5,7 +5,7 @@
 \alias{adj_amt_sim}
 \title{Simulated adjusting amount procedure}
 \description{
-A minimal example of data from a single participant for an adjusting amount procedure
+A minimal example of data from a single participant for an adjusting amount procedure.
 }
 \author{
 Isaac Kinley \email{isaac.kinley@gmail.com}

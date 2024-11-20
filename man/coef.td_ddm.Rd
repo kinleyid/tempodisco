@@ -9,15 +9,15 @@
 \arguments{
 \item{object}{An object of class \code{\link{td_ddm}}.}
 
-\item{type}{A string specifying which coefficients to extract. \code{'all'} extracts them all, \code{'ddm'} extracts only DDM-specific parameters, and \code{'df'} extracts only discount function parameters}
+\item{type}{A string specifying which coefficients to extract. \code{'all'} extracts them all, \code{'ddm'} extracts only DDM-specific parameters, and \code{'df'} extracts only discount function parameters.}
 
 \item{...}{Additional arguments currently not used.}
 }
 \value{
-A named vector of coefficients
+A named vector of coefficients.
 }
 \description{
-Get coefficients of a temporal discounting drift diffusion model
+Get coefficients of a temporal discounting drift diffusion model.
 }
 \seealso{
 Other drift diffusion model functions: 

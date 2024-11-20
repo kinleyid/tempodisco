@@ -22,9 +22,9 @@ td_bclm(
 \code{'scaled-exponential'}: \eqn{\beta_1 \log (v_I/v_D) + \beta_2 t + \beta_3}; \eqn{k = \beta_2/\beta_1}, \eqn{w = \exp[-\beta_3/\beta_1]}
 \code{'nonlinear-time-hyperbolic'}: \eqn{\beta_1(\sigma^{-1}[v_I/v_D]) + \beta_2\log t + \beta_3}; \eqn{k = \exp[\beta_3/\beta_1]}, \eqn{s = \beta_2/\beta_1} \cr
 \code{'nonlinear-time-hyperbolic'}: \eqn{\beta_1(G^{-1}[v_I/v_D]) + \beta_2\log t + \beta_3}; \eqn{k = \exp[\beta_3/\beta_1]}, \eqn{s = \beta_2/\beta_1} \cr
-where \eqn{\sigma^{-1}[\cdot]} is the quantile function of the standard logistic distribution \eqn{G^{-1}[\cdot]} is the quantile function of the standard Gumbel distribution}
+where \eqn{\sigma^{-1}[\cdot]} is the quantile function of the standard logistic distribution \eqn{G^{-1}[\cdot]} is the quantile function of the standard Gumbel distribution.}
 
-\item{...}{Additional arguments passed to \code{glm}}
+\item{...}{Additional arguments passed to \code{glm}.}
 }
 \value{
 An object of class \code{td_bclm}, nearly identical to a \code{glm} but with an additional \code{config} component.
@@ -42,7 +42,6 @@ print(coef(mod))
 }
 \seealso{
 Other linear binary choice model functions: 
-\code{\link{coef.td_bclm}()},
 \code{\link{predict.td_bclm}()}
 }
 \concept{linear binary choice model functions}

@@ -14,17 +14,16 @@
 \item{...}{Additional arguments currently not used.}
 }
 \value{
-A vector of residuals
+A vector of residuals.
 }
 \description{
-Get residuals from a temporal discounting indifference point model
+Get residuals from a temporal discounting indifference point model.
 }
 \seealso{
 Other indifference point model functions: 
 \code{\link{coef.td_ipm}()},
 \code{\link{fitted.td_ipm}()},
 \code{\link{logLik.td_ipm}()},
-\code{\link{predict.td_ipm}()},
-\code{\link{td_ipm}()}
+\code{\link{predict.td_ipm}()}
 }
 \concept{indifference point model functions}

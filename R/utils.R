@@ -278,7 +278,7 @@ kirby_preproc <- function(data, discount_function = c('hyperbolic', 'exponential
 #' @examples
 #' \dontrun{
 #' data("td_bc_single_ptpt")
-#' mod <- wileyto_score(data)
+#' mod <- wileyto_score(td_bc_single_ptpt)
 #' }
 #' @export
 wileyto_score <- function(data) {
@@ -355,4 +355,24 @@ delwise_consistencies <- function(data) {
   return(rows)
   # do.call(rbind, rows)
   
+}
+
+#' Get model-free indifference points
+#' 
+#' Convert a temporal discounting model with the "model-free" discount function to a dataframe of indifference points.
+#' @param mod A model of class \code{\link{td_bcnm}}, \code{\link{td_ipm}}, or \code{\link{td_ddm}} for which the "model-free" discount function has been fit.
+#' @returns A dataframe with columns \code{del} (delay) and \code{indiff} (indifference point).
+#' @examples
+#' \dontrun{
+#' data("td_bc_single_ptpt")
+#' mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'model-free')
+#' indiff_data <- indiffs(mod)
+#' }
+#' @export
+indiffs <- function(mod) {
+  stopifnot(inherits(mod, 'td_um'))
+  stopifnot(discount_function(mod) == 'model-free')
+  out <- data.frame(del = sort(unique(mod$data$del)))
+  out$indiff <- predict(mod, type = 'indiff', newdata = out)
+  return(out)
 }

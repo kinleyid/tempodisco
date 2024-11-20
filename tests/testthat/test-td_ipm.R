@@ -44,8 +44,7 @@ while (df_idx <= length(discount_functions)) {
   test_that('generics', {
     expect_output(print(mod))
     expect_in(class(ED50(mod)), c('numeric', 'character')) # Might be "none"
-    expect_type(AUC(mod, verbose = F), 'double')
-    expect_output(AUC(mod, verbose = T))
+    expect_type(AUC(mod), 'double')
     expect_named(coef(mod))
     if ('indiff' %in% names(mod$data)) {
       # Computed directly on indifference points

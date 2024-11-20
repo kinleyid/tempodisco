@@ -16,10 +16,10 @@
 \item{...}{Additional arguments currently not used.}
 }
 \value{
-A vector of predictions
+A vector of predictions.
 }
 \description{
-Generate predictions from a temporal discounting binary choice model
+Generate predictions from a temporal discounting binary choice model.
 }
 \examples{
 \dontrun{

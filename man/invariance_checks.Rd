@@ -15,7 +15,7 @@ invariance_checks(data, warn = F)
 Named vector specifying whether the participant chose only immediate rewards (\code{all_imm}) or chose all delayed rewards (\code{all_del}).
 }
 \description{
-Check whether participants always chose the immediate reward or always chose the delayed reward
+Check whether participants always chose the immediate reward or always chose the delayed reward.
 }
 \examples{
 \dontrun{

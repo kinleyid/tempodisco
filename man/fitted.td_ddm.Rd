@@ -12,10 +12,10 @@
 \item{...}{Additional arguments currently not used.}
 }
 \value{
-A named vector of fitted values
+A named vector of fitted values.
 }
 \description{
-Get fitted values of a temporal discounting drift diffusion model
+Get fitted values of a temporal discounting drift diffusion model.
 }
 \seealso{
 Other drift diffusion model functions: 

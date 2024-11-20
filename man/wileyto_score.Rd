@@ -18,6 +18,6 @@ Score a set of responses according to the method of \href{https://doi.org/10.375
 \examples{
 \dontrun{
 data("td_bc_single_ptpt")
-mod <- wileyto_score(data)
+mod <- wileyto_score(td_bc_single_ptpt)
 }
 }

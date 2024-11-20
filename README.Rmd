@@ -31,7 +31,9 @@ You can install tempodisco from [GitHub](https://github.com/) with:
 devtools::install_github("kinleyid/tempodisco")
 ```
 
-## Example usage
+## Getting started
+
+See the `getting-started` vignette for example usage.
 
 ```{r}
 library(tempodisco)

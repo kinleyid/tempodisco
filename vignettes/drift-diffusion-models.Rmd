@@ -56,7 +56,7 @@ print(ddm)
 As we can see, parameters are estimated not only for the discount function ($k$), but also for the DDM ($v$, $\beta$, $\alpha$ and $\tau$). These can be extracted using `coef()` to collect for group-level analysis (see the vignette ["Analyzing data from multiple participants"](analyzling-study.html)). As with other model classes (`td_bcnm`, `td_bclm`), we can plot the resulting discount function:
 
 ```{r}
-plot(ddm, log = 'x', verbose = F)
+plot(ddm, log = 'x', verbose = F, p_lines = c(0.25, 0.75))
 ```
 
 Here the gaps correspond to very fast or slow decisions that we excluded.
@@ -68,13 +68,13 @@ predicted_rts <- predict(ddm, type = 'rt')
 cor.test(predicted_rts, ddm$data$rt)
 ```
 
-As expected, they are correlated. To compare these visually, we can `plot()` the DDM wiht the argument `type = "rt"`:
+As expected, they are correlated. To compare these visually, we can `plot()` the DDM with the argument `type = "rt"`:
 
 ```{r}
-plot(ddm, type = 'rt', confint = 0.9)
+plot(ddm, type = 'rt', q_lines = c(0.05, 0.95), ylim = c(1, 9))
 ```
 
-This displays both the predicted RTs from the model and a 90% confidence interval
+This displays both the predicted RTs from the model and a 90% quantile-based confidence interval
 
 [Fontanesi et al. (2019)](https://doi.org/10.3758/s13423-018-1554-2) suggest applying a sigmoid transform to drift rates according the the following equation, which is reported by [Peters & D'Esposito (2020)](https://doi.org/10.1371/journal.pcbi.1007615) to improve model fit for intertemporal choice data:
 

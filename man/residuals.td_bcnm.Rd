@@ -14,10 +14,10 @@
 \item{...}{Additional arguments currently not used.}
 }
 \value{
-A vector of residuals
+A vector of residuals.
 }
 \description{
-Get residuals from a temporal discounting binary choice model
+Get residuals from a temporal discounting binary choice nonlinear model.
 }
 \seealso{
 Other nonlinear binary choice model functions: 

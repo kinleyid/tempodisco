@@ -49,7 +49,7 @@ rows <- by(study, study$id, function(ptpt) { # Stratify by participant ID
   # Return a one-row dataframe containing model-agnostic measures of discounting
   data.frame(
     id = ptpt$id[1],
-    AUC = AUC(mod, verbose = F),
+    AUC = AUC(mod),
     ED50 = ED50(mod)
   )
 }, simplify = F)

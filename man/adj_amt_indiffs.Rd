@@ -14,7 +14,7 @@ adj_amt_indiffs(data, block_indic = "del", order_indic = NULL)
 \item{order_indic}{Column name of the order indicator---i.e., the column that specifies the order in which trials were completed. Sorting by this column within a block should sort the rows in chronological order. If unspecified, the rows are assumed to already be in chronological order.}
 }
 \value{
-A dataframe with two columns: one for the block indicator and another for the corresponding indifference point
+A dataframe with two columns: one for the block indicator and another for the corresponding indifference point.
 }
 \description{
 Compute indifference points for data from an adjusting amount procedure (also called a "titrating procedure").

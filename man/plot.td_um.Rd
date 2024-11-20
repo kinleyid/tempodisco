@@ -13,33 +13,33 @@
   verbose = TRUE,
   del = NULL,
   val_del = NULL,
-  confint = 0.95,
+  q_lines = c(0.025, 0.975),
   ...
 )
 }
 \arguments{
-\item{x}{A delay discounting model. See \code{dd_prob_model} and \code{dd_det_model}}
+\item{x}{A delay discounting model. See \code{dd_prob_model} and \code{dd_det_model}.}
 
-\item{type}{Type of plot to generate}
+\item{type}{Type of plot to generate.}
 
-\item{legend}{Logical: display a legend? Only relevant for \code{type = 'summary'} and \code{type = 'rt'}}
+\item{legend}{Logical: display a legend? Only relevant for \code{type = 'summary'} and \code{type = 'rt'}.}
 
-\item{p_lines}{Numerical vector. When \code{type = 'summary'} the discount curve, where the probability of selecting the immediate reward is 0.5, is plotted. \code{p_lines} allows you to specify other probabilities for which similar curves should be plotted (only applicable for probabilistic models, e.g. \code{td_bcnm}, \code{td_bclm} and \code{td_ddm})}
+\item{p_lines}{Numerical vector. When \code{type = 'summary'} the discount curve, where the probability of selecting the immediate reward is 0.5, is plotted. \code{p_lines} allows you to specify other probabilities for which similar curves should be plotted (only applicable for probabilistic models, e.g. \code{td_bcnm}, \code{td_bclm} and \code{td_ddm}).}
 
-\item{p_tol}{If \code{p_lines} is not \code{NULL}, what is the maximum distance that estimated probabilities can be from their true values? Smaller values results in slower plot generation}
+\item{p_tol}{If \code{p_lines} is not \code{NULL}, what is the maximum distance that estimated probabilities can be from their true values? Smaller values results in slower plot generation.}
 
-\item{verbose}{Whether to print info about, e.g., setting del = ED50 when \code{type = 'endpoints'}}
+\item{verbose}{Whether to print info about, e.g., setting del = ED50 when \code{type = 'endpoints'}.}
 
-\item{del}{Plots data for a particular delay}
+\item{del}{Plots data for a particular delay.}
 
-\item{val_del}{Plots data for a particular delayed value}
+\item{val_del}{Plots data for a particular delayed value.}
 
-\item{confint}{When \code{type = 'rt'}, what confidence interval should be plotted for RTs? Default is 0.95 (95\% confidence interval)}
+\item{q_lines}{When \code{type = 'rt'}, plot dashed lines for which quantiles of the predicted RT distribution? Default is 0.025 and 0.975 (i.e., a quantile-based 95\% confidence interval).}
 
-\item{...}{Additional arguments to \code{plot()}}
+\item{...}{Additional arguments to \code{plot()}.}
 }
 \description{
-Plot delay discounting models
+Plot delay discounting models.
 }
 \examples{
 \dontrun{

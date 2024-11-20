@@ -5,7 +5,7 @@
 \alias{td_ip_simulated_ptpt}
 \title{Simulated indifference point data for a single participant}
 \description{
-A dataframe containing simulated indifference points from a single participant exhibiting approximately hyperbolic discounting
+A dataframe containing simulated indifference points from a single participant exhibiting approximately hyperbolic discounting.
 }
 \author{
 Isaac Kinley \email{isaac.kinley@gmail.com}

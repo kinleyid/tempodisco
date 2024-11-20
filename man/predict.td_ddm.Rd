@@ -21,10 +21,10 @@
 \item{...}{Additional arguments currently not used.}
 }
 \value{
-A vector of predictions
+A vector of predictions.
 }
 \description{
-Generate predictions from a temporal discounting drift diffusion model
+Generate predictions from a temporal discounting drift diffusion model.
 }
 \note{
 When \code{type = 'rt'}, expected RTs are computed irrespective of which reward was selected, per equation 5 in \href{https://doi.org/10.1016/j.jmp.2009.01.006}{Grasman, Wagenmakers, & van der Maas (2009)}.

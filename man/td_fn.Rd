@@ -17,17 +17,17 @@ td_fn(
 )
 }
 \arguments{
-\item{predefined}{A string specifying one of the pre-defined discount functions}
+\item{predefined}{A string specifying one of the pre-defined discount functions.}
 
-\item{name}{Name of custom discount function}
+\item{name}{Name of custom discount function.}
 
-\item{fn}{Function that takes a data.frame and a vector of named parameters and returns a vector of values between 0 and 1}
+\item{fn}{Function that takes a data.frame and a vector of named parameters and returns a vector of values between 0 and 1.}
 
-\item{par_starts}{A named list of vectors, each specifying possible starting values for a parameter to try when running optimization}
+\item{par_starts}{A named list of vectors, each specifying possible starting values for a parameter to try when running optimization.}
 
-\item{par_lims}{A named list of vectors, each specifying the bounds to impose of a parameter}
+\item{par_lims}{A named list of vectors, each specifying the bounds to impose of a parameters. Any parameter for which bounds are unspecified are assumed to be unbounded.}
 
-\item{ED50}{A function which, given a named vector of parameters \code{p} and optionally a value of \code{del_val}, computes the ED50. If there is no closed-form solution, this should return the string "non-analytic". If the ED50 is not well-defined, this should return the string "none"}
+\item{ED50}{A function which, given a named vector of parameters \code{p} and optionally a value of \code{del_val}, computes the ED50. If there is no closed-form solution, this should return the string "non-analytic". If the ED50 is not well-defined, this should return the string "none".}
 
 \item{par_chk}{Optionally, this is a function that checks the parameters to ensure they meet some criteria. E.g., for the dual-systems-exponential discount function, we require k1 < k2.}
 }
@@ -35,7 +35,7 @@ td_fn(
 An object of class `td_fn`.
 }
 \description{
-Get or create a discount function
+Get a predefined discount function or create a custom discount function.
 }
 \examples{
 \dontrun{

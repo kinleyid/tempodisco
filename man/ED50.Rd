@@ -9,13 +9,13 @@ ED50(mod, val_del = NULL)
 \arguments{
 \item{mod}{A temporal discounting model.}
 
-\item{val_del}{Delayed value, if applicable (i.e., if magnitude effects are accounted for)}
+\item{val_del}{Delayed value, if applicable (i.e., if magnitude effects are accounted for).}
 }
 \value{
-A vector of predictions
+A vector of predictions.
 }
 \description{
-Compute the median effective delay
+Compute the median effective delay.
 }
 \examples{
 \dontrun{

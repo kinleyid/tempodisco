@@ -535,7 +535,7 @@ plot.td_um <- function(x,
                        verbose = TRUE,
                        del = NULL,
                        val_del = NULL,
-                       q_lines = 0.95,
+                       q_lines = c(0.025, 0.975),
                        ...) {
   
   type <- match.arg(type)

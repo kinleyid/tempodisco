@@ -37,8 +37,8 @@ cat(sprintf('Percentage difference in ED50 values: %.2f%%\n', 100*abs(ed501 - ed
 Another option is to use the model-based area under the curve (AUC) with the `AUC` function:
 
 ```{r}
-auc1 <- AUC(mod1, verbose = F)
-auc2 <- AUC(mod2, verbose = F)
+auc1 <- AUC(mod1)
+auc2 <- AUC(mod2)
 cat(sprintf('Percentage difference in AUC values: %.2f%%\n', 100*abs(auc1 - auc2)/((auc1 + auc2)/2)))
 ```
 

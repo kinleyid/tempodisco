@@ -29,7 +29,7 @@ td_bcnm(
 
 \item{fixed_ends}{A Boolean (false by default) specifying whether the model should satisfy the desiderata that subjects should always prefer something over nothing (i.e., nonzero delayed reward over nothing) and the same reward sooner rather than later.}
 
-\item{fit_err_rate}{A Boolean (false by default) specifying whether the model should include an error rate (parameterized by "eps"). See Eq. 5 here: https://doi.org/10.3758/s13428-015-0672-2}
+\item{fit_err_rate}{A Boolean (false by default) specifying whether the model should include an error rate (parameterized by "eps"). See Eq. 5 here: https://doi.org/10.3758/s13428-015-0672-2.}
 
 \item{gamma_par_starts}{A vector of starting values to try for the "gamma" parameter (which controls the steepness of the choice rule) during optimization.}
 

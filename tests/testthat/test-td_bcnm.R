@@ -52,8 +52,7 @@ while (arg_combo_idx <= nrow(arg_combos)) {
   test_that('generics', {
     expect_output(print(mod))
     expect_in(class(ED50(mod)), c('numeric', 'character')) # Might be "none"
-    expect_type(AUC(mod, verbose = F), 'double')
-    expect_output(AUC(mod, verbose = T))
+    expect_type(AUC(mod), 'double')
     expect_type(BIC(mod), 'double')
     expect_type(AIC(mod), 'double')
     expect_type(AIC(mod, k = 5), 'double')

@@ -7,7 +7,10 @@
 most_consistent_indiffs(data)
 }
 \arguments{
-\item{data}{Responses to score}
+\item{data}{Responses to score.}
+}
+\value{
+A dataframe with two columns: one for the block indicator and another for the corresponding indifference point.
 }
 \description{
 Experimental method for computing indifference points

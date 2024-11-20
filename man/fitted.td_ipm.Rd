@@ -12,17 +12,16 @@
 \item{...}{Additional arguments currently not used.}
 }
 \value{
-A named vector of fitted values
+A named vector of fitted values.
 }
 \description{
-Get fitted values of a temporal discounting indifference point model
+Get fitted values of a temporal discounting indifference point model.
 }
 \seealso{
 Other indifference point model functions: 
 \code{\link{coef.td_ipm}()},
 \code{\link{logLik.td_ipm}()},
 \code{\link{predict.td_ipm}()},
-\code{\link{residuals.td_ipm}()},
-\code{\link{td_ipm}()}
+\code{\link{residuals.td_ipm}()}
 }
 \concept{indifference point model functions}

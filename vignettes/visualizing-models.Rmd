@@ -94,7 +94,7 @@ ddm <- td_ddm(td_bc_single_ptpt, discount_function = 'exponential',
               beta_par_starts = 0.5,
               alpha_par_starts = 3.5,
               tau_par_starts = 0.9)
-plot(ddm, type = 'rt', confint = 0.9, legend = T)
+plot(ddm, type = 'rt', q_lines = c(0.05, 0.95), legend = T)
 ```
 
-Here, we have selected to also view a 90% confidence interval around the model's predictions.
+Here, we have selected to also view a 90% quantile-based confidence interval around the model's predictions.

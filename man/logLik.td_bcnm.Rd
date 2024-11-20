@@ -12,7 +12,7 @@
 \item{...}{Additional arguments currently not used.}
 }
 \description{
-Compute log-likelihood for a temporal discounting binary choice model.
+Compute log-likelihood for a temporal discounting binary choice nonlinear model.
 }
 \seealso{
 Other nonlinear binary choice model functions: 

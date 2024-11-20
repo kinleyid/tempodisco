@@ -12,10 +12,10 @@
 \item{...}{Additional arguments currently not used.}
 }
 \value{
-A named vector of fitted values
+A named vector of fitted values.
 }
 \description{
-Get fitted values of a temporal discounting binary choice model
+Get fitted values of a temporal discounting binary choice model.
 }
 \seealso{
 Other nonlinear binary choice model functions: 

@@ -7,13 +7,13 @@
 discount_function(mod)
 }
 \arguments{
-\item{mod}{A temporal discounting model}
+\item{mod}{A temporal discounting model.}
 }
 \value{
-The name of the discount function
+The name of the discount function.
 }
 \description{
-Access the name of the discount function of a model
+Access the name of the discount function of a model.
 }
 \examples{
 \dontrun{

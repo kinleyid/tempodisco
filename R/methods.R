@@ -38,63 +38,117 @@ ED50 <- function(mod, val_del = NULL) {
 
 #' Area under the curve (AUC)
 #'
-#' Compute the area under the curve using numerical integration.
-#' @param mod A temporal discounting model. See \code{\link{td_bcnm}} and related functions.
-#' @param min_del Lower limit to use for integration.
-#' @param max_del Upper limit to use for integration.
-#' @param val_del Delayed value to use for computing the indifference curve, if applicable.
-#' @param verbose Specifies whether to provide extra detail, if applicable.
+#' Compute either the model-based or model-free area under the curve.
+#' @param obj A temporal discounting model or a dataframe with columns \code{indiff} (indifference point) and \code{del} (delay).
+#' @param min_del Lower limit to use for integration. Defaults to 0.
+#' @param max_del Upper limit to use for integration. Defaults to the maximum delay in the data.
+#' @param val_del Delayed value to use for computing the indifference curve, if applicable. Defaults to the average \code{del_val} in the data.
+#' @param del_transform String specifying transformation to apply to the delays (e.g., log10 + 1 transform or ordinal scaling transform; \href{https://doi.org/10.1002/jeab.219}{Borges et al., 2016}). Default is no transform.
 #' @param ... Further arguments passed to `integrate()`.
 #' @return AUC value.
+#' @note
+#' Calculation of the area always begins from delay 0, where an indifference point of 1 is assumed.
 #' @examples
 #' \dontrun{
 #' data("td_bc_single_ptpt")
 #' mod <- td_bcnm(td_bc_single_ptpt)
 #' print(AUC(mod))
+#' data("td_ip_simulated_ptpt")
 #' }
 #' @export
-AUC <- function(mod, min_del = 0, max_del = NULL, val_del = NULL, verbose = T, ...) {
+AUC <- function(obj, min_del = 0, max_del = NULL, val_del = NULL, del_transform = c('none', 'log', 'ordinal-scaling'), ...) {
   
-  if (is.null(max_del)) {
-    max_del <- max(mod$data$del)
-    if (verbose) {
-      cat(sprintf('Defaulting to max_del = %s\n', max_del))
+  del_transform <- match.arg(del_transform)
+  
+  if (is.data.frame(obj)) {
+    
+    # Model-free AUC
+    validate_td_data(obj, required_columns = c('indiff', 'del'))
+    obj <- obj[c('indiff', 'del')]
+    # Get max del
+    max_del <- max_del %def% max(obj$del)
+    if (max_del > max(obj$del)) {
+      stop(sprintf('max_del (%s) exceeds the maximum delay in the dataset (%s)',
+                   max_del,
+                   max(obj$del)))
     }
-  }
-  if (mod$config$discount_function$name == 'model-free') {
-    mod$optim$par <- c(c('del_0' = 1), mod$optim$par)
-    if (verbose) {
-      cat(sprintf('Assuming an indifference point of 1 at delay 0\n'))
+    # Assume indiff = 1 at del = 0
+    obj <- rbind(obj, data.frame(del = 0, indiff = 1))
+    # Sort by delay
+    obj <- obj[order(obj$del), ]
+    # Transform delays
+    if (del_transform == 'none') {
+      trf <- identity
+    } else if (del_transform == 'log') {
+      trf <- function(x) log10(x + 1)
+    } else if (del_transform == 'ordinal-scaling') {
+      trf <- approxfun(obj$del, seq_along(obj$del))
     }
-  }
-  if (is.null(val_del)) {
-    if ('val_del' %in% names(mod$data)) {
-      val_del <- mean(mod$data$val_del)
-      if (verbose) {
-        cat(sprintf('Defaulting to val_del = %s\n', val_del))
+    # Integrate
+    integrand <- approxfun(trf(obj$del), obj$indiff)
+    lims <- trf(c(0, max_del))
+    
+    # # Transform delay
+    # if (del_transform == 'log') {
+    #   obj$del <- log10(obj$del + 1)
+    # } else if (del_transform == 'ordinal-scaling') {
+    #   obj$del <- as.numeric(as.factor(obj$del))
+    # }
+    # # Exact solution
+    # trap_areas <- vapply(seq_len(nrow(obj) - 1),
+    #                function(idx) {
+    #                  diff(obj$del[idx:(idx + 1)]) * mean(obj$indiff[idx:(idx + 1)])
+    #                },
+    #                numeric(1))
+    # out <- sum(trap_areas) / (max(obj$del) - min(obj$del))
+    
+  } else {
+    
+    # Model-based AUC
+    stopifnot(inherits(obj, 'td_um'))
+    max_del <- max_del %def% max(obj$data$del)
+    if (obj$config$discount_function$name == 'model-free') {
+      # Assume indiff = 1 at del = 0
+      obj$optim$par <- c(c('del_0' = 1), obj$optim$par)
+    }
+    if (is.null(val_del)) {
+      if ('val_del' %in% names(obj$data)) {
+        val_del <- mean(obj$data$val_del)
+      } else {
+        val_del <- NA
       }
-    } else {
-      val_del <- NA
     }
+    # Get transform to apply to data
+    if (del_transform == 'none') {
+      trf <- identity
+      invtrf <- identity
+    } else if (del_transform == 'log') {
+      trf <- function(x) log10(x + 1)
+      invtrf <- function(x) 10**x - 1
+    } else {
+      stop('For model-based AUC, del_transform must be "none" or "log"')
+    }
+    integrand <- function(t) {
+      predict(obj,
+              newdata = data.frame(del = invtrf(t),
+                                   val_del = val_del),
+              type = 'indiff')
+    }
+    lims <- trf(c(0, max_del))
   }
-  disc_func <- function(t) {
-    predict(mod,
-            newdata = data.frame(del = t,
-                                 val_del = val_del),
-            type = 'indiff')
-  }
-  out <- tryCatch(
+  auc <- tryCatch(
     expr = {
-      integrate(function(t) disc_func(t),
-                lower = min_del,
-                upper = max_del,
-                ...)$value / (max_del - min_del)
+      unnormed_auc <- integrate(f = integrand,
+                                lower = lims[1],
+                                upper = lims[2],
+                                ...)[['value']]
+      auc <- unnormed_auc / diff(lims)
     },
     error = function(e) {
       return(sprintf('integrate() failed to compute AUC with error: "%s"', e$message))
     }
   )
-  return(out)
+  return(auc)
 }
 
 #' Check for non-systematic discounting

@@ -4,31 +4,42 @@
 \alias{AUC}
 \title{Area under the curve (AUC)}
 \usage{
-AUC(mod, min_del = 0, max_del = NULL, val_del = NULL, verbose = T, ...)
+AUC(
+  obj,
+  min_del = 0,
+  max_del = NULL,
+  val_del = NULL,
+  del_transform = c("none", "log", "ordinal-scaling"),
+  ...
+)
 }
 \arguments{
-\item{mod}{A temporal discounting model. See `td_gnlm`}
+\item{obj}{A temporal discounting model or a dataframe with columns \code{indiff} (indifference point) and \code{del} (delay).}
 
-\item{min_del}{Lower limit to use for integration}
+\item{min_del}{Lower limit to use for integration. Defaults to 0.}
 
-\item{max_del}{Upper limit to use for integration}
+\item{max_del}{Upper limit to use for integration. Defaults to the maximum delay in the data.}
 
-\item{val_del}{Delayed value to use for computing the indifference curve, if applicable}
+\item{val_del}{Delayed value to use for computing the indifference curve, if applicable. Defaults to the average \code{del_val} in the data.}
 
-\item{verbose}{Specifies whether to provide extra detail, if applicable}
+\item{del_transform}{String specifying transformation to apply to the delays (e.g., log10 + 1 transform or ordinal scaling transform; \href{https://doi.org/10.1002/jeab.219}{Borges et al., 2016}). Default is no transform.}
 
-\item{...}{Further arguments passed to `integrate()`}
+\item{...}{Further arguments passed to `integrate()`.}
 }
 \value{
-AUC value
+AUC value.
 }
 \description{
-Compute the area under the curve using numerical integration
+Compute either the model-based or model-free area under the curve.
+}
+\note{
+Calculation of the area always begins from delay 0, where an indifference point of 1 is assumed.
 }
 \examples{
 \dontrun{
 data("td_bc_single_ptpt")
 mod <- td_bcnm(td_bc_single_ptpt)
 print(AUC(mod))
+data("td_ip_simulated_ptpt")
 }
 }

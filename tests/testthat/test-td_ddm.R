@@ -23,8 +23,7 @@ expect_s3_class(mod, 'td_ddm')
 test_that('generics', {
   expect_output(print(mod))
   expect_in(class(ED50(mod)), c('numeric', 'character')) # Output might be "none", e.g. for model-free
-  expect_in(class(AUC(mod, verbose = F)), c('numeric', 'character'))
-  expect_output(AUC(mod, verbose = T))
+  expect_in(class(AUC(mod)), c('numeric', 'character'))
   expect_type(BIC(mod), 'double')
   expect_type(AIC(mod), 'double')
   expect_type(AIC(mod, k = 5), 'double')
@@ -48,7 +47,7 @@ test_that('plots', {
   expect_no_error(plot(mod, type = 'endpoints', verbose = F, del = 100, val_del = 50))
   expect_no_error(plot(mod, type = 'link'))
   expect_no_error(plot(mod, type = 'rt'))
-  expect_no_error(plot(mod, type = 'rt', confint = 0.9))
+  expect_no_error(plot(mod, type = 'rt', q_lines = 0.5))
   dev.off()
 })
 

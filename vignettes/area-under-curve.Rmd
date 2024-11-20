@@ -1,0 +1,87 @@
+---
+title: "Computing area under the curve (AUC)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Computing area under the curve (AUC)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(tempodisco)
+```
+
+## Model-free AUC
+
+"Area under the curve" (AUC) is a measure of discounting that has the advantage of not assuming any underlying discount function ((Myerson et al., 2001)[https://doi.org/10.1901/jeab.2001.76-235]). If we have already computed indifference points, we can pass these directly to the `AUC` function:
+
+```{r}
+data("td_ip_simulated_ptpt")
+head(td_ip_simulated_ptpt)
+AUC(td_ip_simulated_ptpt)
+```
+However, if we only have choice-level data, we need to first compute indifference points. To do this, we can call `td_bcnm()` with `discount_function = "model_free"` (which fits an indifference point for each delay rather than computing indifference points based on a discount function) and then extract the indifference points in a dataframe using `indiffs()`:
+
+```{r}
+data("td_bc_single_ptpt")
+indiff_mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'model-free')
+indiff_data <- indiffs(indiff_mod)
+head(indiff_data)
+AUC(indiff_data)
+```
+
+For the AUC computed this way, the later indifference points tend to have an outsize influence on the overall measure. To address this, [Borges et al. (2016)](https://doi.org/10.1002/jeab.219) suggest transforming the delays to a log or ordinal scale. These are implemented in the `del_transform` argument to `AUC()`:
+
+```{r}
+AUC(indiff_data, del_transform = 'log')
+AUC(indiff_data, del_transform = 'ord')
+```
+
+Note that the area under the curve is always computed starting from delay 0, where an indifference point of 1 is assumed.
+
+## Model-based AUC
+
+AUC can also be useful as a non-parametric measure of discounting that allows comparisons across different discount functions. The "model-based AUC" is computed by integrating the curve produced by a discount function ([Gilroy & Hantula, 2018](https://doi.org/10.1002/jeab.318)). To compute the model-based AUC, we first need to fit a model that uses a discount function and then call `AUC()` on that model:
+
+```{r}
+data("td_bc_single_ptpt")
+mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'hyperbolic')
+AUC(mod)
+```
+
+We can use the `max_del` acgument to integrate only up to a certain delay, in case maximum delays differ between participants:
+
+```{r}
+AUC(mod, max_del = 1000)
+```
+
+As with the model-free AUC, we can transform the delays to a log scale. The ordinal transformation is not applicable here because it is not well-defined between points on the ordinal scale.
+
+```{r}
+AUC(mod, del_transform = 'log')
+```
+
+Note that when `del_transform = 'log'`, there is a subtle difference between calling `AUC()` on a table of indifference points and calling it on the "model-free" discount function: for a table of indiffernece points, indifference point interpolations are linear between transformed delays (illustrated in the first plot below). In contrast, for the model-free discount function, interpolations between indifference points are linear in the original scale of the data. This is evident in the curved interpolations in the second plot below:
+
+```{r}
+# Linear in transformed scale:
+plot(indiff ~ del, td_ip_simulated_ptpt, log = 'x', type = 'l', ylim = c(0, 1))
+points(indiff ~ del, td_ip_simulated_ptpt)
+# Linear in original scale:
+mod <- td_ipm(td_ip_simulated_ptpt, discount_function = 'model-free')
+plot(mod, log = 'x', verbose = F)
+```
+
+And indeed, the AUC calculations are slightly different:
+
+```{r}
+AUC(td_ip_simulated_ptpt, del_transform = 'log')
+AUC(mod, del_transform = 'log')
+```

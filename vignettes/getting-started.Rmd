@@ -2,7 +2,7 @@
 title: "Getting started"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{getting-starte}
+  %\VignetteIndexEntry{Getting started}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -17,3 +17,72 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(tempodisco)
 ```
+
+This vignette briefly goes over the main steps involved in analyzing delay discounting data. These topics are covered in greater depth in other vignettes and in the documentation of the relevant functions.
+
+## Loading data
+
+`tempodisco` includes several example datasets. We will load one example from a simulated "adjusting amounts" procedure ([Frye et al., 2016](https://doi.org/10.3791/53584)), and one from a procedure in which choices were not structured according to such a procedure.
+
+```{r}
+data("adj_amt_sim") # Load simulated choice data from an adjusting amounts procedure
+head(adj_amt_sim)
+data("td_bc_single_ptpt") # Load choice data from a non-adjusting-amounts experiment
+head(td_bc_single_ptpt)
+```
+
+For each dataset, there are rows containing the values of the immediate and delayed rewards, the delay of the delayed reward, and whether the immediate reward was chosen. To use the functions in `tempodisco`, your own data will need these same columns named in the same way.
+
+## Computing indifference points
+
+For the adjusting amounts data, we can use the `adj_amt_indiffs` function to compute indifference points at each delay:
+
+```{r}
+indiff_data <- adj_amt_indiffs(adj_amt_sim)
+head(indiff_data)
+```
+
+For non-adjusting-amounts data, we can use a form of logistic regression that models each indifference point as the point at which a participant has a 50\% estimated probability of selecting the immediate or delayed reward:
+
+```{r}
+indiff_mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'model-free')
+plot(indiff_mod, verbose = F)
+```
+
+## Data quality checks
+
+We can test for non-systematic discounting per the criteria of [Johnson & Bickel (2008)](https://doi.org/10.1037/1064-1297.16.3.264) using the `nonsys` function:
+
+```{r}
+print(nonsys(indiff_data)) # Fails criterion 1 (monotonicity)
+print(nonsys(indiff_mod))
+```
+
+## Measuring discounting
+
+To quantify discounting given a set of indifference points, we can use the "area under the curve" measure ([Myerson et al., 2001](https://doi.org/10.1901/jeab.2001.76-235)). The lower this measure is, the steeper an individual's delay discounting.
+
+```{r}
+AUC(indiff_data)
+AUC(indiff_mod, verbose = F)
+```
+
+## Fitting discount functions
+
+Fitting a discount function to a set of indifference points can be done using the `td_ipm` function:
+
+```{r}
+hyperbolic_mod <- td_ipm(indiff_data, discount_function = 'hyperbolic')
+plot(hyperbolic_mod)
+coef(hyperbolic_mod)
+```
+
+In contrast, fitting a discount function to choice-level data involves a form of logistic regression where, as before, the indifference points (determined by a discount function) are the points where the individual has a 50\% estimated probability of selecting the immediate vs delayed reward.
+
+```{r}
+hyperbolic_mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'hyperbolic')
+plot(hyperbolic_mod, verbose = F)
+coef(hyperbolic_mod)
+```
+
+From here, we can extract the $k$ values from the best-fitting hyperbolic discount curves for each participant and use these as a measure of discounting (higher $k$ means steeper discounting).

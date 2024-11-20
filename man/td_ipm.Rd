@@ -15,21 +15,21 @@ td_ipm(
 )
 }
 \arguments{
-\item{data}{A data frame with columns \code{indiff} for the pre-computed indifference points and \code{del} for the delay}
+\item{data}{A data frame with columns \code{indiff} for the pre-computed indifference points and \code{del} for the delay.}
 
 \item{discount_function}{A vector of strings specifying the name of the discount functions to use, or an object of class \code{td_fn} (used for creating custom discount functions), or a list of objects of class \code{td_fn}.}
 
 \item{na.action}{Action to take when data contains \code{NA} values. Default is \code{na.omit}.}
 
-\item{optim_args}{A list of additional args to pass to \code{optim}}
+\item{optim_args}{A list of additional args to pass to \code{optim}.}
 
-\item{silent}{A Boolean specifying whether the call to \code{optim} (which occurs in a \code{try} block) should be silent on error}
+\item{silent}{A Boolean specifying whether the call to \code{optim} (which occurs in a \code{try} block) should be silent on error.}
 }
 \value{
-A list from \code{optim} with additional components specifying the AIC, the ED50, the discount function, and the probabilistic model
+An object of class \code{td_ipm} with components \code{data} (containing the data used for fitting), \code{config} (containing the internal configuration of the model, including the \code{discount_function}), and \code{optim} (the output of \code{optim()}).
 }
 \description{
-Compute a model of a single subject's indifference points
+Compute a model of a single subject's indifference points.
 }
 \examples{
 \dontrun{
@@ -47,12 +47,4 @@ custom_discount_function <- td_fn(
 mod <- td_ipm(td_ip_simulated_ptpt, discount_function = custom_discount_function)
 }
 }
-\seealso{
-Other indifference point model functions: 
-\code{\link{coef.td_ipm}()},
-\code{\link{fitted.td_ipm}()},
-\code{\link{logLik.td_ipm}()},
-\code{\link{predict.td_ipm}()},
-\code{\link{residuals.td_ipm}()}
-}
-\concept{indifference point model functions}
+\concept{indifference point model functions.}

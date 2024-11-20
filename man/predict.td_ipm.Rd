@@ -11,12 +11,12 @@
 
 \item{newdata}{A data frame to use for prediction. If omitted, the data used to fit the model will be used for prediction.}
 
-\item{type}{Type of prediction, either \code{'indiff'} (indifference points) or \code{'response'} (whether the participants would is predicted to choose the immediate (1) or delayed reward (0))}
+\item{type}{Type of prediction, either \code{'indiff'} (indifference points) or \code{'response'} (whether the participants would is predicted to choose the immediate (1) or delayed reward (0)).}
 
 \item{...}{Additional arguments currently not used.}
 }
 \value{
-A vector of predictions
+A vector of predictions.
 }
 \description{
 Generate predictions from a temporal discounting indifference point model
@@ -34,7 +34,6 @@ Other indifference point model functions:
 \code{\link{coef.td_ipm}()},
 \code{\link{fitted.td_ipm}()},
 \code{\link{logLik.td_ipm}()},
-\code{\link{residuals.td_ipm}()},
-\code{\link{td_ipm}()}
+\code{\link{residuals.td_ipm}()}
 }
 \concept{indifference point model functions}
