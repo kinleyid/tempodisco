@@ -32,16 +32,7 @@
 #' @export
 td_bcnm <- function(
     data,
-    discount_function = c('all',
-                          'hyperbolic',
-                          'exponential',
-                          'inverse-q-exponential',
-                          'nonlinear-time-hyperbolic',
-                          'scaled-exponential',
-                          'dual-systems-exponential',
-                          'nonlinear-time-exponential',
-                          'model-free',
-                          'constant'),
+    discount_function = 'all',
     choice_rule = c('logistic', 'probit', 'power'),
     fixed_ends = F,
     fit_err_rate = F,
@@ -95,13 +86,6 @@ td_bcnm <- function(
       stop(sprintf('If choice_rule is not specified, then the following must all be specified:\n%s', paste('- ', req_args, collapse = '\n')))
     
     }
-  }
-  
-  # Set discount function(s)
-  # This can't be as simple as match.arg because the user must also be able to provide a custom discount function
-  if ('all' %in% discount_function) {
-    # If "all" is used, replace discount_function with a vector of all the options
-    discount_function <- eval(formals(td_fn)$predefined)
   }
   
   # Required data columns

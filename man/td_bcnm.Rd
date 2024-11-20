@@ -6,9 +6,7 @@
 \usage{
 td_bcnm(
   data,
-  discount_function = c("all", "hyperbolic", "exponential", "inverse-q-exponential",
-    "nonlinear-time-hyperbolic", "scaled-exponential", "dual-systems-exponential",
-    "nonlinear-time-exponential", "model-free", "constant"),
+  discount_function = "all",
   choice_rule = c("logistic", "probit", "power"),
   fixed_ends = F,
   fit_err_rate = F,

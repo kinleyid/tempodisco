@@ -25,7 +25,7 @@ get_candidate_discount_functions <- function(arg) {
         # get corresponding td_fn objects and append them
         curr_cands <- lapply(predefined_disc_funcs, td_fn)
       } else if (is.character(item)) {
-        curr_cands <- list(td_fn(item))
+        curr_cands <- list(td_fn(predefined = item))
       }
     } else if (is(item, 'td_fn')) {
       curr_cands <- list(item)

@@ -31,6 +31,7 @@ td_bclm <- function(data,
                               'exponential.2',
                               'scaled-exponential',
                               'nonlinear-time-hyperbolic',
+                              'power',
                               'nonlinear-time-exponential'),
                               # 'itch',
                               # 'naive'),
@@ -161,6 +162,9 @@ add_beta_terms <- function(data, model) {
     data$.B1 <- qgumbel(data$val_imm / data$val_del)
     data$.B2 <- log(data$del)
     data$.B3 <- 1
+  } else if (model == 'power') {
+    data$.B1 <- log(data$val_imm / data$val_del)
+    data$.B2 <- log(1 + data$del)
   }
   # } else if (model == 'itch') {
   #   data$.B_I <- 1

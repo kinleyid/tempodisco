@@ -9,7 +9,7 @@ print.td_bcnm <- function(x, ...) {
     cat(sprintf(' %s: %s\n', comp_name, x$config[[comp_name]]))
   }
   cat(sprintf('\nED50: %s\n', ED50(x)))
-  cat(sprintf('AUC: %s\n', AUC(x, verbose = F)))
+  cat(sprintf('AUC: %s\n', AUC(x)))
   cat(sprintf('BIC: %s\n', BIC(x)))
 }
 
@@ -29,7 +29,7 @@ print.td_ipm <- function(x, ...) {
   cat(sprintf('Discount function: %s, with coefficients:\n\n', x$config$discount_function$name))
   print(coef(x))
   cat(sprintf('\nED50: %s\n', ED50(x)))
-  cat(sprintf('AUC: %s\n', AUC(x, verbose = F)))
+  cat(sprintf('AUC: %s\n', AUC(x)))
 }
 
 #' @export
@@ -39,7 +39,7 @@ print.td_ddm <- function(x, ...) {
   print(coef(x))
   cat(sprintf('\n"%s" transform applied to drift rates.\n', x$config$drift_transform$name))
   cat(sprintf('\nED50: %s\n', ED50(x)))
-  cat(sprintf('AUC: %s\n', AUC(x, verbose = F)))
+  cat(sprintf('AUC: %s\n', AUC(x)))
   cat(sprintf('BIC: %s\n', BIC(x)))
 }
 
@@ -339,6 +339,8 @@ coef.td_bclm <- function(object, df_par = TRUE, ...) {
     } else if (d == 'nonlinear-time-exponential') {
       cf <- c('k' = unname(exp(p['.B3']/p['.B1'])),
               's' = unname(p['.B2']/p['.B1']))
+    } else if (d == 'power') {
+      cf <- c('k' = unname(p['.B2']/p['.B1']))
     } else if (d == 'itch') {
       cf <- object$coefficients
     } else if (d == 'naive') {
