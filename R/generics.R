@@ -612,16 +612,16 @@ plot.td_um <- function(x,
     } else {
       # Plot binary choices, immediate in red, delayed in blue
       data$rel_val <- data$val_imm / data$val_del
-      points(rel_val ~ del, col = 'red',
+      points(rel_val ~ del, col = "#F8766D",
              data = data[data$imm_chosen, ])
-      points(rel_val ~ del, col = 'blue',
+      points(rel_val ~ del, col = "#00BFC4",
              data = data[!data$imm_chosen, ])
       if (legend) {
         legend("topright",
                inset = 0.02,
                title = 'Choices',
                legend = c("Imm.", "Del."),
-               col = c("red", "blue"),
+               col = c("#F8766D", "#00BFC4"),
                pch = 1,
                box.lty = 0, # No border
                bg = rgb(1, 1, 1, 0.5)) # Background color with transparency
@@ -781,7 +781,7 @@ plot.td_um <- function(x,
                  inset = 0.02,
                  title = 'Choices',
                  legend = c("Imm.", "Del."),
-                 col = c("red", "blue"),
+                 col = c("#F8766D", "#00BFC4"),
                  pch = 1,
                  box.lty = 0, # No border
                  bg = rgb(1, 1, 1, 0.5)) # Background color with transparency
