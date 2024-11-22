@@ -65,10 +65,11 @@ test_that('multiple discount functions', {
     fn = function(data, p) (1 - p['b'])*exp(-p['k']*data$del) + p['b'],
     par_starts = list(k = c(0.001, 0.1), b = c(0.001, 0.1)),
     par_lims = list(k = c(0, Inf), b = c(0, 1)),
-    ED50 = function(p, ...) 'non-analytic'
+    ED50 = 'non-analytic'
   )
   args <- default_args
   args$discount_function <- list('model-free', 'dual-systems-exponential', custom_discount_function)
+  args$silent <- F
   expect_no_error(do.call(td_ddm, args))
 })
 

@@ -47,7 +47,7 @@ ED50 <- function(mod, val_del = NULL) {
 #' @param ... Further arguments passed to `integrate()`.
 #' @return AUC value.
 #' @note
-#' Calculation of the area always begins from delay 0, where an indifference point of 1 is assumed.
+#' An indifference point of 1 is assumed at delay 0.
 #' @examples
 #' \dontrun{
 #' data("td_bc_single_ptpt")
@@ -107,10 +107,6 @@ AUC <- function(obj, min_del = 0, max_del = NULL, val_del = NULL, del_transform 
     # Model-based AUC
     stopifnot(inherits(obj, 'td_um'))
     max_del <- max_del %def% max(obj$data$del)
-    if (obj$config$discount_function$name == 'model-free') {
-      # Assume indiff = 1 at del = 0
-      obj$optim$par <- c(c('del_0' = 1), obj$optim$par)
-    }
     if (is.null(val_del)) {
       if ('val_del' %in% names(obj$data)) {
         val_del <- mean(obj$data$val_del)
@@ -186,10 +182,9 @@ nonsys <- function(obj) {
     if (obj$config$discount_function$name != 'model-free') {
       stop('Discount function must be "model-free" to check for non-systematic discounting.')
     } else {
-      cf <- coef(obj)
-      cf <- cf[grep('del_', names(cf))]
-      indiffs <- unname(cf)
-      delays <- as.numeric(gsub('del_', '', names(cf)))
+      data <- indiffs(obj)
+      indiffs <- data$indiff
+      delays <- data$del
     }
   } else {
     stop('Input must be a data.frame or a model of class td_bcnm, td_ipm, or td_ddm.')

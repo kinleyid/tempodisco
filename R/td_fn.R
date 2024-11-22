@@ -7,6 +7,7 @@
 #' @param fn Function that takes a data.frame and a vector of named parameters and returns a vector of values between 0 and 1.
 #' @param par_starts A named list of vectors, each specifying possible starting values for a parameter to try when running optimization.
 #' @param par_lims A named list of vectors, each specifying the bounds to impose of a parameters. Any parameter for which bounds are unspecified are assumed to be unbounded.
+#' @param init A function to initialize the td_fn object. It should take 2 arguments: "self" (the td_fn object being initialized) and "data" (the data used for initialization).
 #' @param ED50 A function which, given a named vector of parameters \code{p} and optionally a value of \code{del_val}, computes the ED50. If there is no closed-form solution, this should return the string "non-analytic". If the ED50 is not well-defined, this should return the string "none". As a shortcut for these latter 2 cases, the strings "non-analytic" and "none" can be directly supplied as arguments.
 #' @param par_chk Optionally, this is a function that checks the parameters to ensure they meet some criteria. E.g., for the dual-systems-exponential discount function, we require k1 < k2.
 #' @return An object of class `td_fn`.
@@ -20,7 +21,7 @@
 #'   fn = function(data, p) (1 - p['b'])*exp(-p['k']*data$del) + p['b'],
 #'   par_starts = list(k = c(0.001, 0.1), b = c(0.001, 0.1)),
 #'   par_lims = list(k = c(0, Inf), b = c(0, 1)),
-#'   ED50 = function(...) 'non-analytic'
+#'   ED50 = 'non-analytic'
 #' )
 #' mod <- td_bcnm(td_bc_single_ptpt, discount_function = custom_discount_function, fit_err_rate = T)
 #' }
@@ -35,10 +36,11 @@ td_fn <- function(predefined = c('hyperbolic',
                                  'nonlinear-time-exponential',
                                  'model-free',
                                  'constant'),
-                  name = NULL,
+                  name = 'unnamed',
                   fn = NULL,
                   par_starts = NULL,
                   par_lims = NULL,
+                  init = NULL,
                   ED50 = NULL,
                   par_chk = NULL) {
   
@@ -47,46 +49,67 @@ td_fn <- function(predefined = c('hyperbolic',
   
   if (missing(predefined)) {
     
-    if (missing(name) | missing(fn) | missing(par_starts)) {
-      stop('To create a custom discount funciton, "name", "fn", and "par_starts" must all be provided to td_fn')
-    }
+    stopifnot(
+      is.character(name),
+      length(name) == 1
+    )
     out$name <- name
-    if (!all(names(formals(fn)) == c('data', 'p'))) {
-      stop('fn must take 2 arguments: data (a dataframe) and p (a vector of named parameters)')
-    } else {
-      out$fn <- fn
-    }
     
-    if (is.function(par_starts)) {
-      out$par_starts <- par_starts
-    } else {
-      if (is.null(names(par_starts))) {
-        stop('par_starts must be a named list')
+    if (missing(fn)) {
+      if (missing(init)) {
+        stop('fn must be supplied if it will not be created by init')
       } else {
-        out$par_starts <- as.list(par_starts)
+        fn <- function(data, p) NA
       }
+    } else {
+      stopifnot(is.function(fn))
+      if (!all(names(formals(fn)) == c('data', 'p')))
+        stop('fn must take 2 arguments: data (a dataframe) and p (a vector of named parameters)')
     }
+    out$fn <- fn
     
-    if (is.null(par_lims)) {
+    if (missing(par_starts)) {
+      if (missing(init)) {
+        stop('par_starts must be supplied if it will not be created by init')
+      } else {
+        par_starts <- list(placeholder = NA)
+      }
+    } else {
+      stopifnot(
+        is.list(par_starts),
+        !is.null(names(par_starts)),
+        all(vapply(par_starts,
+                   function(x) is.numeric(x) || is.integer(x),
+                   logical(1))))
+    }
+    out$par_starts <- par_starts
+    
+    if (missing(par_lims)) {
       par_lims <- list()
     } else {
-      if (is.function(par_lims)) {
-        out$par_lims <- par_lims
-      } else {
-        if (is.null(names(par_lims)) | any(names(par_lims) == '')) {
-          stop('Every element of par_lims must have a name corresponding to a different parameter')
-        } else if (!all(vapply(par_lims, length, numeric(1)) == 2)) {
-          stop('par_lims must be a list of 2-element vectors')
-        }
-        
-        for (par_name in names(par_starts)) {
-          if (!(par_name %in% names(par_lims))) {
-            par_lims[[par_name]] <- c(-Inf, Inf)
-          }
-        }
-        
-        out$par_lims <- par_lims
+      stopifnot(
+        is.list(par_lims),
+        !is.null(names(par_lims))
+      )
+      extra_names <- setdiff(names(par_lims), names(par_starts))
+      if (length(extra_names) > 0) {
+        stop(sprintf('parameter(s) %s exist in par_lims but not par_starts',
+                     paste(extra_names, collapse = ' and ')))
       }
+      
+    }
+    for (par_name in names(par_starts)) {
+      if (!(par_name %in% names(par_lims))) {
+        par_lims[[par_name]] <- c(-Inf, Inf)
+      }
+    }
+    out$par_lims <- par_lims
+    
+    if (!missing(init)) {
+      stopifnot(is.function(init))
+      if (!all(names(formals(init)) == c('self', 'data')))
+        stop('init must take 2 arguments: "self" (the td_fn object being initialized) and "data" (the data being used to initialize)')
+      out$init <- init
     }
     
     if (is.null(ED50)) {
@@ -175,7 +198,7 @@ td_fn <- function(predefined = c('hyperbolic',
                    par_lims = list(
                      k = c(0, Inf),
                      s = c(0, Inf)),
-                   ED50 = function(p, ...) function(p, ...) (1/p['k']) ^ (1/p['s']))
+                   ED50 = function(p, ...) (1/p['k']) ^ (1/p['s']))
       
     } else if (name == 'scaled-exponential') {
       
@@ -192,7 +215,7 @@ td_fn <- function(predefined = c('hyperbolic',
     } else if (name == 'dual-systems-exponential') {
       
       out <- td_fn(name = name,
-                   fn = function(data, p) function(data, p) p['w']*exp(-p['k1']*data$del) + (1 - p['w'])*exp(-p['k2']*data$del),
+                   fn = function(data, p) p['w']*exp(-p['k1']*data$del) + (1 - p['w'])*exp(-p['k2']*data$del),
                    par_starts = list(
                      w = c(0.1, 0.5, 0.9),
                      k1 = c(0.001, 0.01, 0.1),
@@ -230,33 +253,28 @@ td_fn <- function(predefined = c('hyperbolic',
     } else if (name == 'model-free') {
       
       out <- td_fn(name = name,
-                   fn = function(data, p) {
-                     p <- p[grep('del_', names(p))]
-                     # Round parameters and delays to 10 decimal points for comparison
-                     dels <- round(as.numeric(gsub('del_', '', names(p))), 10)
-                     xout <- round(data$del, 10)
-                     get_yout <- function(xout_value) {
-                       if (xout_value %in% dels) {
-                         return(p[which(dels == xout_value)])
-                       } else {
-                         interp_result <- approx(x = dels, y = p, xout = xout_value)
-                         return(interp_result$y)
-                       }
+                   fn = function(data, p) 'placeholder',
+                   par_starts = list(placeholder = 0),
+                   par_lims = list(placeholder = c(0, 0)),
+                   init = function(self, data) {
+                     # Get unique delays
+                     delays <- sort(unique(data$del))
+                     # Get starts and limits for free parameters
+                     par_names <- sprintf('indiff_%s', seq_along(delays))
+                     par_starts <- rep(list(0.5), length(delays))
+                     names(par_starts) <- par_names
+                     par_lims <- rep(list(c(0, 1)), length(delays))
+                     names(par_lims) <- par_names
+                     # Add to self
+                     self$par_starts <- par_starts
+                     self$par_lims <- par_lims
+                     # Get interpolation function
+                     self$fn <- function(data, p) {
+                       approx(x = c(0, delays),
+                              y = c(1, p[sprintf('indiff_%s', seq_along(delays))]),
+                              xout = data$del)[['y']]
                      }
-                     yout <- vapply(xout, get_yout, numeric(1))
-                     return(yout)},
-                   par_starts = function(data) {
-                     unique_delays <- unique(data$del)
-                     out <- as.list(rep(0.5, length(unique_delays)))
-                     # Round to 10 decimal points to be able to align delay values 
-                     names(out) <- sprintf('del_%.10f', unique_delays)
-                     return(out)},
-                   par_lims = function(data) {
-                     unique_delays <- unique(data$del)
-                     out <- rep(list(c(0, 1)), length(unique_delays))
-                     # Round to 10 decimal points to be able to align delay values 
-                     names(out) <- sprintf('del_%.10f', unique_delays)
-                     return(out)},
+                     return(self)},
                    ED50 = 'none')
                    
       

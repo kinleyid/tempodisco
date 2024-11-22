@@ -95,7 +95,7 @@ td_ddm <- function(
   #     par_starts = list(max_abs_drift = c(0.1, 1, 10)))
   # }
   drift_trans$name <- drift_transform
-  
+
   # Get a list of candidate discount functions
   disc_func_cands <- get_candidate_discount_functions(arg = discount_function)
   
@@ -103,22 +103,21 @@ td_ddm <- function(
   best_crit <- Inf
   best_mod <- list()
   for (disc_func in disc_func_cands) {
-  
+    
+    disc_func <- initialize_discount_function(disc_func, data)
+    
     # Candidate model
     cand_mod <- list(data = data,
                      config = list(discount_function = disc_func,
                                    drift_transform = drift_trans))
     class(cand_mod) <- c('td_ddm', 'td_um')
     
-    # Get parameter bounds for discount function
-    if (is.function(disc_func$par_lims)) {
-      par_lims <- disc_func$par_lims(data)
-    } else {
-      par_lims <- disc_func$par_lims
-    }
-    # Add DDM parameters bounds and drift transform parameter bounds
+    # Get parameter bounds and starts for
+    #   discount function
+    #   DDM
+    #   drift transform
     par_lims <- c(
-      par_lims,
+      disc_func$par_lims,
       list(
         v = c(0, Inf),
         beta = c(0, 1),
@@ -127,15 +126,8 @@ td_ddm <- function(
       ),
       drift_trans$par_lims
     )
-    # Get discount function parameter starting values
-    if (is.function(disc_func$par_starts)) {
-      par_starts <- disc_func$par_starts(data)
-    } else {
-      par_starts <- disc_func$par_starts
-    }
-    # Add DDM parameter starting values and drift transform parameter starting values
     par_starts <- c(
-      par_starts,
+      disc_func$par_starts,
       list(
         v = v_par_starts,
         beta = beta_par_starts,
@@ -213,7 +205,12 @@ get_linpred_func_ddm <- function(discount_function, drift_transform) {
   
   linpred_func <- function(data, par) {
     # Compute subjective value difference
-    svd <- data$val_imm - data$val_del*discount_function$fn(data, par)
+    tryCatch(
+      svd <- data$val_imm - data$val_del*discount_function$fn(data, par),
+      error = function(e) {
+        browser()
+      }
+    )
     # Compute drift rate
     drift <- svd*par['v']
     # Transform drift rate

@@ -33,7 +33,7 @@ AUC value.
 Compute either the model-based or model-free area under the curve.
 }
 \note{
-Calculation of the area always begins from delay 0, where an indifference point of 1 is assumed.
+An indifference point of 1 is assumed at delay 0.
 }
 \examples{
 \dontrun{
