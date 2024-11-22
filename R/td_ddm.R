@@ -1,6 +1,5 @@
 
 # TODO: Use the same terminology (get_linpred_func_bcnm) for td_bcnm as here
-# TODO: Update td_bcnm to use get_candidate_discount_functions
 # TODO: Custom criterion functions, both here and td_bcnm
 
 # A note on conventions:

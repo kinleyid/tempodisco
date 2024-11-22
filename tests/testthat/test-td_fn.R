@@ -7,7 +7,9 @@ test_that('normal functioning', {
 })
 
 test_that('errors', {
-  expect_error(td_fn('random-discount-function'))
+  expect_error(td_fn())
+  expect_error(td_fn(predefined = 'random-discount-function'))
+  expect_error(td_fn(fn = function(data, p) {p['x']}))
   expect_error(td_fn(fn = function(data, p) {p['x']}))
   expect_error(td_fn(name = 'custom',
                      fn = function(data, p) {p['x']},
@@ -17,4 +19,5 @@ test_that('errors', {
                      fn = function(data, p) {p['x']},
                      par_starts = c(x = 0.5),
                      par_lims = list(c(0, 1))))
+  expect_error(td_fn())
 })

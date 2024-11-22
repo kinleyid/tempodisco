@@ -69,7 +69,6 @@ test_that('multiple discount functions', {
   )
   args <- default_args
   args$discount_function <- list('model-free', 'dual-systems-exponential', custom_discount_function)
-  args$silent <- F
   expect_no_error(do.call(td_ddm, args))
 })
 

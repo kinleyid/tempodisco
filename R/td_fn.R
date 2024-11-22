@@ -72,7 +72,7 @@ td_fn <- function(predefined = c('hyperbolic',
       if (missing(init)) {
         stop('par_starts must be supplied if it will not be created by init')
       } else {
-        par_starts <- list(placeholder = NA)
+        par_starts <- list(placeholder = 0)
       }
     } else {
       stopifnot(
@@ -253,9 +253,6 @@ td_fn <- function(predefined = c('hyperbolic',
     } else if (name == 'model-free') {
       
       out <- td_fn(name = name,
-                   fn = function(data, p) 'placeholder',
-                   par_starts = list(placeholder = 0),
-                   par_lims = list(placeholder = c(0, 0)),
                    init = function(self, data) {
                      # Get unique delays
                      delays <- sort(unique(data$del))

@@ -77,10 +77,11 @@ validate_td_data <- function(data, required_columns) {
       }
       
       if (!all(curr_col >= expected$lims[1]) || !all(curr_col <= expected$lims[2])) {
-        message('%s should be >= %s, <= %s',
+        message(sprintf('%s is %s; should be >= %s, <= %s',
                 colname,
+                curr_col,
                 expected$lims[1],
-                expected$lims[2])
+                expected$lims[2]))
         stop_flag <- T
       }
     }
