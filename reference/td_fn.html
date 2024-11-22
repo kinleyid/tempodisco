@@ -62,13 +62,14 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">td_fn</span><span class="op">(</span></span>
-<span>  predefined <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hyperbolic"</span>, <span class="st">"exponential"</span>, <span class="st">"inverse-q-exponential"</span>,</span>
+<span>  predefined <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hyperbolic"</span>, <span class="st">"exponential"</span>, <span class="st">"power"</span>, <span class="st">"inverse-q-exponential"</span>,</span>
 <span>    <span class="st">"nonlinear-time-hyperbolic"</span>, <span class="st">"scaled-exponential"</span>, <span class="st">"dual-systems-exponential"</span>,</span>
 <span>    <span class="st">"nonlinear-time-exponential"</span>, <span class="st">"model-free"</span>, <span class="st">"constant"</span><span class="op">)</span>,</span>
-<span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  name <span class="op">=</span> <span class="st">"unnamed"</span>,</span>
 <span>  fn <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  par_starts <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  par_lims <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  init <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ED50 <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  par_chk <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -98,8 +99,12 @@
 <dd><p>A named list of vectors, each specifying the bounds to impose of a parameters. Any parameter for which bounds are unspecified are assumed to be unbounded.</p></dd>
 
 
+<dt id="arg-init">init<a class="anchor" aria-label="anchor" href="#arg-init"></a></dt>
+<dd><p>A function to initialize the td_fn object. It should take 2 arguments: "self" (the td_fn object being initialized) and "data" (the data used for initialization).</p></dd>
+
+
 <dt id="arg-ed-">ED50<a class="anchor" aria-label="anchor" href="#arg-ed-"></a></dt>
-<dd><p>A function which, given a named vector of parameters <code>p</code> and optionally a value of <code>del_val</code>, computes the ED50. If there is no closed-form solution, this should return the string "non-analytic". If the ED50 is not well-defined, this should return the string "none".</p></dd>
+<dd><p>A function which, given a named vector of parameters <code>p</code> and optionally a value of <code>del_val</code>, computes the ED50. If there is no closed-form solution, this should return the string "non-analytic". If the ED50 is not well-defined, this should return the string "none". As a shortcut for these latter 2 cases, the strings "non-analytic" and "none" can be directly supplied as arguments.</p></dd>
 
 
 <dt id="arg-par-chk">par_chk<a class="anchor" aria-label="anchor" href="#arg-par-chk"></a></dt>
@@ -122,7 +127,7 @@
 <span class="r-in"><span>  fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">p</span><span class="op">)</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">p</span><span class="op">[</span><span class="st">'b'</span><span class="op">]</span><span class="op">)</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">p</span><span class="op">[</span><span class="st">'k'</span><span class="op">]</span><span class="op">*</span><span class="va">data</span><span class="op">$</span><span class="va">del</span><span class="op">)</span> <span class="op">+</span> <span class="va">p</span><span class="op">[</span><span class="st">'b'</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>  par_starts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>k <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.001</span>, <span class="fl">0.1</span><span class="op">)</span>, b <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.001</span>, <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  par_lims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>k <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="cn">Inf</span><span class="op">)</span>, b <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  ED50 <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="st">'non-analytic'</span></span></span>
+<span class="r-in"><span>  ED50 <span class="op">=</span> <span class="st">'non-analytic'</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="td_bcnm.html">td_bcnm</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>, discount_function <span class="op">=</span> <span class="va">custom_discount_function</span>, fit_err_rate <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>

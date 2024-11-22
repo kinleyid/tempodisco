@@ -108,7 +108,7 @@ the Monetary Choice Questionnaire <a href="https://doi.org/10.1037//0096-3445.12
 <span><span class="co">#&gt; 0.02176563 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ED50: 45.9439876371218</span></span>
-<span><span class="co">#&gt; AUC: integrate() failed to compute AUC with error: "unused argument (verbose = FALSE)"</span></span></code></pre></div>
+<span><span class="co">#&gt; AUC: 0.0551987542147013</span></span></code></pre></div>
 <p>Although this method computes
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
 values according to the hyperbolic discount function, in principle it’s
@@ -125,7 +125,7 @@ possible to use the exponential discount function:</p>
 <span><span class="co">#&gt; 0.008170247 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ED50: 84.8379742026149</span></span>
-<span><span class="co">#&gt; AUC: integrate() failed to compute AUC with error: "unused argument (verbose = FALSE)"</span></span></code></pre></div>
+<span><span class="co">#&gt; AUC: 0.0335100135964859</span></span></code></pre></div>
 <p>Another option is to use the logistic regression method of <a href="https://doi.org/10.3758/BF03195548" class="external-link">Wileyto et al. (2004)</a>,
 where we can solve for the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
@@ -206,6 +206,14 @@ functions as well:</p>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><msup><mi>e</mi><mfrac><msub><mi>β</mi><mn>2</mn></msub><msub><mi>β</mi><mn>1</mn></msub></mfrac></msup></mrow><annotation encoding="application/x-tex">k = e^\frac{\beta_2}{\beta_1}</annotation></semantics></math></td>
 </tr>
 <tr class="odd">
+<td><code>power</code></td>
+<td>Power (<a href="https://doi.org/10.1287/mnsc.32.9.1123" class="external-link">Harvey,
+1986</a>):<br><br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mn>1</mn><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>k</mi></msup></mfrac><annotation encoding="application/x-tex">\frac{1}{(1 + t)^k}</annotation></semantics></math>
+</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>β</mi><mn>1</mn></msub><mo>log</mo><mfrac><msub><mi>v</mi><mi>I</mi></msub><msub><mi>v</mi><mi>D</mi></msub></mfrac><mo>+</mo><msub><mi>β</mi><mn>2</mn></msub><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\beta_1 \log \frac{v_I}{v_D} + \beta_2 \log (1 + t)</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mfrac><msub><mi>β</mi><mn>2</mn></msub><msub><mi>β</mi><mn>1</mn></msub></mfrac></mrow><annotation encoding="application/x-tex">k = \frac{\beta_2}{\beta_1}</annotation></semantics></math></td>
+</tr>
+<tr class="even">
 <td><code>scaled-exponential</code></td>
 <td>Scaled exponential (beta-delta; <a href="https://doi.org/10.1162/003355397555253" class="external-link">Laibson,
 1997</a>):<br><br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><msup><mi>e</mi><mrow><mo>−</mo><mi>k</mi><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">w e^{-kt}</annotation></semantics></math>
@@ -216,7 +224,7 @@ functions as well:</p>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo>=</mo><msup><mi>e</mi><mrow><mo>−</mo><mfrac><msub><mi>β</mi><mn>3</mn></msub><msub><mi>β</mi><mn>1</mn></msub></mfrac></mrow></msup></mrow><annotation encoding="application/x-tex">w = e^{-\frac{\beta_3}{\beta_1}}</annotation></semantics></math>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>nonlinear-time-hyperbolic</code></td>
 <td>Nonlinear-time hyperbolic (<a href="https://doi.org/10.1901/jeab.2006.85-05" class="external-link">Rachlin,
 2006</a>):<br><br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><mi>k</mi><msup><mi>t</mi><mi>s</mi></msup></mrow></mfrac><annotation encoding="application/x-tex">\frac{1}{1 + k t^s}</annotation></semantics></math>
@@ -227,7 +235,7 @@ functions as well:</p>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>=</mo><mfrac><msub><mi>β</mi><mn>2</mn></msub><msub><mi>β</mi><mn>1</mn></msub></mfrac></mrow><annotation encoding="application/x-tex">s = \frac{\beta_2}{\beta_1}</annotation></semantics></math>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>nonlinear-time-exponential</code></td>
 <td>Nonlinear-time exponential (<a href="https://doi.org/10.1287/mnsc.1060.0671" class="external-link">Ebert &amp; Prelec,
 2007</a>):<br><br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>e</mi><mrow><mo>−</mo><mi>k</mi><msup><mi>t</mi><mi>s</mi></msup></mrow></msup><annotation encoding="application/x-tex">e^{-kt^s}</annotation></semantics></math>
@@ -335,6 +343,12 @@ hyperboloid (<a href="https://doi.org/10.1037/0033-2909.130.5.769" class="extern
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo>,</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><mi>k</mi><msup><mi>t</mi><mi>s</mi></msup></mrow></mfrac></mrow><annotation encoding="application/x-tex">f(t; k, s) = \frac{1}{1 + k t^s}</annotation></semantics></math></td>
 <td>Power-functin (<a href="https://doi.org/10.1901/jeab.2006.85-05" class="external-link">Rachlin, 2006</a>)</td>
 </tr>
+<tr class="even">
+<td>
+<code>power</code> (<a href="https://doi.org/10.1287/mnsc.32.9.1123" class="external-link">Harvey, 1986</a>)</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>k</mi></msup></mfrac></mrow><annotation encoding="application/x-tex">f(t; k) = \frac{1}{(1 + t)^k}</annotation></semantics></math></td>
+<td></td>
+</tr>
 </tbody>
 </table>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -346,16 +360,16 @@ hyperboloid (<a href="https://doi.org/10.1037/0033-2909.130.5.769" class="extern
 <span><span class="co">#&gt; Discount function: exponential, with coefficients:</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;          k      gamma </span></span>
-<span><span class="co">#&gt; 0.01086616 0.09327077 </span></span>
+<span><span class="co">#&gt; 0.01083049 0.09341821 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Config:</span></span>
 <span><span class="co">#&gt;  noise_dist: logis</span></span>
 <span><span class="co">#&gt;  gamma_scale: linear</span></span>
 <span><span class="co">#&gt;  transform: identity</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ED50: 63.7895168684722</span></span>
-<span><span class="co">#&gt; AUC: integrate() failed to compute AUC with error: "unused argument (verbose = FALSE)"</span></span>
-<span><span class="co">#&gt; BIC: 25.9543389305639</span></span></code></pre></div>
+<span><span class="co">#&gt; ED50: 63.9996305466619</span></span>
+<span><span class="co">#&gt; AUC: 0.0252791100912786</span></span>
+<span><span class="co">#&gt; BIC: 25.9537097154224</span></span></code></pre></div>
 <p>Several additional arguments can be used to customize the model. For
 example, we can use different choice rules—the “logistic” choice rule is
 the default, but the “probit” and “power” choice rules are also

@@ -125,13 +125,13 @@ discounting:</p>
 <span><span class="co">#&gt;  Pearson's product-moment correlation</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; data:  discount_measures$AUC and log(discount_measures$ED50)</span></span>
-<span><span class="co">#&gt; t = 14.89, df = 6, p-value = 5.774e-06</span></span>
+<span><span class="co">#&gt; t = 14.939, df = 6, p-value = 5.663e-06</span></span>
 <span><span class="co">#&gt; alternative hypothesis: true correlation is not equal to 0</span></span>
 <span><span class="co">#&gt; 95 percent confidence interval:</span></span>
-<span><span class="co">#&gt;  0.9257943 0.9976896</span></span>
+<span><span class="co">#&gt;  0.9262591 0.9977046</span></span>
 <span><span class="co">#&gt; sample estimates:</span></span>
-<span><span class="co">#&gt;       cor </span></span>
-<span><span class="co">#&gt; 0.9867374</span></span></code></pre></div>
+<span><span class="co">#&gt;      cor </span></span>
+<span><span class="co">#&gt; 0.986823</span></span></code></pre></div>
 <p>The resulting table could be merged with another table containing
 other measures of interest (e.g., from other questionnaires).</p>
 <p>In the absence of other measures of interest, we can ask interesting
@@ -162,13 +162,13 @@ produced by Kirby MCQ-style scoring vs. nonlinear model fitting?</p>
 <span><span class="co">#&gt;  Pearson's product-moment correlation</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; data:  log(df$k_nm) and log(df$k_kirby)</span></span>
-<span><span class="co">#&gt; t = 20.388, df = 6, p-value = 9.052e-07</span></span>
+<span><span class="co">#&gt; t = 31.388, df = 6, p-value = 6.947e-08</span></span>
 <span><span class="co">#&gt; alternative hypothesis: true correlation is not equal to 0</span></span>
 <span><span class="co">#&gt; 95 percent confidence interval:</span></span>
-<span><span class="co">#&gt;  0.9594767 0.9987593</span></span>
+<span><span class="co">#&gt;  0.9826287 0.9994742</span></span>
 <span><span class="co">#&gt; sample estimates:</span></span>
 <span><span class="co">#&gt;       cor </span></span>
-<span><span class="co">#&gt; 0.9928599</span></span></code></pre></div>
+<span><span class="co">#&gt; 0.9969687</span></span></code></pre></div>
 <p>Or: how prevalent is hyperbolic versus exponential discounting?</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">best_mods</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/by.html" class="external-link">by</a></span><span class="op">(</span><span class="va">study</span>, <span class="va">study</span><span class="op">$</span><span class="va">id</span>, <span class="kw">function</span><span class="op">(</span><span class="va">ptpt</span><span class="op">)</span> <span class="op">{</span></span>
@@ -180,7 +180,7 @@ produced by Kirby MCQ-style scoring vs. nonlinear model fitting?</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">best_mods</span><span class="op">)</span></span>
 <span><span class="co">#&gt; best_mods</span></span>
 <span><span class="co">#&gt; exponential  hyperbolic </span></span>
-<span><span class="co">#&gt;           7           1</span></span></code></pre></div>
+<span><span class="co">#&gt;           5           3</span></span></code></pre></div>
   </main>
 </div>
 

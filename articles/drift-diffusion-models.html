@@ -167,13 +167,13 @@ function.</p>
 <span><span class="co">#&gt; Coefficients:</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;           k           v        beta       alpha         tau </span></span>
-<span><span class="co">#&gt; 0.009518797 0.008810812 0.574805668 3.462444316 0.946851140 </span></span>
+<span><span class="co">#&gt; 0.009533540 0.008701496 0.574767840 3.386250993 0.960690451 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; "none" transform applied to drift rates.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ED50: 72.8187765186714</span></span>
-<span><span class="co">#&gt; AUC: integrate() failed to compute AUC with error: "unused argument (verbose = FALSE)"</span></span>
-<span><span class="co">#&gt; BIC: 236.382759846412</span></span></code></pre></div>
+<span><span class="co">#&gt; ED50: 72.7061725970083</span></span>
+<span><span class="co">#&gt; AUC: 0.028718092990478</span></span>
+<span><span class="co">#&gt; BIC: 236.321495807626</span></span></code></pre></div>
 <p>As we can see, parameters are estimated not only for the discount
 function
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>),
@@ -201,13 +201,13 @@ actual data:</p>
 <span><span class="co">#&gt;  Pearson's product-moment correlation</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; data:  predicted_rts and ddm$data$rt</span></span>
-<span><span class="co">#&gt; t = 2.6422, df = 64, p-value = 0.01034</span></span>
+<span><span class="co">#&gt; t = 2.6358, df = 64, p-value = 0.01052</span></span>
 <span><span class="co">#&gt; alternative hypothesis: true correlation is not equal to 0</span></span>
 <span><span class="co">#&gt; 95 percent confidence interval:</span></span>
-<span><span class="co">#&gt;  0.07746325 0.51644776</span></span>
+<span><span class="co">#&gt;  0.07670155 0.51588565</span></span>
 <span><span class="co">#&gt; sample estimates:</span></span>
 <span><span class="co">#&gt;       cor </span></span>
-<span><span class="co">#&gt; 0.3136161</span></span></code></pre></div>
+<span><span class="co">#&gt; 0.3129251</span></span></code></pre></div>
 <p>As expected, they are correlated. To compare these visually, we can
 <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> the DDM with the argument
 <code>type = "rt"</code>:</p>
@@ -231,9 +231,9 @@ data:</p>
 <span>              alpha_par_starts <span class="op">=</span> <span class="fl">3.5</span>,</span>
 <span>              tau_par_starts <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">BIC</a></span><span class="op">(</span><span class="va">ddm</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 236.3828</span></span>
+<span><span class="co">#&gt; [1] 236.3215</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">BIC</a></span><span class="op">(</span><span class="va">ddm_sig</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 230.1002</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 230.0989</span></span></code></pre></div>
 <p>Sure enough, the model with the sigmoid transform performs better per
 the Bayesian information criterion. Plotting the probability of choosing
 the immediate reward against the drift rate, we can see that many
