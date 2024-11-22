@@ -15,9 +15,9 @@ qgumbel <- function(p, location = 0, scale = 1) {
 }
 
 # Dirac CDF
-pdirac <- function(q, location = 0) {
-  ifelse(q < location, 0, 1)
-}
+# pdirac <- function(q, location = 0) {
+#   ifelse(q < location, 0, 1)
+# }
 
 # Log-likelihood
 ll <- function(p, x) {

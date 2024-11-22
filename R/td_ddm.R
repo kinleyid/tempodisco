@@ -58,7 +58,7 @@ td_ddm <- function(
   
   # Check that RTs are in seconds vs milliseconds
   if (median(data$rt) > 500) {
-    warning('Median RT is greater than 500, meaning RTs are likely in units of milliseconds (or smaller). They should be in units of seconds.')
+    stop('Median RT is greater than 500, meaning RTs are likely in units of milliseconds (or smaller). They should be in units of seconds.')
   }
   
   # Attention checks
@@ -204,12 +204,7 @@ get_linpred_func_ddm <- function(discount_function, drift_transform) {
   
   linpred_func <- function(data, par) {
     # Compute subjective value difference
-    tryCatch(
-      svd <- data$val_imm - data$val_del*discount_function$fn(data, par),
-      error = function(e) {
-        browser()
-      }
-    )
+    svd <- data$val_imm - data$val_del*discount_function$fn(data, par)
     # Compute drift rate
     drift <- svd*par['v']
     # Transform drift rate

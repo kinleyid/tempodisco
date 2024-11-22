@@ -61,3 +61,7 @@ test_that('experimental indiff scoring function', {
   expect_no_error(most_consistent_indiffs(td_bc_single_ptpt))
   expect_no_error(delwise_consistencies(td_bc_single_ptpt))
 })
+
+test_that('kirby_consistency', {
+  expect_no_error(kirby_consistency(td_bc_single_ptpt, discount_function = 'hyperbolic'))
+})

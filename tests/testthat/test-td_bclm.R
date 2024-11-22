@@ -52,7 +52,9 @@ while (model_idx <= length(models)) {
 }
 
 test_that('errors', {
-  expect_error(td_bcnm(df, model = 'random'))
-  expect_error(td_bcnm())
-  expect_error(td_bcnm(df[, 1:2]))
+  expect_error(td_bclm(df, model = 'random'))
+  expect_error(td_bclm())
+  expect_error(td_bclm(df[, 1:2]))
+  df$`.B1` <- 1
+  expect_error(td_bclm(df, model = 'hyperbolic.1'))
 })

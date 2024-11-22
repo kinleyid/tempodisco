@@ -42,7 +42,7 @@ td_bclm <- function(data,
                    required_columns = c('val_imm', 'val_del', 'del', 'imm_chosen'))
   attention_checks(data, warn = T)
   invariance_checks(data, warn = T)
-  if (length(grep('\\.B', names(data))) > 1) {
+  if (length(grep('\\.B', names(data))) > 0) {
     stop('No columns can have a name that begins with ".B"')
   }
   

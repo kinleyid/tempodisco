@@ -341,11 +341,12 @@ coef.td_bclm <- function(object, df_par = TRUE, ...) {
               's' = unname(p['.B2']/p['.B1']))
     } else if (d == 'power') {
       cf <- c('k' = unname(p['.B2']/p['.B1']))
-    } else if (d == 'itch') {
-      cf <- object$coefficients
-    } else if (d == 'naive') {
-      cf <- object$coefficients
     }
+    # } else if (d == 'itch') {
+    #   cf <- object$coefficients
+    # } else if (d == 'naive') {
+    #   cf <- object$coefficients
+    # }
   } else {
     cf <- object$coefficients
   }

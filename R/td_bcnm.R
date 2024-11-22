@@ -261,17 +261,6 @@ get_prob_mod_frame <- function(...) {
   }
 }
 
-get_nll_fn <- function(data, prob_mod_frame) {
-  # Get negative log-likelihood function, given a set of data and a model
-  # "frame" with structural aspects specified but parameters unspecified
-  
-  nll_fn <- function(par) {
-    p <- laplace_smooth(prob_mod_frame(data, par))
-    return(sum(-ll(p, data$imm_chosen)))
-  }
-  return(nll_fn)
-}
-
 # Robust stuff---may incorporate later
 # huber <- function(t, c) {
 #   idx <- t > c

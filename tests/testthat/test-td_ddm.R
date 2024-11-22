@@ -30,6 +30,7 @@ test_that('generics', {
   expect_type(logLik(mod), 'double')
   expect_type(logLik(mod, type = 'resp'), 'double')
   expect_named(coef(mod))
+  expect_type(deviance(mod), 'double')
   # Residuals are not applicable
   # expect_vector(residuals(mod, type = 'deviance'), size = nrow(df))
   # expect_vector(residuals(mod, type = 'pearson'), size = nrow(df))
@@ -84,4 +85,6 @@ test_that('errors', {
   expect_error(td_ddm(df, discount_function = 'random'))
   expect_error(td_ddm())
   expect_error(td_ddm(df[, 1:2]))
+  df$rt <- df$rt*1000 # in ms
+  expect_error(td_ddm(df, discount_function = 'hyperbolic'))
 })

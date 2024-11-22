@@ -61,6 +61,7 @@ while (arg_combo_idx <= nrow(arg_combos)) {
     expect_length(residuals(mod, type = 'deviance'), n = nrow(df))
     expect_length(residuals(mod, type = 'pearson'), n = nrow(df))
     expect_length(residuals(mod, type = 'response'), n = nrow(df))
+    expect_type(deviance(mod), 'double')
   })
   
   pdf(NULL) # Don't actually produce plots
@@ -71,7 +72,9 @@ while (arg_combo_idx <= nrow(arg_combos)) {
     expect_no_error(plot(mod, type = 'endpoints', verbose = F))
     expect_output(plot(mod, type = 'endpoints', verbose = T))
     expect_no_error(plot(mod, type = 'endpoints', verbose = F, del = 100, val_del = 50))
+    expect_no_error(plot(mod, type = 'endpoints', verbose = F, del = unique(df$del)[1], val_del = 50))
     expect_no_error(plot(mod, type = 'link'))
+    expect_error(plot(mod, type = 'rt'))
   })
   dev.off()
   
