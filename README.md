@@ -59,7 +59,7 @@ for a given individual according to the Bayesian information criterion
 | `dual-systems-exponential` ([Ven den Bos & McClure, 2013](https://doi.org/10.1002/jeab.6)) | $f(t; k_1, k_2, w) = w e^{-k_1 t} + (1 - w) e^{-k_2 t}$ |  |
 | `inverse-q-exponential` ([Green & Myerson, 2004](https://doi.org/10.1037/0033-2909.130.5.769)) | $f(t; k, s) = \frac{1}{(1 + k t)^s}$ | Generalized hyperbolic ([Loewenstin & Prelec](https://doi.org/10.2307/2118482)); hyperboloid ([Green & Myerson, 2004](https://doi.org/10.1037/0033-2909.130.5.769)); q-exponential ([Han & Takahashi, 2012](https://doi.org/10.1016/j.physa.2012.07.012)) |
 | `hyperbolic` ([Mazur, 1987](https://doi.org/10.4324/9781315825502)) | $f(t; k) = \frac{1}{1 + kt}$ |  |
-| `nonlinear-time-hyperbolic` ([Rachlin, 2006](https://doi.org/10.1901/jeab.2006.85-05)) | $f(t; k, s) = \frac{1}{1 + k t^s}$ | Power-functin ([Rachlin, 2006](https://doi.org/10.1901/jeab.2006.85-05)) |
+| `nonlinear-time-hyperbolic` ([Rachlin, 2006](https://doi.org/10.1901/jeab.2006.85-05)) | $f(t; k, s) = \frac{1}{1 + k t^s}$ | Power-function ([Rachlin, 2006](https://doi.org/10.1901/jeab.2006.85-05)) |
 | `power` ([Harvey, 1986](https://doi.org/10.1287/mnsc.32.9.1123)) | $f(t; k) = \frac{1}{(1 + t)^k}$ |  |
 
 These discount functions can be fit to indifference point data (see
