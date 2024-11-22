@@ -36,8 +36,6 @@ td_bcnm <- function(
     choice_rule = c('logistic', 'probit', 'power'),
     fixed_ends = F,
     fit_err_rate = F,
-    # robust = F,
-    # param_ranges = NULL,
     gamma_par_starts = c(0.01, 1, 100),
     eps_par_starts = c(0.01, 0.25),
     silent = T,
@@ -118,9 +116,10 @@ td_bcnm <- function(
   cand_mod <- list(data = data)
   class(cand_mod) <- c('td_bcnm', 'td_um')
   for (cand_fn in cand_fns) {
+    
+    cand_fn <- initialize_discount_function(cand_fn, data)
     config <- args
     config$discount_function <- cand_fn
-    
     cand_mod$config <- config
     
     # Get prob. model with the given settings but parameter values unspecified
@@ -137,11 +136,7 @@ td_bcnm <- function(
     }
     
     # Get parameter starting values
-    if (is.function(config$discount_function$par_starts)) {
-      par_starts <- config$discount_function$par_starts(data)
-    } else {
-      par_starts <- config$discount_function$par_starts
-    }
+    par_starts <- config$discount_function$par_starts
     # Add gamma start values
     par_starts <- c(
       par_starts,
@@ -160,11 +155,7 @@ td_bcnm <- function(
     }
     
     # Get parameter bounds
-    if (is.function(config$discount_function$par_lims)) {
-      par_lims <- config$discount_function$par_lims(data)
-    } else {
-      par_lims <- config$discount_function$par_lims
-    }
+    par_lims <- config$discount_function$par_lims
     # Add gamma limits
     par_lims <- c(
       par_lims,

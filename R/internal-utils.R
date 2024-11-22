@@ -95,3 +95,19 @@ validate_td_data <- function(data, required_columns) {
   }
   
 }
+
+initialize_discount_function <- function(disc_func, data) {
+  if ('init' %in% names(disc_func)) {
+    # Run init() and do some validation
+    disc_func <- disc_func$init(disc_func, data)
+    stopifnot(
+      is.list(disc_func$par_starts),
+      is.list(disc_func$par_lims),
+      all(names(disc_func$par_starts) == names(disc_func$par_lims)),
+      all(vapply(disc_func$par_lims, length, integer(1)) == 2),
+      is.function(disc_func$fn),
+      all(names(formals(disc_func$fn)) == c('data', 'p'))
+    )
+  }
+  return(disc_func)
+}

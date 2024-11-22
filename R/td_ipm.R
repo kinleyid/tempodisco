@@ -51,12 +51,6 @@ td_ipm <- function(
     optim_args = list(),
     silent = T) {
   
-  # Set discount function(s)
-  if ('all' %in% discount_function) {
-    # If "all" is used, replace discount_function with a vector of all the options
-    discount_function <- eval(formals(td_fn)$predefined)
-  }
-  
   # Required data columns
   validate_td_data(data, required_columns = c('indiff', 'del'))
   data <- na.action(data)
@@ -69,22 +63,15 @@ td_ipm <- function(
   class(cand_mod) <- c('td_ipm', 'td_um')
   for (cand_fn in cand_fns) {
    
+    # Initialize
+    cand_fn <- initialize_discount_function(cand_fn, data)
+    
     # Get residual sum of squares function
     rss_fn <- get_rss_fn(data, cand_fn$fn)
     
-    # Get parameter starting values
-    if (is.function(cand_fn$par_starts)) {
-      par_starts <- cand_fn$par_starts(data)
-    } else {
-      par_starts <- cand_fn$par_starts
-    }
-    
-    # Get parameter bounds
-    if (is.function(cand_fn$par_lims)) {
-      par_lims <- cand_fn$par_lims(data)
-    } else {
-      par_lims <- cand_fn$par_lims
-    }
+    # Get parameter starting values and bounds
+    par_starts <- cand_fn$par_starts
+    par_lims <- cand_fn$par_lims
     
     # Run optimization
     optimized <- run_optimization(rss_fn, par_starts, par_lims, optim_args = optim_args, silent = silent)
