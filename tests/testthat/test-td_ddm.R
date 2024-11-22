@@ -90,7 +90,7 @@ test_that('errors', {
     par_starts = list(k = 1),
     par_lims = list(k = c(0, 2))
   )
-  td_ddm(df, discount_function = failing_disc_func)
+  expect_error(td_ddm(df, discount_function = failing_disc_func))
   df$rt <- df$rt*1000 # in ms
   expect_error(td_ddm(df, discount_function = 'hyperbolic'))
 })
