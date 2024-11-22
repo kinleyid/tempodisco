@@ -80,4 +80,10 @@ test_that('errors', {
   expect_error(td_ipm(df, discount_function = 'new'))
   expect_error(plot(mod, type = 'endpoints'))
   expect_error(plot(mod, p_lines = 0.1))
+  failing_disc_func <- td_fn(
+    fn = function(data, p) NA,
+    par_starts = list(k = 1),
+    par_lims = list(k = c(0, 2))
+  )
+  expect_error(td_ipm(df, discount_function = failing_disc_func))
 })

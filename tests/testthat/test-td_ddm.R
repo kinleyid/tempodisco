@@ -85,6 +85,12 @@ test_that('errors', {
   expect_error(td_ddm(df, discount_function = 'random'))
   expect_error(td_ddm())
   expect_error(td_ddm(df[, 1:2]))
+  failing_disc_func <- td_fn(
+    fn = function(data, p) NA,
+    par_starts = list(k = 1),
+    par_lims = list(k = c(0, 2))
+  )
+  td_ddm(df, discount_function = failing_disc_func)
   df$rt <- df$rt*1000 # in ms
   expect_error(td_ddm(df, discount_function = 'hyperbolic'))
 })

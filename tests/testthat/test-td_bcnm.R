@@ -93,5 +93,10 @@ test_that('errors', {
   expect_error(td_bcnm())
   expect_error(td_bcnm(df[, 1:2]))
   expect_error(td_bcnm(df, discount_function = 'new'))
-  expect_error(td_bcnm(df, discount_function = 'new'))
+  failing_disc_func <- td_fn(
+    fn = function(data, p) NA,
+    par_starts = list(k = 1),
+    par_lims = list(k = c(0, 2))
+  )
+  expect_error(td_bcnm(df, discount_function = failing_disc_func))
 })
