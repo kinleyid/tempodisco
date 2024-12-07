@@ -66,7 +66,6 @@
 <span>  discount_function <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"hyperbolic"</span>, <span class="st">"exponential"</span>, <span class="st">"inverse-q-exponential"</span>,</span>
 <span>    <span class="st">"nonlinear-time-hyperbolic"</span>, <span class="st">"scaled-exponential"</span>, <span class="st">"dual-systems-exponential"</span>,</span>
 <span>    <span class="st">"nonlinear-time-exponential"</span>, <span class="st">"model-free"</span>, <span class="st">"constant"</span><span class="op">)</span>,</span>
-<span>  na.action <span class="op">=</span> <span class="va">na.omit</span>,</span>
 <span>  optim_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  silent <span class="op">=</span> <span class="cn">T</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -82,10 +81,6 @@
 
 <dt id="arg-discount-function">discount_function<a class="anchor" aria-label="anchor" href="#arg-discount-function"></a></dt>
 <dd><p>A vector of strings specifying the name of the discount functions to use, or an object of class <code>td_fn</code> (used for creating custom discount functions), or a list of objects of class <code>td_fn</code>.</p></dd>
-
-
-<dt id="arg-na-action">na.action<a class="anchor" aria-label="anchor" href="#arg-na-action"></a></dt>
-<dd><p>Action to take when data contains <code>NA</code> values. Default is <code>na.omit</code>.</p></dd>
 
 
 <dt id="arg-optim-args">optim_args<a class="anchor" aria-label="anchor" href="#arg-optim-args"></a></dt>
