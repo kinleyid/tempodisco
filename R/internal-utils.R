@@ -40,11 +40,24 @@ validate_td_data <- function(data, required_columns) {
   
   # Validate columns in dataframe
   
+  # Check that all required columns are present
   missing_cols <- setdiff(required_columns, names(data))
   if (length(missing_cols) > 0) {
     stop(sprintf('Missing required data column(s): %s', paste(missing_cols, collapse = ', ')))
   }
   
+  # Omit NA rows
+  pre_nrow <- nrow(data)
+  data <- data[complete.cases(data[required_columns]), ]
+  n_rm <- pre_nrow - nrow(data)
+  if (n_rm > 0) {
+    warning(sprintf('Removing %s rows containing missing values', n_rm))
+  }
+  if (nrow(data) == 0) {
+    stop('Dataframe empty after removing missing values')
+  }
+  
+  # Check that each column is of the expected type
   expectations <- list(
     'del' = list(type = c('numeric', 'integer', 'factor'),
                  lims = c(0, Inf)),
@@ -94,6 +107,8 @@ validate_td_data <- function(data, required_columns) {
   if ('imm_chosen' %in% names(data)) {
     data$imm_chosen <- as.logical(data$imm_chosen)
   }
+  
+  return(data)
   
 }
 

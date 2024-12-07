@@ -38,8 +38,10 @@ td_bclm <- function(data,
                     ...) {
   
   # Validate data
-  validate_td_data(data,
-                   required_columns = c('val_imm', 'val_del', 'del', 'imm_chosen'))
+  data <- validate_td_data(
+    data,
+    required_columns = c('val_imm', 'val_del', 'del', 'imm_chosen')
+  )
   attention_checks(data, warn = T)
   invariance_checks(data, warn = T)
   if (length(grep('\\.B', names(data))) > 0) {

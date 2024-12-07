@@ -114,11 +114,6 @@ predict.td_bcnm <- function(object, newdata = NULL, type = c('link', 'response',
     
     return(predict_indiffs(object, newdata))
     
-    # indiff_func <- object$config$discount_function$fn
-    # indiffs <- indiff_func(newdata, coef(object))
-    # names(indiffs) <- NULL
-    # return(indiffs)
-    
   }
 }
 

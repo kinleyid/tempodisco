@@ -87,6 +87,13 @@ while (arg_combo_idx <= nrow(arg_combos)) {
   })
 }
 
+test_that('NAs', {
+  with_na <- df
+  with_na$imm_chosen[2] <- NA
+  with_na$irrelevant_column <- NA
+  expect_warning(td_bcnm(with_na, discount_function = 'hyperbolic'))
+})
+
 test_that('errors', {
   expect_error(td_bcnm(df, choice_rule = 'random'))
   expect_error(td_bcnm(df, noise_dist = 'norm'))

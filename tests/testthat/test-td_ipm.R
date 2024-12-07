@@ -74,6 +74,13 @@ while (df_idx <= length(discount_functions)) {
   })
 }
 
+test_that('NAs', {
+  with_na <- df
+  with_na$indiff[2] <- NA
+  with_na$irrelevant_column <- NA
+  expect_warning(td_ipm(with_na, discount_function = 'hyperbolic'))
+})
+
 test_that('errors', {
   expect_error(td_ipm())
   expect_error(td_ipm(data.frame(del = 1:10)))

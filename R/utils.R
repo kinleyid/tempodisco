@@ -32,6 +32,23 @@ geomean <- function(x, ...) {
   exp(mean(log(x), ...))
 }
 
+# Harmonic mean
+harmean <- function(x) {
+  length(x) / sum(1/x)
+}
+
+# Log-odds mean
+logoddsmean <- function(x) {
+  plogis(mean(qlogis(laplace_smooth(x))))
+}
+
+# arcsin mean
+asinmean <- function(x) {
+  sin(
+    mean(asin(sqrt(x)))
+  )**2
+}
+
 get_transform <- function(config, inverse = F) {
   
   # From a string, get the transform applied to val_imm/val_del and to the value of the discount function

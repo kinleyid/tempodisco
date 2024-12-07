@@ -27,7 +27,6 @@
 #' @param drift_transform A transform to apply to drift rates. Either \code{"none"} (no transform), \code{"sigmoid"} (sigmoidal transform described by Peters & D'Esposito, 2020, \doi{10.1371/journal.pcbi.1007615}, and Fontanesi et al., 2019, \doi{10.3758/s13423-018-1554-2}), or \code{"bias-correct"} (experimental; see note below).
 #' @param optim_args Additional arguments to pass to \code{optim()}. Default is \code{list(silent = T)}.
 #' @param silent Boolean (true by default). The call to \code{optim()} occurs within a \code{try()} wrapper. The value of \code{silent} is passed along to \code{try()}.
-#' @param na.action Action to take when data contains \code{NA} values. Default is \code{na.omit}.
 #' @family drift diffusion model functions
 #' @return An object of class \code{td_bcnm} with components \code{data} (containing the data used for fitting), \code{config} (containing the internal configuration of the model, including the \code{discount_function}), and \code{optim} (the output of \code{optim()}).
 #' @note
@@ -47,18 +46,16 @@ td_ddm <- function(
     tau_par_starts = c(0.2, 0.8),
     drift_transform = c('none', 'sigmoid', 'bias-correct'),
     silent = T,
-    optim_args = list(),
-    na.action = na.omit) {
+    optim_args = list()) {
   # Input validation--------------------------
   
   # Required data columns
-  validate_td_data(data,
-                   required_columns = c('val_imm', 'val_del', 'del', 'imm_chosen', 'rt'))
-  data <- na.action(data)
+  data <- validate_td_data(data,
+                           required_columns = c('val_imm', 'val_del', 'del', 'imm_chosen', 'rt'))
   
   # Check that RTs are in seconds vs milliseconds
-  if (median(data$rt) > 500) {
-    stop('Median RT is greater than 500, meaning RTs are likely in units of milliseconds (or smaller). They should be in units of seconds.')
+  if (median(data$rt) > 100) {
+    stop('Median RT is greater than 100, meaning RTs are likely in units of milliseconds (or smaller). They should be in units of seconds.')
   }
   
   # Attention checks

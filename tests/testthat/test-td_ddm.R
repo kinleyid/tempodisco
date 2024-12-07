@@ -8,7 +8,7 @@ df <- td_bc_single_ptpt
 # Test generics
 # Test a few different discount functions
 
-default_args <- list(td_bc_single_ptpt,
+default_args <- list(data = td_bc_single_ptpt,
                      discount_function = 'exponential',
                      v_par_starts = 0.01,
                      beta_par_starts = 0.5,
@@ -79,6 +79,15 @@ test_that('drift transformations', {
   expect_no_error(do.call(td_ddm, args))
   args$drift_transform <- 'bias-correct'
   expect_no_error(do.call(td_ddm, args))
+})
+
+test_that('NAs', {
+  with_na <- df
+  with_na$imm_chosen[2] <- NA
+  with_na$irrelevant_column <- NA
+  args <- default_args
+  args$data <- with_na
+  expect_warning(mod <- do.call(td_ddm, args))
 })
 
 test_that('errors', {

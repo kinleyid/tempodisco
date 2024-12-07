@@ -51,6 +51,13 @@ while (model_idx <= length(models)) {
   })
 }
 
+test_that('NAs', {
+  with_na <- df
+  with_na$imm_chosen[2] <- NA
+  with_na$irrelevant_column <- NA
+  expect_warning(td_bclm(with_na, model = 'hyperbolic.1'))
+})
+
 test_that('errors', {
   expect_error(td_bclm(df, model = 'random'))
   expect_error(td_bclm())
