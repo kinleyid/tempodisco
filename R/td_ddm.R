@@ -80,16 +80,23 @@ td_ddm <- function(
       par_starts = list(max_abs_drift = c(0.5, 1, 2)))
   } else if (drift_transform == 'bias-correct') {
     drift_trans <- list(
-      fn = function(drift, par) drift + median_pimm_ddm(par),
+      fn = function(drift, par) {
+        # cdf <- function()
+        # get_median(cdf)
+        mdn <- median_pimm_ddm(par)
+        return(drift + mdn)
+      },
       par_lims = NULL,
       par_starts = NULL)
+  } else if (drift_transform == 'bias-correct-sigmoid') {
+    drift_trans <- list(
+      fn = function(drift, par) {
+        # mdn <- get_median(<func>)
+        par['max_abs_drift']*( 2*plogis(drift) - 1 ) + median_pimm_ddm(par)
+      },
+      par_lims = list(max_abs_drift = c(0, Inf)),
+      par_starts = list(max_abs_drift = c(0.1, 1, 10)))
   }
-  # } else if (drift_transform == 'sigmoid-bias-correct') {
-  #   drift_trans <- list(
-  #     fn = function(drift, par) par['max_abs_drift']*( 2*plogis(drift) - 1 ) + median_pimm_ddm(par),
-  #     par_lims = list(max_abs_drift = c(0, Inf)),
-  #     par_starts = list(max_abs_drift = c(0.1, 1, 10)))
-  # }
   drift_trans$name <- drift_transform
 
   # Get a list of candidate discount functions
@@ -171,6 +178,12 @@ td_ddm <- function(
   
   return(best_mod)
   
+}
+
+get_median <- function(fn) {
+  # Get the input to fn that produces 0.5
+  o <- optim(0, function(x) {(fn(x) - 0.5)**2}, method = 'L-BFGS-B')
+  o$par
 }
 
 median_pimm_ddm <- function(par) {

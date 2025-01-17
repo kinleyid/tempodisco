@@ -4,7 +4,7 @@
 #' Get a predefined discount function or create a custom discount function.
 #' @param predefined A string specifying one of the pre-defined discount functions.
 #' @param name Name of custom discount function.
-#' @param fn Function that takes a data.frame and a vector of named parameters and returns a vector of values between 0 and 1.
+#' @param fn Function that takes a data.frame called \code{data} (expected to contain the column \code{del} for delays) and a vector of named parameters called \code{p}, and returns a vector of values between 0 and 1 representing the indifference points computed at the given delay.
 #' @param par_starts A named list of vectors, each specifying possible starting values for a parameter to try when running optimization.
 #' @param par_lims A named list of vectors, each specifying the bounds to impose of a parameters. Any parameter for which bounds are unspecified are assumed to be unbounded.
 #' @param init A function to initialize the td_fn object. It should take 2 arguments: "self" (the td_fn object being initialized) and "data" (the data used for initialization).
