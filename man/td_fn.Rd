@@ -22,7 +22,7 @@ td_fn(
 
 \item{name}{Name of custom discount function.}
 
-\item{fn}{Function that takes a data.frame and a vector of named parameters and returns a vector of values between 0 and 1.}
+\item{fn}{Function that takes a data.frame called \code{data} (expected to contain the column \code{del} for delays) and a vector of named parameters called \code{p}, and returns a vector of values between 0 and 1 representing the indifference points computed at the given delay.}
 
 \item{par_starts}{A named list of vectors, each specifying possible starting values for a parameter to try when running optimization.}
 

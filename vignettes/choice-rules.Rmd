@@ -1,0 +1,120 @@
+---
+title: "Choice rules"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Choice rules}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(tempodisco)
+```
+
+## Background
+
+When [modeling binary choice data](https://kinleyid.github.io/tempodisco/articles/modeling-binary-choice-data.html) using [`td_bcnm`](https://kinleyid.github.io/tempodisco/reference/td_bcnm.html), not only the discount function but also the **choice rule** must be specified. Whereas the discount function is parameterized to specify how the subjective value of a future reward decreases with delay, the choice rule is parameterized to specify the probability of choosing either of two rewards whose subjective values are given. To illustrate, `plot(... type = "summary")` visualizes the discount function:
+
+```{r}
+# Load data and fit model
+data("td_bc_single_ptpt")
+mod <- td_bcnm(td_bc_single_ptpt, discount_function = "hyperbolic")
+# Plot the discount curve
+plot(mod, type = "summary", verbose = F)
+```
+
+whereas `plot(... type = "endpoints")` visualizes the choice rule:
+
+```{r}
+# Plot the choice rule
+plot(mod, type = "endpoints", del = 50, val_del = 200, verbose = F)
+```
+
+Just as we can fit a [range of discount functions](https://kinleyid.github.io/tempodisco/articles/comparing-models.html) to the data, we can also fit several choice rules using the `choice_rule` argument to `td_bcnm`. Each of these gives the probability of selecting the immediate reward, $P(I)$, given the subjective values of the immediate and delayed rewards ($V_I$ and $V_D$, respectively, where $V_I$ is simply the face value of the immediate reward and $V_D$ depends on the discount curve) and a "sharpness" parameter $\gamma \geq 0$, where a larger $\gamma$ reflects less "noisy" decision making. Available choice rules are listed below.
+
+## Available choice rules
+
+### Logistic
+
+`choice_rule = "logistic"` (the default) gives the logistic choice rule:
+
+$$
+P(I) = \sigma\left[\gamma \left( V_I - V_D \right) \right]
+$$
+
+where $\sigma$ is the logistic function $x \mapsto (1 + \exp\{-x\})^{-1}$, which the CDF of a logistic distribution with location parameter 0 and scale parameter 1.
+
+### Probit
+
+`choice_rule = "probit"` gives the probit choice rule:
+
+$$
+P(I) = \Phi\left[\gamma \left( V_I - V_D \right) \right]
+$$
+
+where $\Phi$ is the CDF of the standard normal distribution.
+
+### Power
+
+`choice_rule = "power"` gives the power choice rule ([Luce, 1959/2005](https://doi.org/10.1037/14396-000)):
+
+$$
+P(I) = \frac{V_I^\gamma}{V_I^\gamma + V_D^\gamma}
+$$
+
+which is the CDF of a log-logistic distribution with scale parameter 1 and shape parameter $\gamma$.
+
+## Comparing choice rules
+
+Broadly speaking, the logistic and probit choice rules are similar—both are based on a "Fechner model" ([Becker, DeGroot, & Marschak, 1963](https://doi.org/10.1002/bs.3830080106)) in which comparisons between subjective reward values are "noisy":
+
+$$
+P(I) = \Pr(V_I - V_D < \varepsilon )
+$$
+
+where the noise, represented by the random variable $\varepsilon$, is assumed to follow either a logistic distribution for the logistic choice rule, or a normal distribution for the probit choice rule. In contrast, the power choice rule could be taken to imply the following Fechner-like model:
+
+$$
+P(I) = \Pr\left( \frac{V_I}{V_D} < \varepsilon \right)
+$$
+
+where $\varepsilon$ is now assumed to follow a log-logistic distribution. Mathematical details can be found in [Kinley, Oluwasola & Becker (2025)](https://doi.org/10.1016/j.jmp.2025.102902).
+
+These theoretical differences between the choice rules have the following practical implications:
+
+1.  In the logistic and probit choice rules, decisions are less stochastic (i.e., $\gamma$ is effectively higher) for larger reward magnitudes, whereas decision stochasticity is constant (i.e., $\gamma$ is effectively constant) for the power choice rule. There is evidence that real human decision making is indeed less stochastic for larger reward values ([Gershman & Bhui, 2020](https://doi.org/10.1038/s41467-020-16852-y)). However, it is not obvious that trying to capture this effect for data with a narrow range of reward magnitudes will improve model fit.
+2.  For the logistic and probit choice rules, $P(I)$ is never exactly 0 or 1. In contrast, for the power choice rule, $P(I) = 0$ when $V_I = 0$. Thus, for the power choice rule, model fit will be strongly negatively impacted if a participant ever chose an immediate reward of 0. However, such decisions are arguably better used for attention checks than model fitting (cf. [Almog et al., 2023](doi.org/10.1037/pha0000645)).
+
+To see the differences between the power choice rule on the one hand and the logistic and probit choice rules on the other, we can visualize their predictions for the same participant:
+
+```{r}
+vis_del <- sort(unique(td_bc_single_ptpt$del))[2]
+newdata <- data.frame(del = vis_del, val_del = 200, val_imm = seq(0, 200, length.out = 1000))
+plot(imm_chosen ~ val_imm, data = subset(td_bc_single_ptpt, del == vis_del),
+     xlim = c(0, 200), ylim = c(0, 1))
+plot_legend <- c("red" = "logistic",
+                 "blue" = "probit",
+                 "forestgreen" = "power")
+logLiks <- c()
+for (entry in names(plot_legend)) {
+  choice_rule <- plot_legend[entry]
+  mod <- td_bcnm(td_bc_single_ptpt,
+                 discount_function = "hyperbolic",
+                 choice_rule = choice_rule)
+  logLiks[entry] <- logLik(mod)
+  preds <- predict(mod, type = 'response', newdata = newdata)
+  lines(preds ~ newdata$val_imm, col = entry)
+}
+legend(0, 1,
+       fill = names(plot_legend),
+       legend = paste(plot_legend, '; log lik. = ', round(logLiks, 1), sep = ''))
+```
+
+As suggested by the log likelihood measurements shown in the plot above, the choice rule can significantly impact model fit ([Wulff & van den Bos, 2017](https://doi.org/10.1177/0956797616664342)). Therefore it is a good idea to explore multiple choice rules for a given dataset.

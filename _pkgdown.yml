@@ -35,6 +35,8 @@ navbar:
       href: articles/drift-diffusion-models.html
     - text: Custom discount functions
       href: articles/custom-discount-functions.html
+    - text: Choice rules
+      href: articles/choice-rules.html
 
 reference:
 - title: Temporal discounting models

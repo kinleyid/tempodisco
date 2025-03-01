@@ -9,8 +9,8 @@
 [![codecov](https://codecov.io/github/kinleyid/tempodisco/graph/badge.svg?token=CCQXS3SNGB)](https://app.codecov.io/github/kinleyid/tempodisco)
 <!-- badges: end -->
 
-`tempodisco` is an R package for behavioural researchers working with
-delay discounting data (also known as temporal discounting intertemporal
+[`tempodisco`](https://kinleyid.github.io/tempodisco/index.html) is an R package for behavioural researchers working with
+delay discounting data (also known as temporal discounting or intertemporal
 choice data). It implements common tasks such as scoring responses
 (e.g. computing indifference points from an adjusting amounts procedure,
 computing the “area under the curve”, or computing $k$ values as in the
@@ -39,7 +39,7 @@ devtools::install_github("kinleyid/tempodisco")
 ## Getting started
 
 See [getting
-started](https://kinleyid.github.io/tempodisco/docs/articles/tempodisco.html)
+started](https://kinleyid.github.io/tempodisco/articles/tempodisco.html)
 for example usage.
 
 ## Overview

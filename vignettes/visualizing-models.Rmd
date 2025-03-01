@@ -18,10 +18,10 @@ knitr::opts_chunk$set(
 library(tempodisco)
 ```
 
-We can inspect models using 3 types of plots, controlled by the `type` argument to `plot()`.
+We can visually inspect models using 4 types of plots, controlled by the `type` argument to `plot()`. These plots use base R graphics and are intended to be generated quickly (e.g., in a loop over participants) to provide an easy visual check of model fit. Publication-quality visualizations can be more readily generated using a dedicated plotting package such as [`ggplot2`](https://ggplot2.tidyverse.org/).
 
 ## `"summary"` plots
- 
+
 For a binary choice model, a "summary" plot displays both the binary choices and the discount curve:
 
 ```{r}
