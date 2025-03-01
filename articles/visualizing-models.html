@@ -46,6 +46,7 @@
     <li><h6 class="dropdown-header" data-toc-skip>Advanced topics</h6></li>
     <li><a class="dropdown-item" href="../articles/drift-diffusion-models.html">Drift diffusion models</a></li>
     <li><a class="dropdown-item" href="../articles/custom-discount-functions.html">Custom discount functions</a></li>
+    <li><a class="dropdown-item" href="../articles/choice-rules.html">Choice rules</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -87,8 +88,12 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://kinleyid.github.io/tempodisco/">tempodisco</a></span><span class="op">)</span></span></code></pre></div>
-<p>We can inspect models using 3 types of plots, controlled by the
-<code>type</code> argument to <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code>.</p>
+<p>We can visually inspect models using 4 types of plots, controlled by
+the <code>type</code> argument to <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code>. These plots use
+base R graphics and are intended to be generated quickly (e.g., in a
+loop over participants) to provide an easy visual check of model fit.
+Publication-quality visualizations can be more readily generated using a
+dedicated plotting package such as <a href="https://ggplot2.tidyverse.org/" class="external-link"><code>ggplot2</code></a>.</p>
 <div class="section level2">
 <h2 id="summary-plots">
 <code>"summary"</code> plots<a class="anchor" aria-label="anchor" href="#summary-plots"></a>
