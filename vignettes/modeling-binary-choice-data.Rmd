@@ -20,7 +20,11 @@ library(tempodisco)
 
 ## Classic methods
 
-For binary choice data not explicitly designed to titrate out indifference points (as in an adjusting amount procedure), there are a few analysis options. A common one is the scoring method designed for the Monetary Choice Questionnaire [(Kirby, 1999)](https://doi.org/10.1037//0096-3445.128.1.78):
+For binary choice data not explicitly designed to [titrate out indifference points](https://kinleyid.github.io/tempodisco/articles/adjusting-amounts.html) (as in an adjusting amount procedure), there are a few widely-used traditional scoring methods to quantify discounting.
+
+### Kirby scoring
+
+One scoring method is the one designed for the Monetary Choice Questionnaire [(Kirby, 1999)](https://doi.org/10.1037//0096-3445.128.1.78):
 
 ```{r}
 data("td_bc_single_ptpt")
@@ -28,14 +32,16 @@ mod <- kirby_score(td_bc_single_ptpt)
 print(mod)
 ```
 
-Although this method computes $k$ values according to the hyperbolic discount function, in principle it's possible to use the exponential discount function:
+Although this method computes $k$ values according to the hyperbolic discount function, in principle it's possible to use the exponential discount function (thought this is not an established practice and should be considered an experimental feature of `tempodisco`):
 
 ```{r}
 mod <- kirby_score(td_bc_single_ptpt, discount_function = 'exponential')
 print(mod)
 ```
 
-Another option is to use the logistic regression method of [Wileyto et al. (2004)](https://doi.org/10.3758/BF03195548), where we can solve for the $k$ value of the hyperbolic discount function in terms of the regression coefficients:
+### Wileyto scoring
+
+It is also possible to use the logistic regression method of [Wileyto et al. (2004)](https://doi.org/10.3758/BF03195548), where we can solve for the $k$ value of the hyperbolic discount function in terms of the regression coefficients:
 
 ```{r}
 mod <- wileyto_score(td_bc_single_ptpt)
@@ -44,7 +50,9 @@ print(mod)
 
 ## Newer methods
 
-The [Wileyto et al. (2004)](https://doi.org/10.3758/BF03195548) approach turns out to be possible for other discount functions as well:
+### Linear models
+
+The [Wileyto et al. (2004)](https://doi.org/10.3758/BF03195548) approach turns out to be possible for other discount functions as well ([Kinley, Oluwasola & Becker, 2025](https://doi.org/10.1016/j.jmp.2025.102902).):
 
 ```{r child="../man/fragments/linear-models.Rmd"}
 ```
@@ -56,7 +64,9 @@ mod <- td_bclm(td_bc_single_ptpt, model = 'all')
 print(mod)
 ```
 
-To explore a wider range of discount functions, we can fit a nonlinear model by calling `td_bcnm`. The full list is as follows:
+### Nonlinear models
+
+To explore a wider range of discount functions, we can fit a nonlinear model by calling `td_bcnm`. The full list of built-in discount functions is as follows:
 
 ```{r child="../man/fragments/predefined-discount-functions.Rmd"}
 ```
@@ -66,7 +76,9 @@ mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'all')
 print(mod)
 ```
 
-Several additional arguments can be used to customize the model. For example, we can use different choice rules---the "logistic" choice rule is the default, but the "probit" and "power" choice rules are also available (see [Wulff and Van den Bos, 2018](https://doi.org/10.1177/0956797616664342), for explanations of these):
+#### Choice rules
+
+Several additional arguments can be used to customize the model. For example, we can use different choice rules---the "logistic" choice rule is the default, but the "probit" and "power" choice rules are also available (see [this tutorial](https://kinleyid.github.io/tempodisco/articles/choice-rules.html) for more details):
 
 ```{r}
 # Probit choice rule:
@@ -75,26 +87,29 @@ mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'exponential', choice_rule
 mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'exponential', choice_rule = 'power')
 ```
 
-It is also possible to fit an error rate $\epsilon$ that describes the probability of the participant making a response error (see [Vincent, 2015](https://doi.org/10.3758/s13428-015-0672-2)). I.e.:
-$$P(\text{imm}) = \epsilon + (1 - 2\epsilon) g^{-1}[\eta]$$
-where $P(\text{imm})$ is the probability of choosing the immediate reward, $g$ is the link function, and $\eta$ is the linear predictor.
+#### Error rates
+
+It is also possible to fit an error rate $\epsilon$ that describes the probability of the participant making a response error (see [Vincent, 2015](https://doi.org/10.3758/s13428-015-0672-2)). I.e.: $$P(\text{imm}) = \epsilon + (1 - 2\epsilon) g^{-1}[\eta]$$ where $P(\text{imm})$ is the probability of choosing the immediate reward, $g$ is the link function, and $\eta$ is the linear predictor.
 
 ```{r}
 data("td_bc_study")
 # Select the second participant
-second_ptpt <- unique(td_bc_study$id)[2]
-df <- subset(td_bc_study, id == second_ptpt)
+second_ptpt_id <- unique(td_bc_study$id)[2]
+df <- subset(td_bc_study, id == second_ptpt_id)
 mod <- td_bcnm(df, discount_function = 'exponential', fit_err_rate = T)
 plot(mod, type = 'endpoints', verbose = F)
 lines(c(0, 1), c(0, 0), lty = 2)
 lines(c(0, 1), c(1, 1), lty = 2)
+cat(sprintf("epsilon = %.2f\n", coef(mod)['eps']))
 ```
 
-We can see that the probability of choosing the immediate reward doesn't approach 0 or 1.
+We can see that the probability of choosing the immediate reward doesn't approach 0 or 1 but instead approaches a value of $\epsilon \approx 0.11$.
 
-Alternatively, we might expect that participants should never choose an immediate reward worth 0 and should never choose a delayed reward worth the same face amount as an immediate reward [(Kinley et al., 2024)](https://doi.org/10.31234/osf.io/y2fdh). We can control this by setting `fixed_ends = T`, which "fixes" the endpoints of the psychometric curve, where `val_imm = 0` and `val_imm = val_del`, at 0 and 1, respectively:
+#### Fixed endpoints
+
+Alternatively, we might expect that participants should never choose an immediate reward worth 0 and should never choose a delayed reward worth the same face amount as an immediate reward ([Kinley, Oluwasola & Becker, 2025](https://doi.org/10.1016/j.jmp.2025.102902); see [here](https://kinleyid.github.io/tempodisco/articles/choice-rules.html#fixed-endpoint-choice-rules) for more details). We can control this by setting `fixed_ends = T`, which "fixes" the endpoints of the psychometric curve, where `val_imm = 0` and `val_imm = val_del`, at 0 and 1, respectively:
 
 ```{r}
 mod <- td_bcnm(df, discount_function = 'exponential', fixed_ends = T)
-plot(mod, type = 'endpoints', verbose = F)
+plot(mod, type = 'endpoints', verbose = F, del = 50, val_del = 200)
 ```
