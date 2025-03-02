@@ -241,7 +241,7 @@ mod_cauchit_fixed <- td_bcnm(td_bc_single_ptpt,
 plot(mod_cauchit_fixed, type = "endpoints", del = 50, val_del = 200)
 ```
 
-### Log-normal choice rule
+### Example 2: log-normal choice rule
 
 In the same way that the power choice rule is based on the log-logistic distribution, we can create a choice rule based on the log-normal distribution as follows:
 
