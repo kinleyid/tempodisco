@@ -37,36 +37,36 @@ whereas `plot(... type = "endpoints")` visualizes the choice rule (i.e., the psy
 plot(mod, type = "endpoints", del = 50, val_del = 200, verbose = F)
 ```
 
-Just as we can fit a [range of discount functions](https://kinleyid.github.io/tempodisco/articles/comparing-models.html) to the data, we can also fit several choice rules using the `choice_rule` argument to `td_bcnm`. Each of these gives the probability of selecting the immediate reward, $P(I)$, given the subjective values of the immediate and delayed rewards ($V_I$ and $V_D$, respectively, where $V_I$ is simply the face value of the immediate reward and $V_D$ depends on the discount curve) and a "sharpness" parameter $\gamma \geq 0$, where a larger $\gamma$ reflects less "noisy" decision making. Available choice rules are listed below.
+Just as we can fit a [range of discount functions](https://kinleyid.github.io/tempodisco/articles/comparing-models.html) to the data, we can also fit several choice rules using the `choice_rule` argument to `td_bcnm`. Each of these gives the probability of selecting the immediate reward, $P(I)$, given the subjective values of the immediate and delayed rewards ($SV_I$ and $SV_D$, respectively, where $SV_I$ is simply the face value of the immediate reward and $SV_D$ depends on the discount curve) and a "sharpness" parameter $\gamma \geq 0$, where a larger $\gamma$ reflects less "noisy" decision making. Built-in choice rules are listed below.
 
-## Available choice rules
+## Built-in choice rules
 
 ### Logistic
 
 `choice_rule = "logistic"` (the default) gives the logistic choice rule:
 
 $$
-P(I) = \sigma\left[\gamma \left( V_I - V_D \right) \right]
+P(I) = \sigma\left[\gamma \left( SV_I - SV_D \right) \right]
 $$
 
 where $\sigma$ is the logistic function $x \mapsto (1 + \exp\{-x\})^{-1}$, which the CDF of a logistic distribution with location parameter 0 and scale parameter 1.
 
-### Probit
+### Probit (normal)
 
 `choice_rule = "probit"` gives the probit choice rule:
 
 $$
-P(I) = \Phi\left[\gamma \left( V_I - V_D \right) \right]
+P(I) = \Phi\left[\gamma \left( SV_I - SV_D \right) \right]
 $$
 
 where $\Phi$ is the CDF of the standard normal distribution.
 
-### Power
+### Power (log-logistic)
 
 `choice_rule = "power"` gives the power choice rule ([Luce, 1959/2005](https://doi.org/10.1037/14396-000)):
 
 $$
-P(I) = \frac{V_I^\gamma}{V_I^\gamma + V_D^\gamma}
+P(I) = \frac{SV_I^\gamma}{SV_I^\gamma + SV_D^\gamma}
 $$
 
 which is the CDF of a log-logistic distribution with scale parameter 1 and shape parameter $\gamma$.
@@ -76,13 +76,13 @@ which is the CDF of a log-logistic distribution with scale parameter 1 and shape
 Broadly speaking, the logistic and probit choice rules are similar—both are based on a "Fechner model" ([Becker, DeGroot, & Marschak, 1963](https://doi.org/10.1002/bs.3830080106)) in which comparisons between subjective reward values are "noisy":
 
 $$
-P(I) = \Pr(V_I - V_D < \varepsilon )
+P(I) = \Pr(SV_I - SV_D < \varepsilon )
 $$
 
 where the noise, represented by the random variable $\varepsilon$, is assumed to follow either a logistic distribution for the logistic choice rule, or a normal distribution for the probit choice rule. In contrast, the power choice rule could be taken to imply the following Fechner-like model:
 
 $$
-P(I) = \Pr\left( \frac{V_I}{V_D} < \varepsilon \right)
+P(I) = \Pr\left( \frac{SV_I}{SV_D} < \varepsilon \right)
 $$
 
 where $\varepsilon$ is now assumed to follow a log-logistic distribution. Mathematical details can be found in [Kinley, Oluwasola & Becker (2025)](https://doi.org/10.1016/j.jmp.2025.102902).
@@ -90,7 +90,7 @@ where $\varepsilon$ is now assumed to follow a log-logistic distribution. Mathem
 These theoretical differences between the choice rules have the following practical implications:
 
 1.  In the logistic and probit choice rules, decisions are less stochastic (i.e., $\gamma$ is effectively higher) for larger reward magnitudes, whereas decision stochasticity is constant (i.e., $\gamma$ is effectively constant) for the power choice rule. There is evidence that real human decision making is indeed less stochastic for larger reward values ([Gershman & Bhui, 2020](https://doi.org/10.1038/s41467-020-16852-y)). However, it is not obvious that trying to capture this effect for data with a narrow range of reward magnitudes will improve model fit.
-2.  For the logistic and probit choice rules, $P(I)$ is never exactly 0 or 1. In contrast, for the power choice rule, $P(I) = 0$ when $V_I = 0$. Thus, for the power choice rule, model fit will be strongly negatively impacted if a participant ever chose an immediate reward of 0. However, such decisions are arguably better used for attention checks than model fitting (cf. [Almog et al., 2023](doi.org/10.1037/pha0000645)).
+2.  For the logistic and probit choice rules, $P(I)$ is never exactly 0 or 1. In contrast, for the power choice rule, $P(I) = 0$ when $SV_I = 0$. Thus, for the power choice rule, model fit will be strongly negatively impacted if a participant ever chose an immediate reward of 0. However, such decisions are arguably better used for attention checks than model fitting (cf. [Almog et al., 2023](doi.org/10.1037/pha0000645)).
 
 To see the differences between the power choice rule on the one hand and the logistic and probit choice rules on the other, we can visualize their predictions for the same participant:
 
@@ -194,3 +194,64 @@ mod_fixed <- td_bcnm(td_bc_single_ptpt,
 cat(sprintf('Log lik. with free endpoints: %.2f\n', logLik(mod_free)))
 cat(sprintf('Log lik. with fixed endpoints: %.2f\n', logLik(mod_fixed)))
 ```
+
+## Custom choice rules
+
+The choice rules described above can be generalized as
+
+$$
+P(I) = F\left(s(\gamma) \left[ \tau \left( \frac{V_I}{V_D} \right) - \tau\left(\delta\left(t;\vec{p}\right)\right) \right] \right)
+$$
+
+where $F(\cdot)$ is the CDF of the distribution of the decision noise $\varepsilon$, $s(\cdot)$ is a scale function applied to $\gamma$, and $\tau(\cdot)$ is some transformation. These three functions jointly specify the choice rule, as described below. $V_I$ and $V_D$ are the face (vs. subjective) values of the immediate and delayed rewards, respectively, and $\delta(t; \vec{p})$ is a discount function $\delta$ parameterized by some vector of parameters $\vec{p}$ and evaluated at delay $t$.
+
+The functions $F(\cdot)$, $s(\cdot)$, and $\tau(\cdot)$ can be specified using the arguments `noise_dist`, `gamma_scale`, and `transform`, respectively, to `td_bcnm`. When using the argument `choice_rule`, these three are pre-set internally as follows (assuming `fixed_ends = FALSE`):
+
+| `choice_rule` | `noise_dist` | `gamma_scale` | `transform` |
+|------------------|------------------|------------------|------------------|
+| `"logistic"` | `"logis"`; $F(\cdot) = \sigma(\cdot)$ | `"linear"`; $s(\gamma) = \gamma V_D$ | `"identity"`; $\tau(x) = x$ |
+| `"probit"` | `"norm"`; $F(\cdot) = \Phi(\cdot)$ | `"linear"`; $s(\gamma) = \gamma V_D$ | `"identity"`; $\tau(x) = x$ |
+| `"power"` | `"logis"`; $F(\cdot) = \sigma(\cdot)$ | `"none"`; $s(\gamma) = \gamma$ | `"log"`; $\tau(x) = \log x$ |
+
+Note that `noise_dist` must be a string to which the prefixes `p` and `q` can be prepended to refer to a probability distribution's CDF and quantile functions, respectively (e.g., `pnorm` is the CDF of the normal distribution, `qlogis` is the quantile function of the logistic distribution). Note also that fixed-endpoint versions of these choice rules are generated by setting `transform = "noise_dist_quantile"`, which results in $\tau(x) = F^{-1}(x)$ (for an explanation, see [Kinley, Oluwasola & Becker, 2025](https://doi.org/10.1016/j.jmp.2025.102902)).
+
+When we set these arguments ourselves, the arguments `choice_rule` and `fixed_ends` are ignored, and we can generate custom choice rules:
+
+### Example 1: Cauchit choice rule
+
+To create a Cauchit choice rule (analogous to Cauchit regression in the way the probit choice rule is analogous to probit regression), we could use the same configuration as for the probit choice rule, but switch the `noise_dist` to `"cauchy"`:
+
+```{r}
+mod_cauchit <- td_bcnm(td_bc_single_ptpt,
+                       discount_function = "exponential",
+                       noise_dist = "cauchy",
+                       gamma_scale = "linear",
+                       transform = "identity")
+plot(mod_cauchit, type = "endpoints", del = 50, val_del = 200)
+```
+
+The psychometric curve is now generated by a shifted and scaled arctan function. We can create a fixed-endpoint variant of this choice rule by setting `transform = "noise_dist_quantile"`:
+
+```{r}
+mod_cauchit_fixed <- td_bcnm(td_bc_single_ptpt,
+                             discount_function = "exponential",
+                             noise_dist = "cauchy",
+                             gamma_scale = "linear",
+                             transform = "noise_dist_quantile")
+plot(mod_cauchit_fixed, type = "endpoints", del = 50, val_del = 200)
+```
+
+### Log-normal choice rule
+
+In the same way that the power choice rule is based on the log-logistic distribution, we can create a choice rule based on the log-normal distribution as follows:
+
+```{r}
+mod_lognormal <- td_bcnm(td_bc_single_ptpt,
+                         discount_function = "exponential",
+                         noise_dist = "norm",
+                         gamma_scale = "none",
+                         transform = "log")
+plot(mod_lognormal, type = "endpoints", del = 50, val_del = 200)
+```
+
+As with the power choice rule, the left endpoint of the psychometric curve is fixed. I.e., $P(I) = 0$ when $V_I = 0$.

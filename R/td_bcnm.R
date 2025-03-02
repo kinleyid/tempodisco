@@ -11,7 +11,7 @@
 #' @param eps_par_starts A vector of starting values to try for the "eps" parameter (which controls the error rate) during optimization. Ignored if `fit_err_rate = FALSE`.
 #' @param optim_args Additional arguments to pass to \code{optim()}. Default is \code{list(silent = T)}.
 #' @param silent Boolean (true by default). The call to \code{optim()} occurs within a \code{try()} wrapper. The value of \code{silent} is passed along to \code{try()}.
-#' @param ... Additional arguments to provide finer-grained control over the model configuration.
+#' @param ... Additional arguments to provide finer-grained control over the choice rule. Note that using a custom choice rule causes the \code{choice_rule} and \code{fixed_ends} arguments to be ignored.
 #' @family nonlinear binary choice model functions
 #' @return An object of class \code{td_bcnm} with components \code{data} (containing the data used for fitting), \code{config} (containing the internal configuration of the model, including the \code{discount_function}), and \code{optim} (the output of \code{optim()}).
 #' @examples
@@ -80,7 +80,6 @@ td_bcnm <- function(
     req_args <- c('noise_dist', 'gamma_scale', 'transform')
     if (!setequal(req_args, names(config))) {
       stop(sprintf('If choice_rule is not specified, then the following must all be specified:\n%s', paste('- ', req_args, collapse = '\n')))
-    
     }
   }
   
