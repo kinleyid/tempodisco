@@ -103,12 +103,13 @@ discount function:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load data and fit model</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"td_bc_single_ptpt"</span><span class="op">)</span></span>
-<span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_bcnm.html">td_bcnm</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>, discount_function <span class="op">=</span> <span class="st">"hyperbolic"</span><span class="op">)</span></span>
+<span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_bcnm.html">td_bcnm</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>, discount_function <span class="op">=</span> <span class="st">"exponential"</span><span class="op">)</span></span>
 <span><span class="co"># Plot the discount curve</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, type <span class="op">=</span> <span class="st">"summary"</span>, verbose <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
 <p><img src="choice-rules_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
 <p>whereas <code>plot(... type = "endpoints")</code> visualizes the
-choice rule:</p>
+choice rule (i.e., the psychometric curve for a given combination of
+delay and delayed reward value):</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot the choice rule</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, type <span class="op">=</span> <span class="st">"endpoints"</span>, del <span class="op">=</span> <span class="fl">50</span>, val_del <span class="op">=</span> <span class="fl">200</span>, verbose <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
@@ -241,7 +242,7 @@ their predictions for the same participant:</p>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">entry</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">plot_legend</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">choice_rule</span> <span class="op">&lt;-</span> <span class="va">plot_legend</span><span class="op">[</span><span class="va">entry</span><span class="op">]</span></span>
 <span>  <span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_bcnm.html">td_bcnm</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>,</span>
-<span>                 discount_function <span class="op">=</span> <span class="st">"hyperbolic"</span>,</span>
+<span>                 discount_function <span class="op">=</span> <span class="st">"exponential"</span>,</span>
 <span>                 choice_rule <span class="op">=</span> <span class="va">choice_rule</span><span class="op">)</span></span>
 <span>  <span class="va">logLiks</span><span class="op">[</span><span class="va">entry</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
 <span>  <span class="va">preds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mod</span>, type <span class="op">=</span> <span class="st">'response'</span>, newdata <span class="op">=</span> <span class="va">newdata</span><span class="op">)</span></span>
@@ -255,6 +256,117 @@ their predictions for the same participant:</p>
 above, the choice rule can significantly impact model fit (<a href="https://doi.org/10.1177/0956797616664342" class="external-link">Wulff &amp; van den Bos,
 2017</a>). Therefore it is a good idea to explore multiple choice rules
 for a given dataset.</p>
+</div>
+<div class="section level2">
+<h2 id="fixed-endpoint-choice-rules">Fixed-endpoint choice rules<a class="anchor" aria-label="anchor" href="#fixed-endpoint-choice-rules"></a>
+</h2>
+<p>As described earlier, for the power choice rule, the probability of
+choosing an immediate reward of $0 is 0. In that sense, the left
+endpoint of the psychometric curve is “fixed” at 0. This is arguably an
+advantage, if choosing an immediate reward of $0 should be taken as a
+failed attention check rather than a reflection of an individual’s true
+preferences (Kinley, Oluwasola &amp; Becker, 2025). Following this
+logic, we can create choice rules in which both endpoints are fixed,
+i.e., where the probability of choosing $0 is 0 and where the
+probability of choosing $<em>x</em> now over $<em>x</em> at some delay
+is 1, for all <em>x</em>.</p>
+<p>This option is available through the <code>fixed_ends</code> argument
+to <code>td_bcnm</code>. To see its effect, we can re-fit the models
+from the plot above with <code>fixed_ends = TRUE</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">vis_del</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span><span class="op">$</span><span class="va">del</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span></span>
+<span><span class="va">vis_val_del</span> <span class="op">&lt;-</span> <span class="fl">200</span></span>
+<span><span class="va">newdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>del <span class="op">=</span> <span class="va">vis_del</span>,</span>
+<span>                      val_del <span class="op">=</span> <span class="va">vis_val_del</span>,</span>
+<span>                      val_imm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">vis_val_del</span>, length.out <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">imm_chosen</span> <span class="op">~</span> <span class="va">val_imm</span>, data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>, <span class="va">del</span> <span class="op">==</span> <span class="va">vis_del</span><span class="op">)</span>,</span>
+<span>     xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">vis_val_del</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">plot_legend</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"red"</span> <span class="op">=</span> <span class="st">"logistic"</span>,</span>
+<span>                 <span class="st">"blue"</span> <span class="op">=</span> <span class="st">"probit"</span>,</span>
+<span>                 <span class="st">"forestgreen"</span> <span class="op">=</span> <span class="st">"power"</span><span class="op">)</span></span>
+<span><span class="va">logLiks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">entry</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">plot_legend</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">choice_rule</span> <span class="op">&lt;-</span> <span class="va">plot_legend</span><span class="op">[</span><span class="va">entry</span><span class="op">]</span></span>
+<span>  <span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_bcnm.html">td_bcnm</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>,</span>
+<span>                 discount_function <span class="op">=</span> <span class="st">"exponential"</span>,</span>
+<span>                 fixed_ends <span class="op">=</span> <span class="cn">TRUE</span>,                 <span class="co"># Fixed endpoints</span></span>
+<span>                 choice_rule <span class="op">=</span> <span class="va">choice_rule</span><span class="op">)</span></span>
+<span>  <span class="va">logLiks</span><span class="op">[</span><span class="va">entry</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
+<span>  <span class="va">preds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mod</span>, type <span class="op">=</span> <span class="st">'response'</span>, newdata <span class="op">=</span> <span class="va">newdata</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">preds</span> <span class="op">~</span> <span class="va">newdata</span><span class="op">$</span><span class="va">val_imm</span>, col <span class="op">=</span> <span class="va">entry</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>,</span>
+<span>       fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">plot_legend</span><span class="op">)</span>,</span>
+<span>       legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">plot_legend</span>, <span class="st">'; log lik. = '</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">logLiks</span>, <span class="fl">1</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">''</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="choice-rules_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
+<p>Note that the psychometric curves are no longer symmetrical about
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">P(I) = 0.5</annotation></semantics></math>
+for the logit and probit choice rules. As before, there is an important
+difference between the power choice rule and the others: in the power
+choice rule, decisions do not become less stochastic for larger reward
+magnitudes. To see this, we can re-plot the psychometric curves above,
+but this time predicting what the choice probabilities would be if the
+reward magnitudes were multiplied by 5:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">vis_del</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span><span class="op">$</span><span class="va">del</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span></span>
+<span><span class="va">vis_val_del</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span>
+<span><span class="va">newdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>del <span class="op">=</span> <span class="va">vis_del</span>,</span>
+<span>                      val_del <span class="op">=</span> <span class="va">vis_val_del</span>,</span>
+<span>                      val_imm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">vis_val_del</span>, length.out <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">vis_val_del</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"n"</span>,</span>
+<span>     xlab <span class="op">=</span> <span class="st">"val_imm"</span>, ylab <span class="op">=</span> <span class="st">"prob_imm"</span><span class="op">)</span></span>
+<span><span class="va">plot_legend</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"red"</span> <span class="op">=</span> <span class="st">"logistic"</span>,</span>
+<span>                 <span class="st">"blue"</span> <span class="op">=</span> <span class="st">"probit"</span>,</span>
+<span>                 <span class="st">"forestgreen"</span> <span class="op">=</span> <span class="st">"power"</span><span class="op">)</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">entry</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">plot_legend</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">choice_rule</span> <span class="op">&lt;-</span> <span class="va">plot_legend</span><span class="op">[</span><span class="va">entry</span><span class="op">]</span></span>
+<span>  <span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_bcnm.html">td_bcnm</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>,</span>
+<span>                 discount_function <span class="op">=</span> <span class="st">"exponential"</span>,</span>
+<span>                 fixed_ends <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                 choice_rule <span class="op">=</span> <span class="va">choice_rule</span><span class="op">)</span></span>
+<span>  <span class="va">preds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mod</span>, type <span class="op">=</span> <span class="st">'response'</span>, newdata <span class="op">=</span> <span class="va">newdata</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">preds</span> <span class="op">~</span> <span class="va">newdata</span><span class="op">$</span><span class="va">val_imm</span>, col <span class="op">=</span> <span class="va">entry</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p><img src="choice-rules_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
+<p>The psychometric curve for the power choice rule looks the same,
+while the curves for the logit and probit choice rules are substantially
+steeper.</p>
+<p>The mathematical details of how fixed-endpoint choice rules are
+generated can be found in <a href="https://doi.org/10.1016/j.jmp.2025.102902" class="external-link">Kinley, Oluwasola &amp;
+Becker (2025)</a>. That paper finds that fixed-endpoint choice rules
+improve model fit, but there is an important caveat here: although the
+best-fitting model for a given individual (comparing across discount
+functions and choice rules) is often one with a fixed-endpoint choice
+rule, this does <strong>not</strong> mean that using a fixed-endpoint
+choice rule will improve model fit when only a single discount function
+is used. In fact, although we have not tested this systematically, when
+a given discount function does not provide a good fit to an individual’s
+data, using a fixed-endpoint choice rule seems to often make the model
+fit <strong>worse</strong>.</p>
+<blockquote>
+<p>⚠️ In other words, you <strong>should not</strong> run something like
+<code>td_bcnm(data = ..., discount_function = "hyperbolic", fixed_ends = TRUE)</code>.
+Instead, you should run
+<code>td_bcnm(data = ..., fixed_ends = TRUE)</code> to allow a range of
+discount functions to be compared.</p>
+</blockquote>
+<p>For the examples above, we already knew that the data in
+<code>td_bc_single_ptpt</code> was well fit by an exponential discount
+function, and the model fit was improved by switching to a
+fixed-endpoints choice rule. If we repeat this using a hyperbolic
+discount curve, which does not fit the data well, a fixed-endpoint
+choice rule actually makes the model fit worse:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mod_free</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_bcnm.html">td_bcnm</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>,</span>
+<span>                    discount_function <span class="op">=</span> <span class="st">"hyperbolic"</span>,</span>
+<span>                    fixed_ends <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">mod_fixed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_bcnm.html">td_bcnm</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>,</span>
+<span>                     discount_function <span class="op">=</span> <span class="st">"hyperbolic"</span>,</span>
+<span>                     fixed_ends <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">'Log lik. with free endpoints: %.2f\n'</span>, <span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">mod_free</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Log lik. with free endpoints: -13.59</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">'Log lik. with fixed endpoints: %.2f\n'</span>, <span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">mod_fixed</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Log lik. with fixed endpoints: -14.02</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
