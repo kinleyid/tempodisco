@@ -117,62 +117,62 @@ delay and delayed reward value):</p>
 <p>Just as we can fit a <a href="https://kinleyid.github.io/tempodisco/articles/comparing-models.html">range
 of discount functions</a> to the data, we can also fit several choice
 rules using the <code>choice_rule</code> argument to
-<code>td_bcnm</code>. Each of these gives the probability of selecting
-the immediate reward,
+<code>td_bcnm</code>. Mathematically, each choice rule gives the
+probability of selecting the immediate reward,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">P(I)</annotation></semantics></math>,
 given the subjective values of the immediate and delayed rewards
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>V</mi><mi>I</mi></msub><annotation encoding="application/x-tex">V_I</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><msub><mi>V</mi><mi>I</mi></msub></mrow><annotation encoding="application/x-tex">SV_I</annotation></semantics></math>
 and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>V</mi><mi>D</mi></msub><annotation encoding="application/x-tex">V_D</annotation></semantics></math>,
-respectively, where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>V</mi><mi>I</mi></msub><annotation encoding="application/x-tex">V_I</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><msub><mi>V</mi><mi>D</mi></msub></mrow><annotation encoding="application/x-tex">SV_D</annotation></semantics></math>
+respectively (where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><msub><mi>V</mi><mi>I</mi></msub></mrow><annotation encoding="application/x-tex">SV_I</annotation></semantics></math>
 is simply the face value of the immediate reward and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>V</mi><mi>D</mi></msub><annotation encoding="application/x-tex">V_D</annotation></semantics></math>
-depends on the discount curve) and a “sharpness” parameter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><msub><mi>V</mi><mi>D</mi></msub></mrow><annotation encoding="application/x-tex">SV_D</annotation></semantics></math>
+depends on the discount curve), and a “sharpness” parameter
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>γ</mi><mo>≥</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\gamma \geq 0</annotation></semantics></math>,
 where a larger
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>γ</mi><annotation encoding="application/x-tex">\gamma</annotation></semantics></math>
-reflects less “noisy” decision making. Available choice rules are listed
+reflects less “noisy” decision making. Built-in choice rules are listed
 below.</p>
 </div>
 <div class="section level2">
-<h2 id="available-choice-rules">Available choice rules<a class="anchor" aria-label="anchor" href="#available-choice-rules"></a>
+<h2 id="built-in-choice-rules">Built-in choice rules<a class="anchor" aria-label="anchor" href="#built-in-choice-rules"></a>
 </h2>
 <div class="section level3">
 <h3 id="logistic">Logistic<a class="anchor" aria-label="anchor" href="#logistic"></a>
 </h3>
 <p><code>choice_rule = "logistic"</code> (the default) gives the
 logistic choice rule:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>σ</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>V</mi><mi>I</mi></msub><mo>−</mo><msub><mi>V</mi><mi>D</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">
-P(I) = \sigma\left[\gamma \left( V_I - V_D \right) \right]
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>σ</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><msub><mi>V</mi><mi>I</mi></msub><mo>−</mo><mi>S</mi><msub><mi>V</mi><mi>D</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">
+P(I) = \sigma\left[\gamma \left( SV_I - SV_D \right) \right]
 </annotation></semantics></math></p>
 <p>where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>
 is the logistic function
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>↦</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mo>exp</mo><mo stretchy="false" form="prefix">{</mo><mo>−</mo><mi>x</mi><mo stretchy="false" form="postfix">}</mo><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">x \mapsto (1 + \exp\{-x\})^{-1}</annotation></semantics></math>,
-which the CDF of a logistic distribution with location parameter 0 and
-scale parameter 1.</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>x</mi><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mo>exp</mo><mo stretchy="false" form="prefix">{</mo><mo>−</mo><mi>x</mi><mo stretchy="false" form="postfix">}</mo><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\sigma[x] = (1 + \exp\{-x\})^{-1}</annotation></semantics></math>,
+which is the cumulative distribution function (CDF) of a logistic
+distribution with location parameter 0 and scale parameter 1.</p>
 </div>
 <div class="section level3">
-<h3 id="probit">Probit<a class="anchor" aria-label="anchor" href="#probit"></a>
+<h3 id="probit-normal">Probit (normal)<a class="anchor" aria-label="anchor" href="#probit-normal"></a>
 </h3>
 <p><code>choice_rule = "probit"</code> gives the probit choice rule:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>Φ</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>V</mi><mi>I</mi></msub><mo>−</mo><msub><mi>V</mi><mi>D</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">
-P(I) = \Phi\left[\gamma \left( V_I - V_D \right) \right]
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>Φ</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><msub><mi>V</mi><mi>I</mi></msub><mo>−</mo><mi>S</mi><msub><mi>V</mi><mi>D</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">
+P(I) = \Phi\left[\gamma \left( SV_I - SV_D \right) \right]
 </annotation></semantics></math></p>
 <p>where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Φ</mi><annotation encoding="application/x-tex">\Phi</annotation></semantics></math>
 is the CDF of the standard normal distribution.</p>
 </div>
 <div class="section level3">
-<h3 id="power">Power<a class="anchor" aria-label="anchor" href="#power"></a>
+<h3 id="power-log-logistic">Power (log-logistic)<a class="anchor" aria-label="anchor" href="#power-log-logistic"></a>
 </h3>
 <p><code>choice_rule = "power"</code> gives the power choice rule (<a href="https://doi.org/10.1037/14396-000" class="external-link">Luce, 1959/2005</a>):</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><msubsup><mi>V</mi><mi>I</mi><mi>γ</mi></msubsup><mrow><msubsup><mi>V</mi><mi>I</mi><mi>γ</mi></msubsup><mo>+</mo><msubsup><mi>V</mi><mi>D</mi><mi>γ</mi></msubsup></mrow></mfrac></mrow><annotation encoding="application/x-tex">
-P(I) = \frac{V_I^\gamma}{V_I^\gamma + V_D^\gamma}
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><mi>S</mi><msubsup><mi>V</mi><mi>I</mi><mi>γ</mi></msubsup></mrow><mrow><mi>S</mi><msubsup><mi>V</mi><mi>I</mi><mi>γ</mi></msubsup><mo>+</mo><mi>S</mi><msubsup><mi>V</mi><mi>D</mi><mi>γ</mi></msubsup></mrow></mfrac></mrow><annotation encoding="application/x-tex">
+P(I) = \frac{SV_I^\gamma}{SV_I^\gamma + SV_D^\gamma}
 </annotation></semantics></math></p>
-<p>which is the CDF of a log-logistic distribution with scale parameter
-1 and shape parameter
+<p>where the right hand side of the equation is the CDF of a
+log-logistic distribution with scale parameter 1 and shape parameter
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>γ</mi><annotation encoding="application/x-tex">\gamma</annotation></semantics></math>.</p>
 </div>
 </div>
@@ -183,8 +183,8 @@ P(I) = \frac{V_I^\gamma}{V_I^\gamma + V_D^\gamma}
 similar—both are based on a “Fechner model” (<a href="https://doi.org/10.1002/bs.3830080106" class="external-link">Becker, DeGroot, &amp;
 Marschak, 1963</a>) in which comparisons between subjective reward
 values are “noisy”:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>V</mi><mi>I</mi></msub><mo>−</mo><msub><mi>V</mi><mi>D</mi></msub><mo>&lt;</mo><mi>ε</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
-P(I) = \Pr(V_I - V_D &lt; \varepsilon )
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><msub><mi>V</mi><mi>I</mi></msub><mo>−</mo><mi>S</mi><msub><mi>V</mi><mi>D</mi></msub><mo>&lt;</mo><mi>ε</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+P(I) = \Pr(SV_I - SV_D &lt; \varepsilon )
 </annotation></semantics></math></p>
 <p>where the noise, represented by the random variable
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ε</mi><annotation encoding="application/x-tex">\varepsilon</annotation></semantics></math>,
@@ -192,8 +192,8 @@ is assumed to follow either a logistic distribution for the logistic
 choice rule, or a normal distribution for the probit choice rule. In
 contrast, the power choice rule could be taken to imply the following
 Fechner-like model:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><msub><mi>V</mi><mi>I</mi></msub><msub><mi>V</mi><mi>D</mi></msub></mfrac><mo>&lt;</mo><mi>ε</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
-P(I) = \Pr\left( \frac{V_I}{V_D} &lt; \varepsilon \right)
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><mi>S</mi><msub><mi>V</mi><mi>I</mi></msub></mrow><mrow><mi>S</mi><msub><mi>V</mi><mi>D</mi></msub></mrow></mfrac><mo>&lt;</mo><mi>ε</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+P(I) = \Pr\left( \frac{SV_I}{SV_D} &lt; \varepsilon \right)
 </annotation></semantics></math></p>
 <p>where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ε</mi><annotation encoding="application/x-tex">\varepsilon</annotation></semantics></math>
@@ -220,12 +220,12 @@ fit.</li>
 is never exactly 0 or 1. In contrast, for the power choice rule,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">P(I) = 0</annotation></semantics></math>
 when
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mi>I</mi></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">V_I = 0</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><msub><mi>V</mi><mi>I</mi></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">SV_I = 0</annotation></semantics></math>.
 Thus, for the power choice rule, model fit will be strongly negatively
 impacted if a participant ever chose an immediate reward of 0. However,
 such decisions are arguably better used for attention checks than model
-fitting (cf. <a href="doi.org/10.1037/pha0000645">Almog et al.,
-2023</a>).</li>
+fitting (see, for example, <a href="doi.org/10.1037/pha0000645">Almog et
+al., 2023</a>).</li>
 </ol>
 <p>To see the differences between the power choice rule on the one hand
 and the logistic and probit choice rules on the other, we can visualize
@@ -252,10 +252,10 @@ their predictions for the same participant:</p>
 <span>       fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">plot_legend</span><span class="op">)</span>,</span>
 <span>       legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">plot_legend</span>, <span class="st">'; log lik. = '</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">logLiks</span>, <span class="fl">1</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">''</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="choice-rules_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
-<p>As suggested by the log likelihood measurements shown in the plot
+<p>As suggested by the log likelihood measurements shown in the legend
 above, the choice rule can significantly impact model fit (<a href="https://doi.org/10.1177/0956797616664342" class="external-link">Wulff &amp; van den Bos,
 2017</a>). Therefore it is a good idea to explore multiple choice rules
-for a given dataset.</p>
+for a given dataset to see which one best describes the data.</p>
 </div>
 <div class="section level2">
 <h2 id="fixed-endpoint-choice-rules">Fixed-endpoint choice rules<a class="anchor" aria-label="anchor" href="#fixed-endpoint-choice-rules"></a>
@@ -265,11 +265,12 @@ choosing an immediate reward of $0 is 0. In that sense, the left
 endpoint of the psychometric curve is “fixed” at 0. This is arguably an
 advantage, if choosing an immediate reward of $0 should be taken as a
 failed attention check rather than a reflection of an individual’s true
-preferences (Kinley, Oluwasola &amp; Becker, 2025). Following this
-logic, we can create choice rules in which both endpoints are fixed,
-i.e., where the probability of choosing $0 is 0 and where the
-probability of choosing $<em>x</em> now over $<em>x</em> at some delay
-is 1, for all <em>x</em>.</p>
+preferences (<a href="https://doi.org/10.1016/j.jmp.2025.102902" class="external-link">Kinley,
+Oluwasola &amp; Becker, 2025</a>). Following this logic, we can create
+choice rules in which both endpoints are fixed, i.e., where the
+probability of choosing $0 is 0 and where the probability of choosing
+$<em>x</em> now over $<em>x</em> at some delay is 1, for all
+<em>x</em>.</p>
 <p>This option is available through the <code>fixed_ends</code> argument
 to <code>td_bcnm</code>. To see its effect, we can re-fit the models
 from the plot above with <code>fixed_ends = TRUE</code>:</p>
@@ -301,12 +302,12 @@ from the plot above with <code>fixed_ends = TRUE</code>:</p>
 <p><img src="choice-rules_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 <p>Note that the psychometric curves are no longer symmetrical about
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">P(I) = 0.5</annotation></semantics></math>
-for the logit and probit choice rules. As before, there is an important
-difference between the power choice rule and the others: in the power
-choice rule, decisions do not become less stochastic for larger reward
-magnitudes. To see this, we can re-plot the psychometric curves above,
-but this time predicting what the choice probabilities would be if the
-reward magnitudes were multiplied by 5:</p>
+for the logistic and probit choice rules. As before, there is an
+important difference between the power choice rule and the others: in
+the power choice rule, decisions do not become less stochastic for
+larger reward magnitudes. To see this, we can re-plot the psychometric
+curves above, but this time predicting what the choice probabilities
+would be if the reward magnitudes were multiplied by 5:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">vis_del</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span><span class="op">$</span><span class="va">del</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span></span>
 <span><span class="va">vis_val_del</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span>
@@ -329,20 +330,20 @@ reward magnitudes were multiplied by 5:</p>
 <span><span class="op">}</span></span></code></pre></div>
 <p><img src="choice-rules_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 <p>The psychometric curve for the power choice rule looks the same,
-while the curves for the logit and probit choice rules are substantially
-steeper.</p>
+while the curves for the logistic and probit choice rules are
+substantially steeper.</p>
 <p>The mathematical details of how fixed-endpoint choice rules are
 generated can be found in <a href="https://doi.org/10.1016/j.jmp.2025.102902" class="external-link">Kinley, Oluwasola &amp;
 Becker (2025)</a>. That paper finds that fixed-endpoint choice rules
-improve model fit, but there is an important caveat here: although the
+improve model fit, but there is an important caveat: although the
 best-fitting model for a given individual (comparing across discount
 functions and choice rules) is often one with a fixed-endpoint choice
 rule, this does <strong>not</strong> mean that using a fixed-endpoint
-choice rule will improve model fit when only a single discount function
-is used. In fact, although we have not tested this systematically, when
-a given discount function does not provide a good fit to an individual’s
-data, using a fixed-endpoint choice rule seems to often make the model
-fit <strong>worse</strong>.</p>
+choice rule will improve model fit when a single discount function is
+assumed across individuals. In fact, although we have not tested this
+systematically, when a given discount function does not provide a good
+fit to an individual’s data, using a fixed-endpoint choice rule seems to
+often make the model fit <strong>worse</strong>.</p>
 <blockquote>
 <p>⚠️ In other words, you <strong>should not</strong> run something like
 <code>td_bcnm(data = ..., discount_function = "hyperbolic", fixed_ends = TRUE)</code>.
@@ -352,10 +353,10 @@ discount functions to be compared.</p>
 </blockquote>
 <p>For the examples above, we already knew that the data in
 <code>td_bc_single_ptpt</code> was well fit by an exponential discount
-function, and the model fit was improved by switching to a
-fixed-endpoints choice rule. If we repeat this using a hyperbolic
-discount curve, which does not fit the data well, a fixed-endpoint
-choice rule actually makes the model fit worse:</p>
+function, and the model fit turned out to be improved by switching to a
+fixed-endpoints choice rule. However, if we repeat the model fitting
+using a hyperbolic discount function, which does not fit the data well,
+a fixed-endpoint choice rule actually makes the model fit worse:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_free</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_bcnm.html">td_bcnm</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>,</span>
 <span>                    discount_function <span class="op">=</span> <span class="st">"hyperbolic"</span>,</span>
@@ -367,6 +368,170 @@ choice rule actually makes the model fit worse:</p>
 <span><span class="co">#&gt; Log lik. with free endpoints: -13.59</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">'Log lik. with fixed endpoints: %.2f\n'</span>, <span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">mod_fixed</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Log lik. with fixed endpoints: -14.02</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="custom-choice-rules">Custom choice rules<a class="anchor" aria-label="anchor" href="#custom-choice-rules"></a>
+</h2>
+<p>The choice rules described above can be generalized as</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>F</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>γ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">[</mo><mi>τ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><msub><mi>V</mi><mi>I</mi></msub><msub><mi>V</mi><mi>D</mi></msub></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>τ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>δ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mover><mi>p</mi><mo accent="true">→</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+P(I) = F\left(s(\gamma) \left[ \tau \left( \frac{V_I}{V_D} \right) - \tau\left(\delta\left(t;\vec{p}\right)\right) \right] \right)
+</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>⋅</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">F(\cdot)</annotation></semantics></math>
+is the CDF of the distribution of the decision noise
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ε</mi><annotation encoding="application/x-tex">\varepsilon</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>⋅</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">s(\cdot)</annotation></semantics></math>
+is a scale function applied to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>γ</mi><annotation encoding="application/x-tex">\gamma</annotation></semantics></math>,
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>⋅</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\tau(\cdot)</annotation></semantics></math>
+is some transformation. These three functions jointly specify the choice
+rule, as described below.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>V</mi><mi>I</mi></msub><annotation encoding="application/x-tex">V_I</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>V</mi><mi>D</mi></msub><annotation encoding="application/x-tex">V_D</annotation></semantics></math>
+are the face (vs. subjective) values of the immediate and delayed
+rewards, respectively, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mover><mi>p</mi><mo accent="true">→</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\delta(t; \vec{p})</annotation></semantics></math>
+is a discount function
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>
+parameterized by some vector of parameters
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>p</mi><mo accent="true">→</mo></mover><annotation encoding="application/x-tex">\vec{p}</annotation></semantics></math>
+and evaluated at delay
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>.</p>
+<p>The functions
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>⋅</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">F(\cdot)</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>⋅</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">s(\cdot)</annotation></semantics></math>,
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>⋅</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\tau(\cdot)</annotation></semantics></math>
+can be specified using the arguments <code>noise_dist</code>,
+<code>gamma_scale</code>, and <code>transform</code>, respectively, to
+<code>td_bcnm</code>. When using the argument <code>choice_rule</code>,
+these three are pre-set internally as follows (assuming
+<code>fixed_ends = FALSE</code>):</p>
+<table class="table">
+<colgroup>
+<col width="25%">
+<col width="25%">
+<col width="25%">
+<col width="25%">
+</colgroup>
+<thead><tr class="header">
+<th><code>choice_rule</code></th>
+<th><code>noise_dist</code></th>
+<th><code>gamma_scale</code></th>
+<th><code>transform</code></th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>"logistic"</code></td>
+<td>
+<code>"logis"</code>;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>⋅</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>σ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>⋅</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">F(\cdot) = \sigma(\cdot)</annotation></semantics></math>
+</td>
+<td>
+<code>"linear"</code>;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>γ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>γ</mi><msub><mi>V</mi><mi>D</mi></msub></mrow><annotation encoding="application/x-tex">s(\gamma) = \gamma V_D</annotation></semantics></math>
+</td>
+<td>
+<code>"identity"</code>;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">\tau(x) = x</annotation></semantics></math>
+</td>
+</tr>
+<tr class="even">
+<td><code>"probit"</code></td>
+<td>
+<code>"norm"</code>;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>⋅</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>Φ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>⋅</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">F(\cdot) = \Phi(\cdot)</annotation></semantics></math>
+</td>
+<td>
+<code>"linear"</code>;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>γ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>γ</mi><msub><mi>V</mi><mi>D</mi></msub></mrow><annotation encoding="application/x-tex">s(\gamma) = \gamma V_D</annotation></semantics></math>
+</td>
+<td>
+<code>"identity"</code>;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">\tau(x) = x</annotation></semantics></math>
+</td>
+</tr>
+<tr class="odd">
+<td><code>"power"</code></td>
+<td>
+<code>"logis"</code>;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>⋅</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>σ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>⋅</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">F(\cdot) = \sigma(\cdot)</annotation></semantics></math>
+</td>
+<td>
+<code>"none"</code>;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>γ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>γ</mi></mrow><annotation encoding="application/x-tex">s(\gamma) = \gamma</annotation></semantics></math>
+</td>
+<td>
+<code>"log"</code>;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>log</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">\tau(x) = \log x</annotation></semantics></math>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Note that <code>noise_dist</code> must be a string to which the
+prefixes <code>p</code> and <code>q</code> can be prepended to refer to
+a probability distribution’s CDF and quantile functions, respectively
+(e.g., <code>pnorm</code> is the CDF of the normal distribution,
+<code>qlogis</code> is the quantile function of the logistic
+distribution). Note also that fixed-endpoint versions of these choice
+rules are generated by setting
+<code>transform = "noise_dist_quantile"</code>, which results in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mi>F</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\tau(x) = F^{-1}(x)</annotation></semantics></math>
+(for an explanation, see <a href="https://doi.org/10.1016/j.jmp.2025.102902" class="external-link">Kinley, Oluwasola &amp;
+Becker, 2025</a>).</p>
+<p>When we set <code>noise_dist</code>, <code>gamma_scale</code>, and
+<code>transform</code> ourselves, the arguments <code>choice_rule</code>
+and <code>fixed_ends</code> are ignored, allowing us to generate custom
+choice rules as shown below.</p>
+<div class="section level3">
+<h3 id="example-1-cauchit-choice-rule">Example 1: Cauchit choice rule<a class="anchor" aria-label="anchor" href="#example-1-cauchit-choice-rule"></a>
+</h3>
+<p>To create a Cauchit choice rule (analogous to Cauchit regression in
+the way the probit choice rule is analogous to probit regression), we
+could use the same configuration as for the probit choice rule, but
+switch the <code>noise_dist</code> to <code>"cauchy"</code>:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mod_cauchit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_bcnm.html">td_bcnm</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>,</span>
+<span>                       discount_function <span class="op">=</span> <span class="st">"exponential"</span>,</span>
+<span>                       noise_dist <span class="op">=</span> <span class="st">"cauchy"</span>,</span>
+<span>                       gamma_scale <span class="op">=</span> <span class="st">"linear"</span>,</span>
+<span>                       transform <span class="op">=</span> <span class="st">"identity"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod_cauchit</span>, type <span class="op">=</span> <span class="st">"endpoints"</span>, del <span class="op">=</span> <span class="fl">50</span>, val_del <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span></code></pre></div>
+<p><img src="choice-rules_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
+<p>The psychometric curve is now generated by a shifted and scaled
+arctan function. We can create a fixed-endpoint variant of this choice
+rule by setting <code>transform = "noise_dist_quantile"</code>:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mod_cauchit_fixed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_bcnm.html">td_bcnm</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>,</span>
+<span>                             discount_function <span class="op">=</span> <span class="st">"exponential"</span>,</span>
+<span>                             noise_dist <span class="op">=</span> <span class="st">"cauchy"</span>,</span>
+<span>                             gamma_scale <span class="op">=</span> <span class="st">"linear"</span>,</span>
+<span>                             transform <span class="op">=</span> <span class="st">"noise_dist_quantile"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod_cauchit_fixed</span>, type <span class="op">=</span> <span class="st">"endpoints"</span>, del <span class="op">=</span> <span class="fl">50</span>, val_del <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span></code></pre></div>
+<p><img src="choice-rules_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
+</div>
+<div class="section level3">
+<h3 id="log-normal-choice-rule">Log-normal choice rule<a class="anchor" aria-label="anchor" href="#log-normal-choice-rule"></a>
+</h3>
+<p>In the same way that the power choice rule is based on the
+log-logistic distribution, we can create a choice rule based on the
+log-normal distribution as follows:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mod_lognormal</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_bcnm.html">td_bcnm</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>,</span>
+<span>                         discount_function <span class="op">=</span> <span class="st">"exponential"</span>,</span>
+<span>                         noise_dist <span class="op">=</span> <span class="st">"norm"</span>,</span>
+<span>                         gamma_scale <span class="op">=</span> <span class="st">"none"</span>,</span>
+<span>                         transform <span class="op">=</span> <span class="st">"log"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod_lognormal</span>, type <span class="op">=</span> <span class="st">"endpoints"</span>, del <span class="op">=</span> <span class="fl">50</span>, val_del <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span></code></pre></div>
+<p><img src="choice-rules_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
+<p>As with the power choice rule, the left endpoint of the psychometric
+curve is fixed, i.e.,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">P(I) = 0</annotation></semantics></math>
+when
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mi>I</mi></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">V_I = 0</annotation></semantics></math>.</p>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
