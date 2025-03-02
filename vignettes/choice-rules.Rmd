@@ -25,12 +25,12 @@ When [modeling binary choice data](https://kinleyid.github.io/tempodisco/article
 ```{r}
 # Load data and fit model
 data("td_bc_single_ptpt")
-mod <- td_bcnm(td_bc_single_ptpt, discount_function = "hyperbolic")
+mod <- td_bcnm(td_bc_single_ptpt, discount_function = "exponential")
 # Plot the discount curve
 plot(mod, type = "summary", verbose = F)
 ```
 
-whereas `plot(... type = "endpoints")` visualizes the choice rule:
+whereas `plot(... type = "endpoints")` visualizes the choice rule (i.e., the psychometric curve for a given combination of delay and delayed reward value):
 
 ```{r}
 # Plot the choice rule
@@ -106,7 +106,7 @@ logLiks <- c()
 for (entry in names(plot_legend)) {
   choice_rule <- plot_legend[entry]
   mod <- td_bcnm(td_bc_single_ptpt,
-                 discount_function = "hyperbolic",
+                 discount_function = "exponential",
                  choice_rule = choice_rule)
   logLiks[entry] <- logLik(mod)
   preds <- predict(mod, type = 'response', newdata = newdata)
@@ -118,3 +118,79 @@ legend(0, 1,
 ```
 
 As suggested by the log likelihood measurements shown in the plot above, the choice rule can significantly impact model fit ([Wulff & van den Bos, 2017](https://doi.org/10.1177/0956797616664342)). Therefore it is a good idea to explore multiple choice rules for a given dataset.
+
+## Fixed-endpoint choice rules
+
+As described earlier, for the power choice rule, the probability of choosing an immediate reward of \$0 is 0. In that sense, the left endpoint of the psychometric curve is "fixed" at 0. This is arguably an advantage, if choosing an immediate reward of \$0 should be taken as a failed attention check rather than a reflection of an individual's true preferences (Kinley, Oluwasola & Becker, 2025). Following this logic, we can create choice rules in which both endpoints are fixed, i.e., where the probability of choosing \$0 is 0 and where the probability of choosing \$*x* now over \$*x* at some delay is 1, for all *x*.
+
+This option is available through the `fixed_ends` argument to `td_bcnm`. To see its effect, we can re-fit the models from the plot above with `fixed_ends = TRUE`:
+
+```{r}
+vis_del <- sort(unique(td_bc_single_ptpt$del))[2]
+vis_val_del <- 200
+newdata <- data.frame(del = vis_del,
+                      val_del = vis_val_del,
+                      val_imm = seq(0, vis_val_del, length.out = 1000))
+plot(imm_chosen ~ val_imm, data = subset(td_bc_single_ptpt, del == vis_del),
+     xlim = c(0, vis_val_del), ylim = c(0, 1))
+plot_legend <- c("red" = "logistic",
+                 "blue" = "probit",
+                 "forestgreen" = "power")
+logLiks <- c()
+for (entry in names(plot_legend)) {
+  choice_rule <- plot_legend[entry]
+  mod <- td_bcnm(td_bc_single_ptpt,
+                 discount_function = "exponential",
+                 fixed_ends = TRUE,                 # Fixed endpoints
+                 choice_rule = choice_rule)
+  logLiks[entry] <- logLik(mod)
+  preds <- predict(mod, type = 'response', newdata = newdata)
+  lines(preds ~ newdata$val_imm, col = entry)
+}
+legend(0, 1,
+       fill = names(plot_legend),
+       legend = paste(plot_legend, '; log lik. = ', round(logLiks, 1), sep = ''))
+```
+
+Note that the psychometric curves are no longer symmetrical about $P(I) = 0.5$ for the logit and probit choice rules. As before, there is an important difference between the power choice rule and the others: in the power choice rule, decisions do not become less stochastic for larger reward magnitudes. To see this, we can re-plot the psychometric curves above, but this time predicting what the choice probabilities would be if the reward magnitudes were multiplied by 5:
+
+```{r}
+vis_del <- sort(unique(td_bc_single_ptpt$del))[2]
+vis_val_del <- 1000
+newdata <- data.frame(del = vis_del,
+                      val_del = vis_val_del,
+                      val_imm = seq(0, vis_val_del, length.out = 1000))
+plot(c(0, 1) ~ c(0, vis_val_del), type = "n",
+     xlab = "val_imm", ylab = "prob_imm")
+plot_legend <- c("red" = "logistic",
+                 "blue" = "probit",
+                 "forestgreen" = "power")
+for (entry in names(plot_legend)) {
+  choice_rule <- plot_legend[entry]
+  mod <- td_bcnm(td_bc_single_ptpt,
+                 discount_function = "exponential",
+                 fixed_ends = TRUE,
+                 choice_rule = choice_rule)
+  preds <- predict(mod, type = 'response', newdata = newdata)
+  lines(preds ~ newdata$val_imm, col = entry)
+}
+```
+
+The psychometric curve for the power choice rule looks the same, while the curves for the logit and probit choice rules are substantially steeper.
+
+The mathematical details of how fixed-endpoint choice rules are generated can be found in [Kinley, Oluwasola & Becker (2025)](https://doi.org/10.1016/j.jmp.2025.102902). That paper finds that fixed-endpoint choice rules improve model fit, but there is an important caveat here: although the best-fitting model for a given individual (comparing across discount functions and choice rules) is often one with a fixed-endpoint choice rule, this does **not** mean that using a fixed-endpoint choice rule will improve model fit when only a single discount function is used. In fact, although we have not tested this systematically, when a given discount function does not provide a good fit to an individual's data, using a fixed-endpoint choice rule seems to often make the model fit **worse**.
+
+> ⚠️ In other words, you **should not** run something like `td_bcnm(data = ..., discount_function = "hyperbolic", fixed_ends = TRUE)`. Instead, you should run `td_bcnm(data = ..., fixed_ends = TRUE)` to allow a range of discount functions to be compared.
+
+For the examples above, we already knew that the data in `td_bc_single_ptpt` was well fit by an exponential discount function, and the model fit was improved by switching to a fixed-endpoints choice rule. If we repeat this using a hyperbolic discount curve, which does not fit the data well, a fixed-endpoint choice rule actually makes the model fit worse:
+
+```{r}
+mod_free <- td_bcnm(td_bc_single_ptpt,
+                    discount_function = "hyperbolic",
+                    fixed_ends = FALSE)
+mod_fixed <- td_bcnm(td_bc_single_ptpt,
+                     discount_function = "hyperbolic",
+                     fixed_ends = TRUE)
+cat(sprintf('Log lik. with free endpoints: %.2f\n', logLik(mod_free)))
+cat(sprintf('Log lik. with fixed endpoints: %.2f\n', logLik(mod_fixed)))
+```
