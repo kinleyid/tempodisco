@@ -91,10 +91,15 @@
 <div class="section level2">
 <h2 id="classic-methods">Classic methods<a class="anchor" aria-label="anchor" href="#classic-methods"></a>
 </h2>
-<p>For binary choice data not explicitly designed to titrate out
-indifference points (as in an adjusting amount procedure), there are a
-few analysis options. A common one is the scoring method designed for
-the Monetary Choice Questionnaire <a href="https://doi.org/10.1037//0096-3445.128.1.78" class="external-link">(Kirby,
+<p>For binary choice data not explicitly designed to <a href="https://kinleyid.github.io/tempodisco/articles/adjusting-amounts.html">titrate
+out indifference points</a> (as in an adjusting amount procedure), there
+are a few widely-used traditional scoring methods to quantify
+discounting.</p>
+<div class="section level3">
+<h3 id="kirby-scoring">Kirby scoring<a class="anchor" aria-label="anchor" href="#kirby-scoring"></a>
+</h3>
+<p>One scoring method is the one designed for the Monetary Choice
+Questionnaire <a href="https://doi.org/10.1037//0096-3445.128.1.78" class="external-link">(Kirby,
 1999)</a>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"td_bc_single_ptpt"</span><span class="op">)</span></span>
@@ -113,7 +118,9 @@ the Monetary Choice Questionnaire <a href="https://doi.org/10.1037//0096-3445.12
 <p>Although this method computes
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
 values according to the hyperbolic discount function, in principle it’s
-possible to use the exponential discount function:</p>
+possible to use the exponential discount function (thought this is not
+an established practice and should be considered an experimental feature
+of <code>tempodisco</code>):</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/kirby_score.html">kirby_score</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>, discount_function <span class="op">=</span> <span class="st">'exponential'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
@@ -127,7 +134,11 @@ possible to use the exponential discount function:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ED50: 84.8379742026149</span></span>
 <span><span class="co">#&gt; AUC: 0.0335100135964859</span></span></code></pre></div>
-<p>Another option is to use the logistic regression method of <a href="https://doi.org/10.3758/BF03195548" class="external-link">Wileyto et al. (2004)</a>,
+</div>
+<div class="section level3">
+<h3 id="wileyto-scoring">Wileyto scoring<a class="anchor" aria-label="anchor" href="#wileyto-scoring"></a>
+</h3>
+<p>It is also possible to use the logistic regression method of <a href="https://doi.org/10.3758/BF03195548" class="external-link">Wileyto et al. (2004)</a>,
 where we can solve for the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
 value of the hyperbolic discount function in terms of the regression
@@ -154,12 +165,17 @@ coefficients:</p>
 <span><span class="co">#&gt; Null Deviance:       97.04 </span></span>
 <span><span class="co">#&gt; Residual Deviance: 37.47     AIC: 41.47</span></span></code></pre></div>
 </div>
+</div>
 <div class="section level2">
 <h2 id="newer-methods">Newer methods<a class="anchor" aria-label="anchor" href="#newer-methods"></a>
 </h2>
+<div class="section level3">
+<h3 id="linear-models">Linear models<a class="anchor" aria-label="anchor" href="#linear-models"></a>
+</h3>
 <p>The <a href="https://doi.org/10.3758/BF03195548" class="external-link">Wileyto et
 al. (2004)</a> approach turns out to be possible for other discount
-functions as well:</p>
+functions as well (<a href="https://doi.org/10.1016/j.jmp.2025.102902" class="external-link">Kinley, Oluwasola &amp;
+Becker, 2025</a>.):</p>
 <table class="table">
 <colgroup>
 <col width="25%">
@@ -254,8 +270,7 @@ functions as well:</p>
 is the logit function, or the quantile function of a standard logistic
 distribution, and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>G</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">[</mo><mo>⋅</mo><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">G^{-1}[\cdot]</annotation></semantics></math>
-is the quantile function of a standard Gumbel distribution (<a href="https://doi.org/10.31234/osf.io/y2fdh" class="external-link">Kinley et al.,
-2024</a>)</p>
+is the quantile function of a standard Gumbel distribution.</p>
 <p>We can test all of these and select the best according to the
 Bayesian Information Criterion as follows:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -281,9 +296,13 @@ Bayesian Information Criterion as follows:</p>
 <span><span class="co">#&gt; Degrees of Freedom: 70 Total (i.e. Null);  68 Residual</span></span>
 <span><span class="co">#&gt; Null Deviance:       97.04 </span></span>
 <span><span class="co">#&gt; Residual Deviance: 15.7  AIC: 19.7</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="nonlinear-models">Nonlinear models<a class="anchor" aria-label="anchor" href="#nonlinear-models"></a>
+</h3>
 <p>To explore a wider range of discount functions, we can fit a
-nonlinear model by calling <code>td_bcnm</code>. The full list is as
-follows:</p>
+nonlinear model by calling <code>td_bcnm</code>. The full list of
+built-in discount functions is as follows:</p>
 <table class="table">
 <colgroup>
 <col width="16%">
@@ -371,16 +390,23 @@ hyperboloid (<a href="https://doi.org/10.1037/0033-2909.130.5.769" class="extern
 <span><span class="co">#&gt; ED50: 63.9996305466619</span></span>
 <span><span class="co">#&gt; AUC: 0.0252791100912786</span></span>
 <span><span class="co">#&gt; BIC: 25.9537097154224</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="choice-rules">Choice rules<a class="anchor" aria-label="anchor" href="#choice-rules"></a>
+</h4>
 <p>Several additional arguments can be used to customize the model. For
 example, we can use different choice rules—the “logistic” choice rule is
 the default, but the “probit” and “power” choice rules are also
-available (see <a href="https://doi.org/10.1177/0956797616664342" class="external-link">Wulff
-and Van den Bos, 2018</a>, for explanations of these):</p>
+available (see <a href="https://kinleyid.github.io/tempodisco/articles/choice-rules.html">this
+tutorial</a> for more details):</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Probit choice rule:</span></span>
 <span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_bcnm.html">td_bcnm</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>, discount_function <span class="op">=</span> <span class="st">'exponential'</span>, choice_rule <span class="op">=</span> <span class="st">'probit'</span><span class="op">)</span></span>
 <span><span class="co"># Power choice rule:</span></span>
 <span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_bcnm.html">td_bcnm</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>, discount_function <span class="op">=</span> <span class="st">'exponential'</span>, choice_rule <span class="op">=</span> <span class="st">'power'</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="error-rates">Error rates<a class="anchor" aria-label="anchor" href="#error-rates"></a>
+</h4>
 <p>It is also possible to fit an error rate
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϵ</mi><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math>
 that describes the probability of the participant making a response
@@ -397,26 +423,37 @@ is the linear predictor.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"td_bc_study"</span><span class="op">)</span></span>
 <span><span class="co"># Select the second participant</span></span>
-<span><span class="va">second_ptpt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">td_bc_study</span><span class="op">$</span><span class="va">id</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span></span>
-<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">td_bc_study</span>, <span class="va">id</span> <span class="op">==</span> <span class="va">second_ptpt</span><span class="op">)</span></span>
+<span><span class="va">second_ptpt_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">td_bc_study</span><span class="op">$</span><span class="va">id</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span></span>
+<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">td_bc_study</span>, <span class="va">id</span> <span class="op">==</span> <span class="va">second_ptpt_id</span><span class="op">)</span></span>
 <span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_bcnm.html">td_bcnm</a></span><span class="op">(</span><span class="va">df</span>, discount_function <span class="op">=</span> <span class="st">'exponential'</span>, fit_err_rate <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, type <span class="op">=</span> <span class="st">'endpoints'</span>, verbose <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="modeling-binary-choice-data_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"epsilon = %.2f\n"</span>, <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span><span class="op">[</span><span class="st">'eps'</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; epsilon = 0.11</span></span></code></pre></div>
 <p>We can see that the probability of choosing the immediate reward
-doesn’t approach 0 or 1.</p>
+doesn’t approach 0 or 1 but instead approaches a value of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi><mo>≈</mo><mn>0.11</mn></mrow><annotation encoding="application/x-tex">\epsilon \approx 0.11</annotation></semantics></math>.</p>
+</div>
+<div class="section level4">
+<h4 id="fixed-endpoints">Fixed endpoints<a class="anchor" aria-label="anchor" href="#fixed-endpoints"></a>
+</h4>
 <p>Alternatively, we might expect that participants should never choose
 an immediate reward worth 0 and should never choose a delayed reward
-worth the same face amount as an immediate reward <a href="https://doi.org/10.31234/osf.io/y2fdh" class="external-link">(Kinley et al., 2024)</a>.
-We can control this by setting <code>fixed_ends = T</code>, which
-“fixes” the endpoints of the psychometric curve, where
-<code>val_imm = 0</code> and <code>val_imm = val_del</code>, at 0 and 1,
-respectively:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+worth the same face amount as an immediate reward (<a href="https://doi.org/10.1016/j.jmp.2025.102902" class="external-link">Kinley, Oluwasola &amp;
+Becker, 2025</a>; see <a href="https://kinleyid.github.io/tempodisco/articles/choice-rules.html#fixed-endpoint-choice-rules">here</a>
+for more details). We can control this by setting
+<code>fixed_ends = T</code>, which “fixes” the endpoints of the
+psychometric curve, where <code>val_imm = 0</code> and
+<code>val_imm = val_del</code>, at 0 and 1, respectively:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_bcnm.html">td_bcnm</a></span><span class="op">(</span><span class="va">df</span>, discount_function <span class="op">=</span> <span class="st">'exponential'</span>, fixed_ends <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, type <span class="op">=</span> <span class="st">'endpoints'</span>, verbose <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, type <span class="op">=</span> <span class="st">'endpoints'</span>, verbose <span class="op">=</span> <span class="cn">F</span>, del <span class="op">=</span> <span class="fl">50</span>, val_del <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span></code></pre></div>
 <p><img src="modeling-binary-choice-data_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
+</div>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
