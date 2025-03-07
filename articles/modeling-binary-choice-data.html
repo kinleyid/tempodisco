@@ -118,12 +118,12 @@ Questionnaire <a href="https://doi.org/10.1037//0096-3445.128.1.78" class="exter
 <p>Although this method computes
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
 values according to the hyperbolic discount function, in principle it’s
-possible to use the exponential discount function (thought this is not
-an established practice and should be considered an experimental feature
-of <code>tempodisco</code>):</p>
+possible to use the exponential or power discount functions (though this
+is not an established practice and should be considered an experimental
+feature of <code>tempodisco</code>):</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/kirby_score.html">kirby_score</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>, discount_function <span class="op">=</span> <span class="st">'exponential'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">mod_exp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/kirby_score.html">kirby_score</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>, discount_function <span class="op">=</span> <span class="st">'exponential'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mod_exp</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Temporal discounting indifference point model</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -133,7 +133,19 @@ of <code>tempodisco</code>):</p>
 <span><span class="co">#&gt; 0.008170247 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ED50: 84.8379742026149</span></span>
-<span><span class="co">#&gt; AUC: 0.0335100135964859</span></span></code></pre></div>
+<span><span class="co">#&gt; AUC: 0.0335100135964859</span></span>
+<span><span class="va">mod_pow</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/kirby_score.html">kirby_score</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>, discount_function <span class="op">=</span> <span class="st">'power'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mod_pow</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Temporal discounting indifference point model</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Discount function: power, with coefficients:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;         k </span></span>
+<span><span class="co">#&gt; 0.3052023 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ED50: 0.235591893994806</span></span>
+<span><span class="co">#&gt; AUC: 0.1173431135372</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="wileyto-scoring">Wileyto scoring<a class="anchor" aria-label="anchor" href="#wileyto-scoring"></a>
