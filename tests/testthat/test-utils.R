@@ -44,6 +44,9 @@ test_that('indifference computation works', {
 data("td_bc_single_ptpt")
 test_that('kirby scoring', {
   expect_s3_class(kirby_score(td_bc_single_ptpt), 'td_ipm')
+  expect_no_error(kirby_score(td_bc_single_ptpt, discount_function = 'hyperbolic'))
+  expect_no_error(kirby_score(td_bc_single_ptpt, discount_function = 'exponential'))
+  expect_no_error(kirby_score(td_bc_single_ptpt, discount_function = 'power'))
 })
 test_that('inconsistent responses produce a warning', {
   set.seed(123)
