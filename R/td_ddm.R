@@ -44,7 +44,8 @@ td_ddm <- function(
     beta_par_starts = c(0.25, 0.5, 0.75),
     alpha_par_starts = c(0.5, 1, 10),
     tau_par_starts = c(0.2, 0.8),
-    drift_transform = c('none', 'sigmoid', 'bias-correct'),
+    max_abs_drift_par_starts = c(0.1, 1, 10),
+    drift_transform = c('none', 'sigmoid', 'bias-correct', 'sigmoid-bias-correct'),
     silent = T,
     optim_args = list()) {
   # Input validation--------------------------
@@ -77,7 +78,7 @@ td_ddm <- function(
     drift_trans <- list(
       fn = function(drift, par) par['max_abs_drift']*( 2*plogis(drift) - 1 ),
       par_lims = list(max_abs_drift = c(0, Inf)),
-      par_starts = list(max_abs_drift = c(0.5, 1, 2)))
+      par_starts = list(max_abs_drift = max_abs_drift_par_starts))
   } else if (drift_transform == 'bias-correct') {
     drift_trans <- list(
       fn = function(drift, par) {
@@ -88,14 +89,14 @@ td_ddm <- function(
       },
       par_lims = NULL,
       par_starts = NULL)
-  } else if (drift_transform == 'bias-correct-sigmoid') {
+  } else if (drift_transform == 'sigmoid-bias-correct') {
     drift_trans <- list(
       fn = function(drift, par) {
         # mdn <- get_median(<func>)
         par['max_abs_drift']*( 2*plogis(drift) - 1 ) + median_pimm_ddm(par)
       },
       par_lims = list(max_abs_drift = c(0, Inf)),
-      par_starts = list(max_abs_drift = c(0.1, 1, 10)))
+      par_starts = list(max_abs_drift = max_abs_drift_par_starts))
   }
   drift_trans$name <- drift_transform
 
