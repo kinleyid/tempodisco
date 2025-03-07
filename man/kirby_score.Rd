@@ -4,12 +4,12 @@
 \alias{kirby_score}
 \title{Kirby MCQ-style scoring}
 \usage{
-kirby_score(data, discount_function = c("hyperbolic", "exponential"))
+kirby_score(data, discount_function = c("hyperbolic", "exponential", "power"))
 }
 \arguments{
 \item{data}{Responses to score.}
 
-\item{discount_function}{Should \eqn{k} values be computed according to the hyperbolic or exponential discount function? The original method uses the hyperbolic, but in principle the exponential is also possible.}
+\item{discount_function}{Should \eqn{k} values be computed according to the hyperbolic, exponential, or power discount function? The original method uses the hyperbolic, but in principle the exponential and power are also possible (though these should be considered experimental features).}
 }
 \value{
 An object of class \code{\link{td_ipm}}.

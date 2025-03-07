@@ -4,12 +4,15 @@
 \alias{kirby_consistency}
 \title{Compute consistency score}
 \usage{
-kirby_consistency(data, discount_function = c("hyperbolic", "exponential"))
+kirby_consistency(
+  data,
+  discount_function = c("hyperbolic", "exponential", "power")
+)
 }
 \arguments{
 \item{data}{Responses to score.}
 
-\item{discount_function}{Should \eqn{k} values be computed according to the hyperbolic or exponential discount function? The original method uses the hyperbolic, but in principle the exponential is also possible.}
+\item{discount_function}{Should \eqn{k} values be computed according to the hyperbolic, exponential, or power discount function? The original method uses the hyperbolic, but in principle the exponential and power are also possible (though these should be considered experimental features).}
 }
 \value{
 A consistency score between 0 and 1.

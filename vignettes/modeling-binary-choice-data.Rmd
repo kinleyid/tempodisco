@@ -32,11 +32,13 @@ mod <- kirby_score(td_bc_single_ptpt)
 print(mod)
 ```
 
-Although this method computes $k$ values according to the hyperbolic discount function, in principle it's possible to use the exponential discount function (thought this is not an established practice and should be considered an experimental feature of `tempodisco`):
+Although this method computes $k$ values according to the hyperbolic discount function, in principle it's possible to use the exponential or power discount functions (though this is not an established practice and should be considered an experimental feature of `tempodisco`):
 
 ```{r}
-mod <- kirby_score(td_bc_single_ptpt, discount_function = 'exponential')
-print(mod)
+mod_exp <- kirby_score(td_bc_single_ptpt, discount_function = 'exponential')
+print(mod_exp)
+mod_pow <- kirby_score(td_bc_single_ptpt, discount_function = 'power')
+print(mod_pow)
 ```
 
 ### Wileyto scoring
