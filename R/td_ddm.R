@@ -69,38 +69,42 @@ td_ddm <- function(
   # End input validation----------------------
   
   # Parse drift transform (produce an object called drift_trans)
+  drift_trans <- list()
+  # First get sigmoid-type transform
   drift_transform <- match.arg(drift_transform)
-  
   if (drift_transform == 'none') {
-    drift_trans <- list(
-      fn = function(drift, par) identity(drift),
-      par_lims = NULL,
-      par_starts = NULL)
-  } else if (drift_transform == 'sigmoid') {
-    drift_trans <- list(
-      fn = function(drift, par) par['max_abs_drift']*( 2*plogis(drift) - 1 ),
-      par_lims = list(max_abs_drift = c(0, Inf)),
-      par_starts = list(max_abs_drift = max_abs_drift_par_starts))
-  } else if (drift_transform == 'bias-correct') {
-    drift_trans <- list(
-      fn = function(drift, par) {
-        # cdf <- function()
-        # get_median(cdf)
-        mdn <- median_pimm_ddm(par)
-        return(drift + mdn)
-      },
-      par_lims = NULL,
-      par_starts = NULL)
-  } else if (drift_transform == 'sigmoid-bias-correct') {
-    drift_trans <- list(
-      fn = function(drift, par) {
-        # mdn <- get_median(<func>)
-        par['max_abs_drift']*( 2*plogis(drift) - 1 ) + median_pimm_ddm(par)
-      },
-      par_lims = list(max_abs_drift = c(0, Inf)),
-      par_starts = list(max_abs_drift = max_abs_drift_par_starts))
+    trf_fn <- function(d, p) identity(d)
+    # Add param information
+    drift_trans$par_lims <- NULL
+    drift_trans$par_starts <- NULL
+  } else {
+    cdf <- get(sprintf('p%s', drift_transform)) # Get as CDF
+    trf_fn <- function(d, p) p['max_abs_drift']*( 2*cdf(d) - 1 )
+    # Add param information
+    drift_trans$par_lims <- list(
+      max_abs_drift = c(0, Inf))
+    drift_trans$par_starts <- list(
+      max_abs_drift = max_abs_drift_par_starts)
   }
-  drift_trans$name <- drift_transform
+  # Bias correction
+  if (bias_correct) {
+    bias_fn <- function(d, p) d + median_pimm_ddm(p)
+  } else {
+    bias_fn <- function(d, p) identity(d)
+  }
+  
+  # Final function to process raw drift rates
+  drift_trans$fn <- function(drift, par) {
+    transformed <- trf_fn(drift, par)
+    bias_corrected <- bias_fn(transformed, par)
+    return(bias_corrected)
+  }
+  # Name (for printing?)
+  drift_trans$name <- sprintf('%s%s',
+                              drift_transform,
+                              ifelse(bias_correct,
+                                     ' + bias correct',
+                                     ''))
 
   # Get a list of candidate discount functions
   disc_func_cands <- get_candidate_discount_functions(arg = discount_function)
@@ -125,7 +129,7 @@ td_ddm <- function(
     par_lims <- c(
       disc_func$par_lims,
       list(
-        v = c(0, Inf),
+        gamma = c(0, Inf),
         beta = c(0, 1),
         alpha = c(0, Inf),
         tau = c(0, Inf)
