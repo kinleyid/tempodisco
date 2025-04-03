@@ -53,7 +53,7 @@ ddm <- td_ddm(td_bc_single_ptpt, discount_function = 'exponential',
 print(ddm)
 ```
 
-As we can see, parameters are estimated not only for the discount function ($k$), but also for the DDM ($v$, $\beta$, $\alpha$ and $\tau$). These can be extracted using `coef()` to collect for group-level analysis (see the vignette ["Analyzing data from multiple participants"](analyzling-study.html)). As with other model classes (`td_bcnm`, `td_bclm`), we can plot the resulting discount function:
+As we can see, parameters are estimated not only for the discount function ($k$), but also for the DDM ($v$, $\beta$, $\alpha$ and $\tau$). These can be extracted using `coef()` to collect for group-level analysis (see the vignette ["Analyzing data from multiple participants"](analyzing-study.html)). As with other model classes (`td_bcnm`, `td_bclm`), we can plot the resulting discount function:
 
 ```{r}
 plot(ddm, log = 'x', verbose = F, p_lines = c(0.25, 0.75))

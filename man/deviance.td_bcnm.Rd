@@ -4,12 +4,12 @@
 \alias{deviance.td_bcnm}
 \title{Model deviance}
 \usage{
-\method{deviance}{td_bcnm}(mod, ...)
+\method{deviance}{td_bcnm}(object, ...)
 }
 \arguments{
-\item{mod}{An object of class \code{td_bcnm}.}
-
 \item{...}{Additional arguments currently not used.}
+
+\item{mod}{An object of class \code{td_bcnm}.}
 }
 \description{
 Compute deviance for a temporal discounting binary choice model.

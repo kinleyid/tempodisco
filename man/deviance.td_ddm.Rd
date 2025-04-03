@@ -4,12 +4,12 @@
 \alias{deviance.td_ddm}
 \title{Model deviance}
 \usage{
-\method{deviance}{td_ddm}(mod, ...)
+\method{deviance}{td_ddm}(object, ...)
 }
 \arguments{
-\item{mod}{An object of class \code{td_ddm}.}
-
 \item{...}{Additional arguments currently not used.}
+
+\item{mod}{An object of class \code{td_ddm}.}
 }
 \description{
 Compute deviance for a temporal discounting drift diffusion model.

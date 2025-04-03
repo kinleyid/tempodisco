@@ -4,14 +4,14 @@
 \alias{logLik.td_ddm}
 \title{Extract log-likelihood}
 \usage{
-\method{logLik}{td_ddm}(mod, type = c("resp_rt", "resp", "rt"), ...)
+\method{logLik}{td_ddm}(object, type = c("resp_rt", "resp", "rt"), ...)
 }
 \arguments{
-\item{mod}{An object of class \code{td_bcnm}.}
-
 \item{type}{Should probabilities /probability densities be computed for responses and RTs (\code{'resp_rt'}, default) or responses only (\code{'resp'})?}
 
 \item{...}{Additional arguments currently not used.}
+
+\item{mod}{An object of class \code{td_bcnm}.}
 }
 \description{
 Compute log-likelihood for a temporal discounting drift diffusion model.

@@ -7,14 +7,16 @@
 
 [![R-CMD-check](https://github.com/kinleyid/tempodisco/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/kinleyid/tempodisco/actions/workflows/R-CMD-check.yaml)
 [![codecov](https://codecov.io/github/kinleyid/tempodisco/graph/badge.svg?token=CCQXS3SNGB)](https://app.codecov.io/github/kinleyid/tempodisco)
+
 <!-- badges: end -->
 
-`tempodisco` is an R package for behavioural researchers working with
-delay discounting data (also known as temporal discounting intertemporal
-choice data). It implements common tasks such as scoring responses
-(e.g. computing indifference points from an adjusting amounts procedure,
-computing the “area under the curve”, or computing $k$ values as in the
-Monetary Choice Questionnaire; [Frye et al.,
+[`tempodisco`](https://kinleyid.github.io/tempodisco/index.html) is an R
+package for behavioural researchers working with delay discounting data
+(also known as temporal discounting intertemporal choice data). It
+implements common tasks such as scoring responses (e.g. computing
+indifference points from an adjusting amounts procedure, computing the
+“area under the curve”, or computing $k$ values as in the Monetary
+Choice Questionnaire; [Frye et al.,
 2016](https://doi.org/10.3791/53584); [Myerson et al.,
 2001](https://doi.org/10.1901/jeab.2001.76-235); [Kirby et al.,
 1999](https://doi.org/10.1037//0096-3445.128.1.78)), identifying
@@ -29,7 +31,7 @@ using drift diffusion models ([Peters & D’Esposito,
 
 ## Installation
 
-You can install tempodisco from GitHub with:
+You can install `tempodisco` from GitHub with:
 
 ``` r
 # install.packages("devtools")
@@ -38,9 +40,10 @@ devtools::install_github("kinleyid/tempodisco")
 
 ## Getting started
 
-See [getting
-started](https://kinleyid.github.io/tempodisco/docs/articles/tempodisco.html)
-for example usage.
+See the [documentation](https://kinleyid.github.io/tempodisco/),
+particularly the “[Getting
+started](https://kinleyid.github.io/tempodisco/articles/tempodisco.html)”
+page, for example usage.
 
 ## Overview
 
@@ -66,7 +69,7 @@ These discount functions can be fit to indifference point data (see
 [`td_ipm`](https://kinleyid.github.io/tempodisco/reference/td_ipm.html)),
 choice-level data (see
 [`td_bcnm`](https://kinleyid.github.io/tempodisco/reference/td_bcnm.html)),
-or reaction time data (see
+or data including both choices and reaction times (see
 [`td_ddm`](https://kinleyid.github.io/tempodisco/reference/td_ddm.html)).
 
 After fitting a model, we can check to see how well it matches the data
@@ -83,9 +86,16 @@ plot(mod, p_lines = c(0.1, 0.9), log = 'x', verbose = F)
 
 <img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
 
-See “[Visualizing
+Note that the discount curve contains an inflection point because the
+x-axis is on a log scale. See the “[Visualizing
 models](https://kinleyid.github.io/tempodisco/articles/visualizing-models.html)”
-for more examples.
+page of the documentation for more examples.
+
+## Further reading
+
+The “Examples” tab on [the
+documentation](https://kinleyid.github.io/tempodisco/) contains a list
+of tutorials on solving common problems in delay discounting research.
 
 ## Reporting issues and requesting features
 

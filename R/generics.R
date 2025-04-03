@@ -427,12 +427,12 @@ residuals.td_ipm <- function(object, type = c('response', 'pearson'), ...) {
 #' @param ... Additional arguments currently not used.
 #' @family nonlinear binary choice model functions
 #' @export
-logLik.td_bcnm <- function(mod, ...) {
-  p <- laplace_smooth(predict(mod, type = 'response'))
-  x <- mod$data$imm_chosen
+logLik.td_bcnm <- function(object, ...) {
+  p <- laplace_smooth(predict(object, type = 'response'))
+  x <- object$data$imm_chosen
   val <- sum(ll(p, x))
-  attr(val, "nobs") <- nrow(mod$data)
-  attr(val, "df") <- length(coef(mod))
+  attr(val, "nobs") <- nrow(object$data)
+  attr(val, "df") <- length(coef(object))
   class(val) <- "logLik"
   return(val)
 }
@@ -444,17 +444,17 @@ logLik.td_bcnm <- function(mod, ...) {
 #' @param ... Additional arguments currently not used.
 #' @family indifference point model functions
 #' @export
-logLik.td_ipm <- function(mod, ...) {
+logLik.td_ipm <- function(object, ...) {
   
   # From logLik.nls
-  res <- residuals(mod)
+  res <- residuals(object)
   N <- length(res)
   w <- rep_len(1, N) # Always unweighted
   ## Note the trick for zero weights
   zw <- w == 0
   val <-  -N * (log(2 * pi) + 1 - log(N) - sum(log(w + zw)) + log(sum(w*res^2)))/2
   ## the formula here corresponds to estimating sigma^2.
-  attr(val, "df") <- 1L + length(coef(mod))
+  attr(val, "df") <- 1L + length(coef(object))
   attr(val, "nobs") <- attr(val, "nall") <- sum(!zw)
   class(val) <- "logLik"
 
@@ -469,19 +469,19 @@ logLik.td_ipm <- function(mod, ...) {
 #' @param ... Additional arguments currently not used.
 #' @family drift diffusion model functions
 #' @export
-logLik.td_ddm <- function(mod, type = c('resp_rt', 'resp', 'rt'), ...) {
+logLik.td_ddm <- function(object, type = c('resp_rt', 'resp', 'rt'), ...) {
   type <- match.arg(type)
   if (type == 'resp_rt') {
-    prob_func <- do.call(get_prob_func_ddm, mod$config)
-    p <- prob_func(mod$data, coef(mod))
+    prob_func <- do.call(get_prob_func_ddm, object$config)
+    p <- prob_func(object$data, coef(object))
     val <- sum(log(p))
   } else if (type == 'resp') {
-    p <- laplace_smooth(predict(mod, type = 'response'))
-    x <- mod$data$imm_chosen
+    p <- laplace_smooth(predict(object, type = 'response'))
+    x <- object$data$imm_chosen
     val <- sum(ll(p, x))
   }
-  attr(val, "nobs") <- nrow(mod$data)
-  attr(val, "df") <- length(coef(mod))
+  attr(val, "nobs") <- nrow(object$data)
+  attr(val, "df") <- length(coef(object))
   class(val) <- "logLik"
   return(val)
 }
@@ -493,7 +493,7 @@ logLik.td_ddm <- function(mod, type = c('resp_rt', 'resp', 'rt'), ...) {
 #' @param ... Additional arguments currently not used.
 #' @family nonlinear binary choice model functions
 #' @export
-deviance.td_bcnm <- function(mod, ...) return(-2*logLik.td_bcnm(mod))
+deviance.td_bcnm <- function(object, ...) return(-2*logLik.td_bcnm(object))
 
 #' Model deviance
 #' 
@@ -502,7 +502,7 @@ deviance.td_bcnm <- function(mod, ...) return(-2*logLik.td_bcnm(mod))
 #' @param ... Additional arguments currently not used.
 #' @family drift diffusion model functions
 #' @export
-deviance.td_ddm <- function(mod, ...) return(-2*logLik.td_ddm(mod))
+deviance.td_ddm <- function(object, ...) return(-2*logLik.td_ddm(object))
 
 #' Plot models
 #'

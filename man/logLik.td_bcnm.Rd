@@ -4,12 +4,12 @@
 \alias{logLik.td_bcnm}
 \title{Extract log-likelihood}
 \usage{
-\method{logLik}{td_bcnm}(mod, ...)
+\method{logLik}{td_bcnm}(object, ...)
 }
 \arguments{
-\item{mod}{An object of class \code{td_bcnm}}
-
 \item{...}{Additional arguments currently not used.}
+
+\item{mod}{An object of class \code{td_bcnm}}
 }
 \description{
 Compute log-likelihood for a temporal discounting binary choice nonlinear model.
