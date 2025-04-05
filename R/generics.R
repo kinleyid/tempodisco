@@ -423,7 +423,7 @@ residuals.td_ipm <- function(object, type = c('response', 'pearson'), ...) {
 #' Extract log-likelihood
 #' 
 #' Compute log-likelihood for a temporal discounting binary choice nonlinear model.
-#' @param mod An object of class \code{td_bcnm}
+#' @param object An object of class \code{td_bcnm}
 #' @param ... Additional arguments currently not used.
 #' @family nonlinear binary choice model functions
 #' @export
@@ -440,7 +440,7 @@ logLik.td_bcnm <- function(object, ...) {
 #' Extract log-likelihood
 #' 
 #' Compute log-likelihood for a temporal discounting indifference point model.
-#' @param mod An object of class \code{td_ipm}
+#' @param object An object of class \code{td_ipm}
 #' @param ... Additional arguments currently not used.
 #' @family indifference point model functions
 #' @export
@@ -464,7 +464,7 @@ logLik.td_ipm <- function(object, ...) {
 #' Extract log-likelihood
 #' 
 #' Compute log-likelihood for a temporal discounting drift diffusion model.
-#' @param mod An object of class \code{td_bcnm}.
+#' @param object An object of class \code{td_bcnm}.
 #' @param type Should probabilities /probability densities be computed for responses and RTs (\code{'resp_rt'}, default) or responses only (\code{'resp'})?
 #' @param ... Additional arguments currently not used.
 #' @family drift diffusion model functions
@@ -489,7 +489,7 @@ logLik.td_ddm <- function(object, type = c('resp_rt', 'resp', 'rt'), ...) {
 #' Model deviance
 #' 
 #' Compute deviance for a temporal discounting binary choice model.
-#' @param mod An object of class \code{td_bcnm}.
+#' @param object An object of class \code{td_bcnm}.
 #' @param ... Additional arguments currently not used.
 #' @family nonlinear binary choice model functions
 #' @export
@@ -498,7 +498,7 @@ deviance.td_bcnm <- function(object, ...) return(-2*logLik.td_bcnm(object))
 #' Model deviance
 #' 
 #' Compute deviance for a temporal discounting drift diffusion model.
-#' @param mod An object of class \code{td_ddm}.
+#' @param object An object of class \code{td_ddm}.
 #' @param ... Additional arguments currently not used.
 #' @family drift diffusion model functions
 #' @export

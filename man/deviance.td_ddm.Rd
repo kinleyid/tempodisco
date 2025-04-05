@@ -7,9 +7,9 @@
 \method{deviance}{td_ddm}(object, ...)
 }
 \arguments{
-\item{...}{Additional arguments currently not used.}
+\item{object}{An object of class \code{td_ddm}.}
 
-\item{mod}{An object of class \code{td_ddm}.}
+\item{...}{Additional arguments currently not used.}
 }
 \description{
 Compute deviance for a temporal discounting drift diffusion model.

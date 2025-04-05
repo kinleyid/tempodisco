@@ -7,9 +7,9 @@
 \method{logLik}{td_bcnm}(object, ...)
 }
 \arguments{
-\item{...}{Additional arguments currently not used.}
+\item{object}{An object of class \code{td_bcnm}}
 
-\item{mod}{An object of class \code{td_bcnm}}
+\item{...}{Additional arguments currently not used.}
 }
 \description{
 Compute log-likelihood for a temporal discounting binary choice nonlinear model.
