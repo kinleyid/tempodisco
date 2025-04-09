@@ -4,7 +4,7 @@
 #' @name td_bc_single_ptpt
 #' @docType data
 #' @author Isaac Kinley \email{isaac.kinley@gmail.com}
-#' @references \url{https://doi.org/10.31234/osf.io/y2fdh}
+#' @references \doi{10.31234/osf.io/qjcwn}
 #' @keywords temporal delay discounting choice
 NULL
 
@@ -14,7 +14,7 @@ NULL
 #' @name td_bc_study
 #' @docType data
 #' @author Isaac Kinley \email{isaac.kinley@gmail.com}
-#' @references \url{https://doi.org/10.31234/osf.io/y2fdh}
+#' @references \doi{10.31234/osf.io/qjcwn}
 #' @keywords temporal delay discounting choice
 NULL
 
