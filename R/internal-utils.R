@@ -75,7 +75,7 @@ validate_td_data <- function(data, required_columns) {
   # Rather than stopping when a column fails validation, run the validation
   # for all columns and print out all the failures so the user can fix them
   # all.
-  stop_flag <- F
+  stop_flag <- FALSE
   for (colname in names(expectations)) {
     if (colname %in% names(data)) {
       
@@ -86,7 +86,7 @@ validate_td_data <- function(data, required_columns) {
         message(sprintf('%s should be of type %s',
                         colname,
                         paste(expected$type, collapse = ' or ')))
-        stop_flag <- T
+        stop_flag <- TRUE
       }
       
       if (!all(curr_col >= expected$lims[1]) || !all(curr_col <= expected$lims[2])) {
@@ -95,7 +95,7 @@ validate_td_data <- function(data, required_columns) {
                 curr_col,
                 expected$lims[1],
                 expected$lims[2]))
-        stop_flag <- T
+        stop_flag <- TRUE
       }
     }
   }

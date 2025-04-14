@@ -25,7 +25,7 @@
 #' @param alpha_par_starts A vector of starting values to try for the "alpha" parameter (boundary separation) during optimization.
 #' @param tau_par_starts A vector of starting values to try for the "tau" parameter (non-decision time) during optimization.
 #' @param drift_transform A transform to apply to drift rates. Either \code{"none"} (no transform), \code{"sigmoid"} (sigmoidal transform described by Peters & D'Esposito, 2020, \doi{10.1371/journal.pcbi.1007615}, and Fontanesi et al., 2019, \doi{10.3758/s13423-018-1554-2}), or \code{"bias-correct"} (experimental; see note below).
-#' @param optim_args Additional arguments to pass to \code{optim()}. Default is \code{list(silent = T)}.
+#' @param optim_args Additional arguments to pass to \code{optim()}. Default is \code{list(silent = TRUE)}.
 #' @param silent Boolean (true by default). The call to \code{optim()} occurs within a \code{try()} wrapper. The value of \code{silent} is passed along to \code{try()}.
 #' @family drift diffusion model functions
 #' @return An object of class \code{td_bcnm} with components \code{data} (containing the data used for fitting), \code{config} (containing the internal configuration of the model, including the \code{discount_function}), and \code{optim} (the output of \code{optim()}).
@@ -45,7 +45,7 @@ td_ddm <- function(
     alpha_par_starts = c(0.5, 1, 10),
     tau_par_starts = c(0.2, 0.8),
     drift_transform = c('none', 'sigmoid', 'bias-correct'),
-    silent = T,
+    silent = TRUE,
     optim_args = list()) {
   # Input validation--------------------------
   
@@ -59,10 +59,10 @@ td_ddm <- function(
   }
   
   # Attention checks
-  attention_checks(data, warn = T)
+  attention_checks(data, warn = TRUE)
   
   # All immediate chosen or all delayed chosen?
-  invariance_checks(data, warn = T)
+  invariance_checks(data, warn = TRUE)
   
   # End input validation----------------------
   
@@ -188,7 +188,7 @@ get_median <- function(fn) {
 
 median_pimm_ddm <- function(par) {
   # Get drift rate producing indifferent (i.e., p = 0.5 for imm. and del.)
-  o <- optim(0, function(v) {(pimm_ddm(v, par) - 0.5)**2}, control = list(warn.1d.NelderMead = F))
+  o <- optim(0, function(v) {(pimm_ddm(v, par) - 0.5)**2}, control = list(warn.1d.NelderMead = FALSE))
   o$par
 }
 

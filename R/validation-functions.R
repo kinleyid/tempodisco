@@ -13,7 +13,7 @@
 #' attention_checks(td_bc_single_ptpt)
 #' }
 #' @export
-attention_checks <- function(data, warn = F, ppn = F) {
+attention_checks <- function(data, warn = FALSE, ppn = FALSE) {
   
   validate_td_data(data,
                    required_columns = c('val_imm', 'val_del', 'imm_chosen'))
@@ -56,7 +56,7 @@ attention_checks <- function(data, warn = F, ppn = F) {
 #' attention_checks(td_bc_single_ptpt)
 #' }
 #' @export
-invariance_checks <- function(data, warn = F) {
+invariance_checks <- function(data, warn = FALSE) {
   
   all_imm <- all(data$imm_chosen)
   if (all_imm & warn) {

@@ -47,7 +47,7 @@ td_ipm <- function(
                           'model-free',
                           'constant'),
     optim_args = list(),
-    silent = T) {
+    silent = TRUE) {
   
   # Required data columns
   

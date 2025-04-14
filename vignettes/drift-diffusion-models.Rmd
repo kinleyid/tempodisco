@@ -22,9 +22,9 @@ library(tempodisco)
 
 Drift diffusion models (DDMs; [Ratcliff, 1978](https://doi.org/10.1037/0033-295X.85.2.59)) predict not only binary choices but also response times (RTs), and can be applied to intertemporal choice data ([Peters & D'Esposito, 2020](https://doi.org/10.1371/journal.pcbi.1007615)). DDMs model decision making as a process of noisy evidence accumulation in which the evidence $X$ begins at some value $\beta$ and evolves according to the stochastic differential equation
 
-$$\frac{d}{dt}X \sim \nu + \omega$$
+$$\frac{d}{dt}X \sim \delta + \omega$$
 
-where $\delta$ is the drift rate, and $\omega$ is normally distributed noise with 0 mean and unit variance. Evidence begins accumulating after a non-decision period $\tau$ and is complete once $X$ reaches either 0 (meaning the delayed reward is chosen) or a threshold $\alpha$ (meaning the immediate reward is chosen). Thus, the model captures speed-accuracy tradeoffs: as $\alpha$ increases, decisions will be slower but more "accurate" (i.e., reflective of the decision maker's relative preferences). This package relies on [Wabersich and Vandekerckhove's (2014) ](https://doi.org/10.32614/RJ-2014-005) [`RWiener`](https://cran.r-project.org/package=RWiener) to compute first passage times for the diffusion process.
+where $\delta$ is the drift rate, and $\omega$ is normally distributed noise with $0$ mean and unit variance. Evidence begins accumulating after a non-decision period $\tau$ and is complete once $X$ reaches either $0$ (meaning the delayed reward is chosen) or a threshold $\alpha$ (meaning the immediate reward is chosen). Thus, the model captures speed-accuracy tradeoffs: as $\alpha$ increases, decisions will be slower but more "accurate" (i.e., reflective of the decision maker's relative preferences). This package relies on [Wabersich and Vandekerckhove's (2014)](https://doi.org/10.32614/RJ-2014-005) [`RWiener`](https://cran.r-project.org/package=RWiener) to compute first passage times for the diffusion process.
 
 Following [Peters & D'Esposito (2020)](https://doi.org/10.1371/journal.pcbi.1007615), the drift rate is computed by multiplying the difference in subjective values by a scale factor $v$:
 

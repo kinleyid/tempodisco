@@ -9,7 +9,7 @@
 #' @param fit_err_rate A Boolean (false by default) specifying whether the model should include an error rate (parameterized by "eps"). See Eq. 5 here: https://doi.org/10.3758/s13428-015-0672-2.
 #' @param gamma_par_starts A vector of starting values to try for the "gamma" parameter (which controls the steepness of the choice rule) during optimization.
 #' @param eps_par_starts A vector of starting values to try for the "eps" parameter (which controls the error rate) during optimization. Ignored if `fit_err_rate = FALSE`.
-#' @param optim_args Additional arguments to pass to \code{optim()}. Default is \code{list(silent = T)}.
+#' @param optim_args Additional arguments to pass to \code{optim()}. Default is \code{list(silent = TRUE)}.
 #' @param silent Boolean (true by default). The call to \code{optim()} occurs within a \code{try()} wrapper. The value of \code{silent} is passed along to \code{try()}.
 #' @param ... Additional arguments to provide finer-grained control over the choice rule. Note that using a custom choice rule causes the \code{choice_rule} and \code{fixed_ends} arguments to be ignored.
 #' @family nonlinear binary choice model functions
@@ -17,7 +17,7 @@
 #' @examples
 #' \dontrun{
 #' data("td_bc_single_ptpt")
-#' mod <- td_bcnm(td_bc_single_ptpt, discount_function = "hyperbolic", fixed_ends = T)
+#' mod <- td_bcnm(td_bc_single_ptpt, discount_function = "hyperbolic", fixed_ends = TRUE)
 #' # Custom discount function
 #' custom_discount_function <- td_fn(
 #'   name = 'custom',
@@ -26,18 +26,18 @@
 #'   par_lims = list(k = c(0, Inf), b = c(0, 1)),
 #'   ED50 = function(...) 'non-analytic'
 #' )
-#' mod <- td_bcnm(td_bc_single_ptpt, discount_function = custom_discount_function, fit_err_rate = T)
+#' mod <- td_bcnm(td_bc_single_ptpt, discount_function = custom_discount_function, fit_err_rate = TRUE)
 #' }
 #' @export
 td_bcnm <- function(
     data,
     discount_function = 'all',
     choice_rule = c('logistic', 'probit', 'power'),
-    fixed_ends = F,
-    fit_err_rate = F,
+    fixed_ends = FALSE,
+    fit_err_rate = FALSE,
     gamma_par_starts = c(0.01, 1, 100),
     eps_par_starts = c(0.01, 0.25),
-    silent = T,
+    silent = TRUE,
     optim_args = list(),
     ...) {
   
@@ -93,10 +93,10 @@ td_bcnm <- function(
   data$imm_chosen <- as.logical(data$imm_chosen)
   
   # Attention checks
-  attention_checks(data, warn = T)
+  attention_checks(data, warn = TRUE)
   
   # All immediate chosen or all delayed chosen?
-  invariance_checks(data, warn = T)
+  invariance_checks(data, warn = TRUE)
   
   # Get arguments as a list
   args <- c(
@@ -123,7 +123,7 @@ td_bcnm <- function(
     # Get prob. model with the given settings but parameter values unspecified
     prob_mod_frame <- do.call(get_prob_mod_frame, config)
     # Get function to compute negative log likelihood
-    robust <- F # Maybe in the future
+    robust <- FALSE # Maybe in the future
     if (robust) {
       # nll_fn <- get_rob_fn(data, prob_mod_frame)
     } else {

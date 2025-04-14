@@ -425,6 +425,7 @@ residuals.td_ipm <- function(object, type = c('response', 'pearson'), ...) {
 #' Compute log-likelihood for a temporal discounting binary choice nonlinear model.
 #' @param object An object of class \code{td_bcnm}
 #' @param ... Additional arguments currently not used.
+#' @return Returns an object of class \code{logLik} with attributed \code{df} and \code{nobs}
 #' @family nonlinear binary choice model functions
 #' @export
 logLik.td_bcnm <- function(object, ...) {
@@ -442,6 +443,7 @@ logLik.td_bcnm <- function(object, ...) {
 #' Compute log-likelihood for a temporal discounting indifference point model.
 #' @param object An object of class \code{td_ipm}
 #' @param ... Additional arguments currently not used.
+#' @return Returns an object of class \code{logLik} with attributed \code{df} and \code{nobs}
 #' @family indifference point model functions
 #' @export
 logLik.td_ipm <- function(object, ...) {
@@ -467,6 +469,7 @@ logLik.td_ipm <- function(object, ...) {
 #' @param object An object of class \code{td_bcnm}.
 #' @param type Should probabilities /probability densities be computed for responses and RTs (\code{'resp_rt'}, default) or responses only (\code{'resp'})?
 #' @param ... Additional arguments currently not used.
+#' @return Returns an object of class \code{logLik} with attributed \code{df} and \code{nobs}
 #' @family drift diffusion model functions
 #' @export
 logLik.td_ddm <- function(object, type = c('resp_rt', 'resp', 'rt'), ...) {
@@ -491,6 +494,7 @@ logLik.td_ddm <- function(object, type = c('resp_rt', 'resp', 'rt'), ...) {
 #' Compute deviance for a temporal discounting binary choice model.
 #' @param object An object of class \code{td_bcnm}.
 #' @param ... Additional arguments currently not used.
+#' @return The value of the deviance extracted from the model
 #' @family nonlinear binary choice model functions
 #' @export
 deviance.td_bcnm <- function(object, ...) return(-2*logLik.td_bcnm(object))
@@ -500,6 +504,7 @@ deviance.td_bcnm <- function(object, ...) return(-2*logLik.td_bcnm(object))
 #' Compute deviance for a temporal discounting drift diffusion model.
 #' @param object An object of class \code{td_ddm}.
 #' @param ... Additional arguments currently not used.
+#' @return The value of the deviance extracted from the model
 #' @family drift diffusion model functions
 #' @export
 deviance.td_ddm <- function(object, ...) return(-2*logLik.td_ddm(object))
@@ -517,6 +522,7 @@ deviance.td_ddm <- function(object, ...) return(-2*logLik.td_ddm(object))
 #' @param verbose Whether to print info about, e.g., setting del = ED50 when \code{type = 'endpoints'}.
 #' @param q_lines When \code{type = 'rt'}, plot dashed lines for which quantiles of the predicted RT distribution? Default is 0.025 and 0.975 (i.e., a quantile-based 95\% confidence interval).
 #' @param ... Additional arguments to \code{plot()}.
+#' @return No return value (called to produce a plot)
 #' @examples
 #' \dontrun{
 #' data("td_bc_single_ptpt")

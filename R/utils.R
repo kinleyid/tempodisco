@@ -49,7 +49,7 @@ asinmean <- function(x) {
   )**2
 }
 
-get_transform <- function(config, inverse = F) {
+get_transform <- function(config, inverse = FALSE) {
   
   # From a string, get the transform applied to val_imm/val_del and to the value of the discount function
   # Optionally, get the inverse of this transform
@@ -100,7 +100,7 @@ get_transform <- function(config, inverse = F) {
 #   return(R)
 # }
 
-run_optimization <- function(fn, par_starts, par_lims, optim_args, silent = F) {
+run_optimization <- function(fn, par_starts, par_lims, optim_args, silent = FALSE) {
   
   # Get the best-fitting optim() object
  
@@ -168,7 +168,7 @@ adj_amt_indiffs <- function(data, block_indic = 'del', order_indic = NULL) {
                    required_columns = c('val_imm', 'val_del', 'imm_chosen',
                                         block_indic, order_indic))
                   
-  rows <- by(data, INDICES = data[[block_indic]], simplify = F, FUN = function(block) {
+  rows <- by(data, INDICES = data[[block_indic]], simplify = FALSE, FUN = function(block) {
 
     block_id <- block[[block_indic]][1]
     
@@ -281,7 +281,7 @@ kirby_preproc <- function(data, discount_function = c('hyperbolic', 'exponential
   data$consistency <- vapply(seq_len(nrow(data)), function(idx) {
     mean(c(data$imm_chosen[0:(idx-1)],
            !data$imm_chosen[(idx):(nrow(data)+1)]),
-         na.rm = T)
+         na.rm = TRUE)
   }, numeric(1))
   
   return(data)
@@ -368,7 +368,7 @@ delwise_consistencies <- function(data) {
     #   del = sdf$del[1],
     #   consistency = max(sdf$consistency)
     # )
-  }, simplify = F)
+  }, simplify = FALSE)
   
   return(rows)
   # do.call(rbind, rows)
