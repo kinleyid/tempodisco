@@ -53,7 +53,7 @@ td_ipm <- function(
   
   data <- validate_td_data(data, required_columns = c('indiff', 'del'))
   
-  cand_fns <- get_candidate_discount_functions(discount_function)
+  cand_fns <- get_candidate_discount_functions(discount_function, val_del_avail = FALSE)
   
   # Run optimization on each candidate discount function
   best_crit <- Inf

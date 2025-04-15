@@ -1,13 +1,14 @@
 
 # Internal utility functions, e.g., input validation functions that are frequently reused
 
-get_candidate_discount_functions <- function(arg) {
+get_candidate_discount_functions <- function(arg, val_del_avail = TRUE) {
   # Get a list of candidate td_fn objects to test
   # `arg` can be:
   # - 'all' (test all predefined discount functions)
   # - a character vector of names of predefined discount functions to test
   # - a custom discount function (object of class `td_fn`)
   # - a list containing both custom discount functions and names of predefined discount functions
+  # Note that, when val_del_avail = FALSE (e.g., when we're fitting indifference point data), the additive-utility function can't be used
   
   # First get singletons into a list
   if (is.character(arg)) {
@@ -22,6 +23,10 @@ get_candidate_discount_functions <- function(arg) {
       if (item == 'all') {
         # get names of predefined discount functions
         predefined_disc_funcs <- eval(formals(td_fn)$predefined)
+        if (!val_del_avail) {
+          # val_del is not a column in the data, therefore additive-utility can't be used
+          predefined_disc_funcs <- predefined_disc_funcs[predefined_disc_funcs != 'additive-utility']
+        }
         # get corresponding td_fn objects and append them
         curr_cands <- lapply(predefined_disc_funcs, td_fn)
       } else if (is.character(item)) {
