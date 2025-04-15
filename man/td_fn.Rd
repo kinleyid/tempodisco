@@ -7,7 +7,7 @@
 td_fn(
   predefined = c("hyperbolic", "exponential", "power", "inverse-q-exponential",
     "nonlinear-time-hyperbolic", "scaled-exponential", "dual-systems-exponential",
-    "nonlinear-time-exponential", "model-free", "constant"),
+    "nonlinear-time-exponential", "additive-utility", "model-free", "constant"),
   name = "unnamed",
   fn = NULL,
   par_starts = NULL,
@@ -35,7 +35,7 @@ td_fn(
 \item{par_chk}{Optionally, this is a function that checks the parameters to ensure they meet some criteria. E.g., for the dual-systems-exponential discount function, we require k1 < k2.}
 }
 \value{
-An object of class `td_fn`.
+An object of class \code{td_fn}.
 }
 \description{
 Get a predefined discount function or create a custom discount function.

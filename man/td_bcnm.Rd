@@ -8,11 +8,11 @@ td_bcnm(
   data,
   discount_function = "all",
   choice_rule = c("logistic", "probit", "power"),
-  fixed_ends = F,
-  fit_err_rate = F,
+  fixed_ends = FALSE,
+  fit_err_rate = FALSE,
   gamma_par_starts = c(0.01, 1, 100),
   eps_par_starts = c(0.01, 0.25),
-  silent = T,
+  silent = TRUE,
   optim_args = list(),
   ...
 )
@@ -34,7 +34,7 @@ td_bcnm(
 
 \item{silent}{Boolean (true by default). The call to \code{optim()} occurs within a \code{try()} wrapper. The value of \code{silent} is passed along to \code{try()}.}
 
-\item{optim_args}{Additional arguments to pass to \code{optim()}. Default is \code{list(silent = T)}.}
+\item{optim_args}{Additional arguments to pass to \code{optim()}. Default is \code{list(silent = TRUE)}.}
 
 \item{...}{Additional arguments to provide finer-grained control over the choice rule. Note that using a custom choice rule causes the \code{choice_rule} and \code{fixed_ends} arguments to be ignored.}
 }
@@ -47,7 +47,7 @@ Compute a binary choice model for a single subject
 \examples{
 \dontrun{
 data("td_bc_single_ptpt")
-mod <- td_bcnm(td_bc_single_ptpt, discount_function = "hyperbolic", fixed_ends = T)
+mod <- td_bcnm(td_bc_single_ptpt, discount_function = "hyperbolic", fixed_ends = TRUE)
 # Custom discount function
 custom_discount_function <- td_fn(
   name = 'custom',
@@ -56,7 +56,7 @@ custom_discount_function <- td_fn(
   par_lims = list(k = c(0, Inf), b = c(0, 1)),
   ED50 = function(...) 'non-analytic'
 )
-mod <- td_bcnm(td_bc_single_ptpt, discount_function = custom_discount_function, fit_err_rate = T)
+mod <- td_bcnm(td_bc_single_ptpt, discount_function = custom_discount_function, fit_err_rate = TRUE)
 }
 }
 \seealso{

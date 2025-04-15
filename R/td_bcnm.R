@@ -170,7 +170,7 @@ td_bcnm <- function(
         )
       )
     }
-    # Run optimizationn
+    # Run optimization
     optimized <- run_optimization(nll_fn,
                                   par_starts,
                                   par_lims,

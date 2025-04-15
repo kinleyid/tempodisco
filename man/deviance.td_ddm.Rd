@@ -11,6 +11,9 @@
 
 \item{...}{Additional arguments currently not used.}
 }
+\value{
+The value of the deviance extracted from the model
+}
 \description{
 Compute deviance for a temporal discounting drift diffusion model.
 }

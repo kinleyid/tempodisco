@@ -38,6 +38,9 @@
 
 \item{...}{Additional arguments to \code{plot()}.}
 }
+\value{
+No return value (called to produce a plot)
+}
 \description{
 Plot delay discounting models.
 }

@@ -4,7 +4,7 @@
 \alias{invariance_checks}
 \title{Check for invariant responding}
 \usage{
-invariance_checks(data, warn = F)
+invariance_checks(data, warn = FALSE)
 }
 \arguments{
 \item{data}{A \code{data.frame} with columns \code{val_imm}, \code{val_del} and \code{del_chosen}, representing data from a single participant.}

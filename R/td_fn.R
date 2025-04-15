@@ -10,7 +10,7 @@
 #' @param init A function to initialize the td_fn object. It should take 2 arguments: "self" (the td_fn object being initialized) and "data" (the data used for initialization).
 #' @param ED50 A function which, given a named vector of parameters \code{p} and optionally a value of \code{del_val}, computes the ED50. If there is no closed-form solution, this should return the string "non-analytic". If the ED50 is not well-defined, this should return the string "none". As a shortcut for these latter 2 cases, the strings "non-analytic" and "none" can be directly supplied as arguments.
 #' @param par_chk Optionally, this is a function that checks the parameters to ensure they meet some criteria. E.g., for the dual-systems-exponential discount function, we require k1 < k2.
-#' @return An object of class `td_fn`.
+#' @return An object of class \code{td_fn}.
 #' @examples 
 #' \dontrun{
 #' data("td_bc_single_ptpt")
@@ -34,6 +34,7 @@ td_fn <- function(predefined = c('hyperbolic',
                                  'scaled-exponential',
                                  'dual-systems-exponential',
                                  'nonlinear-time-exponential',
+                                 'additive-utility',
                                  'model-free',
                                  'constant'),
                   name = 'unnamed',
@@ -250,6 +251,24 @@ td_fn <- function(predefined = c('hyperbolic',
                      k = c(0, Inf)),
                    ED50 = function(p, ...) (log(2)/p['k'])^(1/p['s']))
       
+    } else if (name == 'additive-utility') {
+      
+      out <- td_fn(name = name,
+                   fn = function(data, p) {
+                     # Note that pmax() is applied before raising to 1/a
+                     # This is because raising a negative number to 1/a produces NaN
+                     pmax(0, 1 - data$val_del**-p['a']*p['k']*data$del**p['s']) ** (1/p['a'])
+                   },
+                   par_starts = list(
+                     a = c(0.1, 0.5, 0.9),
+                     s = c(0.001, 0.01, 0.1),
+                     k = c(0.001, 0.01, 0.1)),
+                   par_lims = list(
+                     a = c(0, Inf),
+                     s = c(0, Inf),
+                     k = c(0, Inf)),
+                   ED50 = function(p, val_del) (val_del**p['a']/p['k'] * (1 - 0.5**p['a']))**(1/p['s']))
+    
     } else if (name == 'model-free') {
       
       out <- td_fn(name = name,

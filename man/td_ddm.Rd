@@ -12,7 +12,7 @@ td_ddm(
   alpha_par_starts = c(0.5, 1, 10),
   tau_par_starts = c(0.2, 0.8),
   drift_transform = c("none", "sigmoid", "bias-correct"),
-  silent = T,
+  silent = TRUE,
   optim_args = list()
 )
 }
@@ -33,7 +33,7 @@ td_ddm(
 
 \item{silent}{Boolean (true by default). The call to \code{optim()} occurs within a \code{try()} wrapper. The value of \code{silent} is passed along to \code{try()}.}
 
-\item{optim_args}{Additional arguments to pass to \code{optim()}. Default is \code{list(silent = T)}.}
+\item{optim_args}{Additional arguments to pass to \code{optim()}. Default is \code{list(silent = TRUE)}.}
 }
 \value{
 An object of class \code{td_bcnm} with components \code{data} (containing the data used for fitting), \code{config} (containing the internal configuration of the model, including the \code{discount_function}), and \code{optim} (the output of \code{optim()}).

@@ -10,7 +10,7 @@ td_ipm(
     "nonlinear-time-hyperbolic", "scaled-exponential", "dual-systems-exponential",
     "nonlinear-time-exponential", "model-free", "constant"),
   optim_args = list(),
-  silent = T
+  silent = TRUE
 )
 }
 \arguments{

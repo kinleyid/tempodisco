@@ -13,6 +13,9 @@
 
 \item{...}{Additional arguments currently not used.}
 }
+\value{
+Returns an object of class \code{logLik} with attributed \code{df} and \code{nobs}
+}
 \description{
 Compute log-likelihood for a temporal discounting drift diffusion model.
 }
