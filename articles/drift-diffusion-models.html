@@ -100,17 +100,21 @@ evidence accumulation in which the evidence
 begins at some value
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>β</mi><annotation encoding="application/x-tex">\beta</annotation></semantics></math>
 and evolves according to the stochastic differential equation</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mi>d</mi><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mi>X</mi><mo>∼</mo><mi>ν</mi><mo>+</mo><mi>ω</mi></mrow><annotation encoding="application/x-tex">\frac{d}{dt}X \sim \nu + \omega</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mi>d</mi><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mi>X</mi><mo>∼</mo><mi>δ</mi><mo>+</mo><mi>ω</mi></mrow><annotation encoding="application/x-tex">\frac{d}{dt}X \sim \delta + \omega</annotation></semantics></math></p>
 <p>where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>
 is the drift rate, and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>
-is normally distributed noise with 0 mean and unit variance. Evidence
-begins accumulating after a non-decision period
+is normally distributed noise with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
+mean and unit variance. Evidence begins accumulating after a
+non-decision period
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
 and is complete once
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
-reaches either 0 (meaning the delayed reward is chosen) or a threshold
+reaches either
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
+(meaning the delayed reward is chosen) or a threshold
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>
 (meaning the immediate reward is chosen). Thus, the model captures
 speed-accuracy tradeoffs: as

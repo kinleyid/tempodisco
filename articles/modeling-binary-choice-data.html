@@ -317,14 +317,14 @@ nonlinear model by calling <code>td_bcnm</code>. The full list of
 built-in discount functions is as follows:</p>
 <table class="table">
 <colgroup>
-<col width="16%">
-<col width="47%">
-<col width="36%">
+<col width="25%">
+<col width="43%">
+<col width="31%">
 </colgroup>
 <thead><tr class="header">
 <th>Name</th>
 <th>Functional form</th>
-<th>Other names</th>
+<th>Notes</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -337,14 +337,14 @@ built-in discount functions is as follows:</p>
 <td>
 <code>scaled-exponential</code> (<a href="https://doi.org/10.1162/003355397555253" class="external-link">Laibson, 1997</a>)</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo>,</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>w</mi><msup><mi>e</mi><mrow><mo>−</mo><mi>k</mi><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">f(t; k, w) = w e^{-k t}</annotation></semantics></math></td>
-<td>Quasi-hyperbolic; beta-delta</td>
+<td>Also known as quasi-hyperbolic or beta-delta</td>
 </tr>
 <tr class="odd">
 <td>
 <code>nonlinear-time-exponential</code> (<a href="https://doi.org/10.1287/mnsc.1060.0671" class="external-link">Ebert &amp; Prelec,
 2007</a>)</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo>,</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mi>e</mi><mrow><mo>−</mo><mi>k</mi><msup><mi>t</mi><mi>s</mi></msup></mrow></msup></mrow><annotation encoding="application/x-tex">f(t; k, s) = e^{-k t^s}</annotation></semantics></math></td>
-<td>Constant sensitivity</td>
+<td>Also known as constant sensitivity</td>
 </tr>
 <tr class="even">
 <td>
@@ -358,9 +358,9 @@ built-in discount functions is as follows:</p>
 <code>inverse-q-exponential</code> (<a href="https://doi.org/10.1037/0033-2909.130.5.769" class="external-link">Green &amp; Myerson,
 2004</a>)</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo>,</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>k</mi><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>s</mi></msup></mfrac></mrow><annotation encoding="application/x-tex">f(t; k, s) = \frac{1}{(1 + k t)^s}</annotation></semantics></math></td>
-<td>Generalized hyperbolic (<a href="https://doi.org/10.2307/2118482" class="external-link">Loewenstin &amp; Prelec</a>);
+<td>Also known as generalized hyperbolic (<a href="https://doi.org/10.2307/2118482" class="external-link">Loewenstin &amp; Prelec</a>),
 hyperboloid (<a href="https://doi.org/10.1037/0033-2909.130.5.769" class="external-link">Green
-&amp; Myerson, 2004</a>); q-exponential (<a href="https://doi.org/10.1016/j.physa.2012.07.012" class="external-link">Han &amp; Takahashi,
+&amp; Myerson, 2004</a>), or q-exponential (<a href="https://doi.org/10.1016/j.physa.2012.07.012" class="external-link">Han &amp; Takahashi,
 2012</a>)</td>
 </tr>
 <tr class="even">
@@ -373,9 +373,17 @@ hyperboloid (<a href="https://doi.org/10.1037/0033-2909.130.5.769" class="extern
 <td>
 <code>nonlinear-time-hyperbolic</code> (<a href="https://doi.org/10.1901/jeab.2006.85-05" class="external-link">Rachlin, 2006</a>)</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo>,</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><mi>k</mi><msup><mi>t</mi><mi>s</mi></msup></mrow></mfrac></mrow><annotation encoding="application/x-tex">f(t; k, s) = \frac{1}{1 + k t^s}</annotation></semantics></math></td>
-<td>Power-function (<a href="https://doi.org/10.1901/jeab.2006.85-05" class="external-link">Rachlin, 2006</a>)</td>
+<td>Also known as power-function (<a href="https://doi.org/10.1901/jeab.2006.85-05" class="external-link">Rachlin, 2006</a>)</td>
 </tr>
 <tr class="even">
+<td>
+<code>additive-utility</code> (<a href="https://doi.org/10.1037/a0016414" class="external-link">Killeen, 2009</a>)</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mfrac><mi>k</mi><msubsup><mi>V</mi><mi>D</mi><mi>a</mi></msubsup></mfrac><msup><mi>t</mi><mi>s</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow><mfrac><mn>1</mn><mi>a</mi></mfrac></msup></mrow><annotation encoding="application/x-tex">f(t; k, s, a) = \left( 1 - \frac{k}{V_D^a}t^s\right)^\frac{1}{a}</annotation></semantics></math></td>
+<td>Here,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>V</mi><mi>D</mi></msub><annotation encoding="application/x-tex">V_D</annotation></semantics></math>
+is the value of the delayed reward.</td>
+</tr>
+<tr class="odd">
 <td>
 <code>power</code> (<a href="https://doi.org/10.1287/mnsc.32.9.1123" class="external-link">Harvey, 1986</a>)</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>k</mi></msup></mfrac></mrow><annotation encoding="application/x-tex">f(t; k) = \frac{1}{(1 + t)^k}</annotation></semantics></math></td>
