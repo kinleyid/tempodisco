@@ -55,15 +55,16 @@ following discount functions and can automatically select the best one
 for a given individual according to the Bayesian information criterion
 ([Schwartz, 1978](https://doi.org/10.1214/aos/1176344136)):
 
-| Name | Functional form | Other names |
+| Name | Functional form | Notes |
 |----|----|----|
 | `exponential` ([Samuelson, 1937](https://doi.org/10.2307/2967612)) | $f(t; k) = e^{-k t}$ |  |
-| `scaled-exponential` ([Laibson, 1997](https://doi.org/10.1162/003355397555253)) | $f(t; k, w) = w e^{-k t}$ | Quasi-hyperbolic; beta-delta |
-| `nonlinear-time-exponential` ([Ebert & Prelec, 2007](https://doi.org/10.1287/mnsc.1060.0671)) | $f(t; k, s) = e^{-k t^s}$ | Constant sensitivity |
+| `scaled-exponential` ([Laibson, 1997](https://doi.org/10.1162/003355397555253)) | $f(t; k, w) = w e^{-k t}$ | Also known as quasi-hyperbolic or beta-delta |
+| `nonlinear-time-exponential` ([Ebert & Prelec, 2007](https://doi.org/10.1287/mnsc.1060.0671)) | $f(t; k, s) = e^{-k t^s}$ | Also known as constant sensitivity |
 | `dual-systems-exponential` ([Ven den Bos & McClure, 2013](https://doi.org/10.1002/jeab.6)) | $f(t; k_1, k_2, w) = w e^{-k_1 t} + (1 - w) e^{-k_2 t}$ |  |
-| `inverse-q-exponential` ([Green & Myerson, 2004](https://doi.org/10.1037/0033-2909.130.5.769)) | $f(t; k, s) = \frac{1}{(1 + k t)^s}$ | Generalized hyperbolic ([Loewenstin & Prelec](https://doi.org/10.2307/2118482)); hyperboloid ([Green & Myerson, 2004](https://doi.org/10.1037/0033-2909.130.5.769)); q-exponential ([Han & Takahashi, 2012](https://doi.org/10.1016/j.physa.2012.07.012)) |
+| `inverse-q-exponential` ([Green & Myerson, 2004](https://doi.org/10.1037/0033-2909.130.5.769)) | $f(t; k, s) = \frac{1}{(1 + k t)^s}$ | Also known as generalized hyperbolic ([Loewenstin & Prelec](https://doi.org/10.2307/2118482)), hyperboloid ([Green & Myerson, 2004](https://doi.org/10.1037/0033-2909.130.5.769)), or q-exponential ([Han & Takahashi, 2012](https://doi.org/10.1016/j.physa.2012.07.012)) |
 | `hyperbolic` ([Mazur, 1987](https://doi.org/10.4324/9781315825502)) | $f(t; k) = \frac{1}{1 + kt}$ |  |
-| `nonlinear-time-hyperbolic` ([Rachlin, 2006](https://doi.org/10.1901/jeab.2006.85-05)) | $f(t; k, s) = \frac{1}{1 + k t^s}$ | Power-function ([Rachlin, 2006](https://doi.org/10.1901/jeab.2006.85-05)) |
+| `nonlinear-time-hyperbolic` ([Rachlin, 2006](https://doi.org/10.1901/jeab.2006.85-05)) | $f(t; k, s) = \frac{1}{1 + k t^s}$ | Also known as power-function ([Rachlin, 2006](https://doi.org/10.1901/jeab.2006.85-05)) |
+| `additive-utility` ([Killeen, 2009](https://doi.org/10.1037/a0016414)) | $f(t; k, s, a) = \left( 1 - \frac{k}{V_D^a}t^s\right)^\frac{1}{a}$ | Here, $V_D$ is the value of the delayed reward. |
 | `power` ([Harvey, 1986](https://doi.org/10.1287/mnsc.32.9.1123)) | $f(t; k) = \frac{1}{(1 + t)^k}$ |  |
 
 These discount functions can be fit to indifference point data (see
