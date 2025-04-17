@@ -317,9 +317,9 @@ nonlinear model by calling <code>td_bcnm</code>. The full list of
 built-in discount functions is as follows:</p>
 <table class="table">
 <colgroup>
-<col width="25%">
-<col width="43%">
-<col width="31%">
+<col width="33%">
+<col width="33%">
+<col width="33%">
 </colgroup>
 <thead><tr class="header">
 <th>Name</th>
@@ -381,7 +381,9 @@ hyperboloid (<a href="https://doi.org/10.1037/0033-2909.130.5.769" class="extern
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mfrac><mi>k</mi><msubsup><mi>V</mi><mi>D</mi><mi>a</mi></msubsup></mfrac><msup><mi>t</mi><mi>s</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow><mfrac><mn>1</mn><mi>a</mi></mfrac></msup></mrow><annotation encoding="application/x-tex">f(t; k, s, a) = \left( 1 - \frac{k}{V_D^a}t^s\right)^\frac{1}{a}</annotation></semantics></math></td>
 <td>Here,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>V</mi><mi>D</mi></msub><annotation encoding="application/x-tex">V_D</annotation></semantics></math>
-is the value of the delayed reward.</td>
+is the value of the delayed reward. For
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>&gt;</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>V</mi><mi>D</mi><mi>a</mi></msubsup><mi>/</mi><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mn>1</mn><mi>/</mi><mi>s</mi></mrow></msup></mrow><annotation encoding="application/x-tex">t &gt; \left(V_D^a / k\right)^{1/s}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f(t; k, s, a) = 0</annotation></semantics></math>.</td>
 </tr>
 <tr class="odd">
 <td>
