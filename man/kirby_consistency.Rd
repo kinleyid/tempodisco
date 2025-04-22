@@ -21,7 +21,7 @@ A consistency score between 0 and 1.
 Compute the consistency score per the method of Kirby et al. (1999, \doi{10.1037//0096-3445.128.1.78}). This is described in detail in Kaplan et al. (2016, \doi{10.1007/s40614-016-0070-9}), where it's suggested that a consistency score below 0.75 might be a sign of inattentive responding.
 }
 \examples{
-\dontrun{
+\donttest{
 data("td_bc_single_ptpt")
 mod <- kirby_consistency(td_bc_single_ptpt)
 }

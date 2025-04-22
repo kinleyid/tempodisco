@@ -29,7 +29,7 @@ An object of class \code{td_ipm} with components \code{data} (containing the dat
 Compute a model of a single subject's indifference points.
 }
 \examples{
-\dontrun{
+\donttest{
 # Basic usage
 data("td_ip_simulated_ptpt")
 mod <- td_ipm(td_ip_simulated_ptpt, discount_function = "hyperbolic")

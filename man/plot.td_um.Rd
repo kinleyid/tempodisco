@@ -45,7 +45,7 @@ No return value (called to produce a plot)
 Plot delay discounting models.
 }
 \examples{
-\dontrun{
+\donttest{
 data("td_bc_single_ptpt")
 mod <- td_bclm(td_bc_single_ptpt, model = 'hyperbolic.1')
 plot(mod, type = 'summary', p_lines = c(0.25, 0.75), log = 'x')

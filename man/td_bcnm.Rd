@@ -45,7 +45,7 @@ An object of class \code{td_bcnm} with components \code{data} (containing the da
 Compute a binary choice model for a single subject
 }
 \examples{
-\dontrun{
+\donttest{
 data("td_bc_single_ptpt")
 mod <- td_bcnm(td_bc_single_ptpt, discount_function = "hyperbolic", fixed_ends = TRUE)
 # Custom discount function

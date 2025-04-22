@@ -35,7 +35,7 @@ Compute a binary choice linear model for a single subject. In these models, we c
 \eqn{\beta_1}
 }
 \examples{
-\dontrun{
+\donttest{
 data("td_bc_single_ptpt")
 mod <- td_bclm(td_bc_single_ptpt, model = 'hyperbolic.1')
 print(coef(mod))

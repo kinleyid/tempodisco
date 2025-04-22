@@ -4,11 +4,11 @@
 #' Compute the median effective delay.
 #' @param mod A temporal discounting model.
 #' @param val_del Delayed value, if applicable (i.e., if magnitude effects are accounted for).
-#' @return A vector of predictions.
+#' @return Median effective delay value.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data("td_bc_single_ptpt")
-#' mod <- td_bcnm(td_bc_single_ptpt)
+#' mod <- td_bcnm(td_bc_single_ptpt, discount_function = "exponential")
 #' print(ED50(mod))
 #' }
 #' @export
@@ -49,11 +49,10 @@ ED50 <- function(mod, val_del = NULL) {
 #' @note
 #' An indifference point of 1 is assumed at delay 0.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data("td_bc_single_ptpt")
-#' mod <- td_bcnm(td_bc_single_ptpt)
+#' mod <- td_bcnm(td_bc_single_ptpt, discount_function = "exponential")
 #' print(AUC(mod))
-#' data("td_ip_simulated_ptpt")
 #' }
 #' @export
 AUC <- function(obj, min_del = 0, max_del = NULL, val_del = NULL, del_transform = c('none', 'log', 'ordinal-scaling'), ...) {
@@ -157,7 +156,7 @@ AUC <- function(obj, min_del = 0, max_del = NULL, val_del = NULL, del_transform 
 #' @param obj Either a \code{data.frame} with columns \code{indiff} and \code{del}, or a discounting model of class \code{td_bcnm} or \code{td_ipm}, fit using the \code{"model-free"} discount function.
 #' @returns Named logical vector specifying whether nonsystematic discounting is exhibited according to C1/C2.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # On a model
 #' data("td_bc_single_ptpt")
 #' mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'model-free')
@@ -212,9 +211,9 @@ nonsys <- function(obj) {
 #' @param mod A temporal discounting model.
 #' @returns The name of the discount function.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data("td_bc_single_ptpt")
-#' mod <- td_bcnm(td_bc_single_ptpt)
+#' mod <- td_bcnm(td_bc_single_ptpt, discount_function = "exponential")
 #' discount_function(mod)
 #' }
 #' @export

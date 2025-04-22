@@ -84,7 +84,7 @@ predict_indiffs <- function(object, newdata) {
 #' @family nonlinear binary choice model functions
 #' @return A vector of predictions.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data("td_bc_single_ptpt")
 #' mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'hyperbolic')
 #' indiffs <- predict(mod, newdata = data.frame(del = 1:100), type = 'indiff')
@@ -127,7 +127,7 @@ predict.td_bcnm <- function(object, newdata = NULL, type = c('link', 'response',
 #' @family linear binary choice model functions
 #' @return A vector of predictions.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data("td_bc_single_ptpt")
 #' mod <- td_bclm(td_bc_single_ptpt, model = 'hyperbolic.1')
 #' indiffs <- predict(mod, newdata = data.frame(del = 1:100), type = 'indiff')
@@ -163,7 +163,7 @@ predict.td_bclm <- function(object, newdata = NULL, type = c('indiff', 'link', '
 #' @family indifference point model functions
 #' @return A vector of predictions.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data("td_ip_simulated_ptpt")
 #' mod <- td_ipm(td_ip_simulated_ptpt, discount_function = 'hyperbolic')
 #' indiffs <- predict(mod, del = 1:100)
@@ -209,10 +209,14 @@ predict.td_ipm <- function(object, newdata = NULL, type = c('indiff', 'response'
 #' @note
 #' When \code{type = 'rt'}, expected RTs are computed irrespective of which reward was selected, per equation 5 in Grasman, Wagenmakers, & van der Maas (2009, \doi{10.1016/j.jmp.2009.01.006}).
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data("td_bc_single_ptpt")
-#' mod <- td_ddm(td_bc_single_ptpt, discount_function = 'exponential')
-#' pred_rts <- predict(mod, type = 'rt')
+#' ddm <- td_ddm(td_bc_single_ptpt, discount_function = 'exponential',
+#'               v_par_starts = 0.01,
+#'               beta_par_starts = 0.5,
+#'               alpha_par_starts = 3.5,
+#'               tau_par_starts = 0.9)
+#' pred_rts <- predict(ddm, type = 'rt')
 #' }
 #' @export
 predict.td_ddm <- function(object, newdata = NULL, type = c('indiff', 'link', 'response', 'rt'), ...) {
@@ -524,7 +528,7 @@ deviance.td_ddm <- function(object, ...) return(-2*logLik.td_ddm(object))
 #' @param ... Additional arguments to \code{plot()}.
 #' @return No return value (called to produce a plot)
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data("td_bc_single_ptpt")
 #' mod <- td_bclm(td_bc_single_ptpt, model = 'hyperbolic.1')
 #' plot(mod, type = 'summary', p_lines = c(0.25, 0.75), log = 'x')

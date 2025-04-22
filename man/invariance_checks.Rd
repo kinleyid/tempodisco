@@ -18,7 +18,7 @@ Named vector specifying whether the participant chose only immediate rewards (\c
 Check whether participants always chose the immediate reward or always chose the delayed reward.
 }
 \examples{
-\dontrun{
+\donttest{
 # On a model
 data("td_bc_single_ptpt")
 attention_checks(td_bc_single_ptpt)

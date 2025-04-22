@@ -45,9 +45,13 @@ Fit a drift diffusion model for a single subject using maximum likelihood estima
 Drift rates are computed based on the difference in subjective values between the immediate and delayed rewards. In theory, when they are equally valued, they should have equal probability of being chosen. However, this is only true when the bias parameter of the drift diffusion model (\code{beta}) is 0.5 (i.e., no bias). To make sure the immediate and delayed reward have equal probability of being chosen when they are equally valued, we can set \code{drift_transform = "bias-correct"} to add a bias correction factor to the drift rate. However, this feature is experimental and its effects on model fit etc. have not been tested.
 }
 \examples{
-\dontrun{
+\donttest{
 data("td_bc_single_ptpt")
-mod <- td_ddm(td_bc_single_ptpt, discount_function = "hyperbolic")
+ddm <- td_ddm(td_bc_single_ptpt, discount_function = 'exponential',
+              v_par_starts = 0.01,
+              beta_par_starts = 0.5,
+              alpha_par_starts = 3.5,
+              tau_par_starts = 0.9)
 }
 }
 \seealso{

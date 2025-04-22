@@ -12,15 +12,15 @@ ED50(mod, val_del = NULL)
 \item{val_del}{Delayed value, if applicable (i.e., if magnitude effects are accounted for).}
 }
 \value{
-A vector of predictions.
+Median effective delay value.
 }
 \description{
 Compute the median effective delay.
 }
 \examples{
-\dontrun{
+\donttest{
 data("td_bc_single_ptpt")
-mod <- td_bcnm(td_bc_single_ptpt)
+mod <- td_bcnm(td_bc_single_ptpt, discount_function = "exponential")
 print(ED50(mod))
 }
 }

@@ -12,9 +12,8 @@
 #' @param par_chk Optionally, this is a function that checks the parameters to ensure they meet some criteria. E.g., for the dual-systems-exponential discount function, we require k1 < k2.
 #' @return An object of class \code{td_fn}.
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' data("td_bc_single_ptpt")
-#' mod <- td_bcnm(td_bc_single_ptpt, discount_function = "hyperbolic", fixed_ends = T)
 #' # Custom discount function
 #' custom_discount_function <- td_fn(
 #'   name = 'custom',
@@ -23,7 +22,7 @@
 #'   par_lims = list(k = c(0, Inf), b = c(0, 1)),
 #'   ED50 = 'non-analytic'
 #' )
-#' mod <- td_bcnm(td_bc_single_ptpt, discount_function = custom_discount_function, fit_err_rate = T)
+#' mod <- td_bcnm(td_bc_single_ptpt, discount_function = custom_discount_function, fit_err_rate = TRUE)
 #' }
 #' @export
 td_fn <- function(predefined = c('hyperbolic',

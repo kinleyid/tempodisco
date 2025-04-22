@@ -19,7 +19,7 @@ get_rss_fn <- function(data, discount_function) {
 #' @family indifference point model functions.
 #' @return An object of class \code{td_ipm} with components \code{data} (containing the data used for fitting), \code{config} (containing the internal configuration of the model, including the \code{discount_function}), and \code{optim} (the output of \code{optim()}).
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Basic usage
 #' data("td_ip_simulated_ptpt")
 #' mod <- td_ipm(td_ip_simulated_ptpt, discount_function = "hyperbolic")

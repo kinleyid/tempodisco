@@ -16,9 +16,9 @@ The name of the discount function.
 Access the name of the discount function of a model.
 }
 \examples{
-\dontrun{
+\donttest{
 data("td_bc_single_ptpt")
-mod <- td_bcnm(td_bc_single_ptpt)
+mod <- td_bcnm(td_bc_single_ptpt, discount_function = "exponential")
 discount_function(mod)
 }
 }

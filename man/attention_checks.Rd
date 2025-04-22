@@ -20,7 +20,7 @@ Named vector counting the number of times the participant chose an immediate rew
 Check whether participants failed attention checks, either choosing an immediate reward of 0 or choosing a delayed reward equal in face value to an immediate reward. If the participant was never offered either choice, a warning is given.
 }
 \examples{
-\dontrun{
+\donttest{
 # On a model
 data("td_bc_single_ptpt")
 attention_checks(td_bc_single_ptpt)

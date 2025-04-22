@@ -20,7 +20,7 @@ A dataframe with two columns: one for the block indicator and another for the co
 Compute indifference points for data from an adjusting amount procedure (also called a "titrating procedure").
 }
 \examples{
-\dontrun{
+\donttest{
 data("adj_amt_sim")
 adj_amt_indiffs(adj_amt_sim)
 adj_amt_indiffs(adj_amt_sim, block_indic = 'del', order_indic = 'trial_idx')

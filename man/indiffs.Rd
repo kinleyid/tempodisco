@@ -16,7 +16,7 @@ A dataframe with columns \code{del} (delay) and \code{indiff} (indifference poin
 Convert a temporal discounting model with the "model-free" discount function to a dataframe of indifference points.
 }
 \examples{
-\dontrun{
+\donttest{
 data("td_bc_single_ptpt")
 mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'model-free')
 indiff_data <- indiffs(mod)

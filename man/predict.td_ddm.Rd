@@ -30,10 +30,14 @@ Generate predictions from a temporal discounting drift diffusion model.
 When \code{type = 'rt'}, expected RTs are computed irrespective of which reward was selected, per equation 5 in Grasman, Wagenmakers, & van der Maas (2009, \doi{10.1016/j.jmp.2009.01.006}).
 }
 \examples{
-\dontrun{
+\donttest{
 data("td_bc_single_ptpt")
-mod <- td_ddm(td_bc_single_ptpt, discount_function = 'exponential')
-pred_rts <- predict(mod, type = 'rt')
+ddm <- td_ddm(td_bc_single_ptpt, discount_function = 'exponential',
+              v_par_starts = 0.01,
+              beta_par_starts = 0.5,
+              alpha_par_starts = 3.5,
+              tau_par_starts = 0.9)
+pred_rts <- predict(ddm, type = 'rt')
 }
 }
 \seealso{

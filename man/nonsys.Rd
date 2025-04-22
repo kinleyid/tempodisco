@@ -20,7 +20,7 @@ Check for non-systematic discounting, per the Johnson & Bickel (2008) criteria. 
 }
 }
 \examples{
-\dontrun{
+\donttest{
 # On a model
 data("td_bc_single_ptpt")
 mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'model-free')

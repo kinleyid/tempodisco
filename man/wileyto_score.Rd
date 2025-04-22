@@ -16,7 +16,7 @@ An object of class \code{td_bclm}.
 Score a set of responses according to the method of Wileyto et al. (2004, \doi{10.3758/BF03195548}). This function is a thin wrapper to \code{\link{td_bclm}}.
 }
 \examples{
-\dontrun{
+\donttest{
 data("td_bc_single_ptpt")
 mod <- wileyto_score(td_bc_single_ptpt)
 }

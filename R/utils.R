@@ -86,8 +86,8 @@ get_transform <- function(config, inverse = FALSE) {
 #   
 #   qfunc <- get(sprintf('q%s', mod$config$noise_dist))
 #   
-#   transform <- get_transform(mod$config, inverse = F)
-#   inverse_transform <- get_transform(mod$config, inverse = T)
+#   transform <- get_transform(mod$config, inverse = FALSE)
+#   inverse_transform <- get_transform(mod$config, inverse = TRUE)
 #   
 #   gamma <- coef(mod)['gamma']
 #   if (mod$config$gamma_scale == 'linear') {
@@ -156,7 +156,7 @@ run_optimization <- function(fn, par_starts, par_lims, optim_args, silent = FALS
 #' @param order_indic Column name of the order indicator---i.e., the column that specifies the order in which trials were completed. Sorting by this column within a block should sort the rows in chronological order. If unspecified, the rows are assumed to already be in chronological order.
 #' @returns A dataframe with two columns: one for the block indicator and another for the corresponding indifference point.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data("adj_amt_sim")
 #' adj_amt_indiffs(adj_amt_sim)
 #' adj_amt_indiffs(adj_amt_sim, block_indic = 'del', order_indic = 'trial_idx')
@@ -207,7 +207,7 @@ adj_amt_indiffs <- function(data, block_indic = 'del', order_indic = NULL) {
 #' @param discount_function Should \eqn{k} values be computed according to the hyperbolic, exponential, or power discount function? The original method uses the hyperbolic, but in principle the exponential and power are also possible (though these should be considered experimental features).
 #' @return An object of class \code{\link{td_ipm}}.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data("td_bc_single_ptpt")
 #' mod <- kirby_score(td_bc_single_ptpt)
 #' }
@@ -252,7 +252,7 @@ kirby_score <- function(data, discount_function = c('hyperbolic', 'exponential',
 #' @param discount_function Should \eqn{k} values be computed according to the hyperbolic, exponential, or power discount function? The original method uses the hyperbolic, but in principle the exponential and power are also possible (though these should be considered experimental features).
 #' @return A consistency score between 0 and 1.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data("td_bc_single_ptpt")
 #' mod <- kirby_consistency(td_bc_single_ptpt)
 #' }
@@ -294,7 +294,7 @@ kirby_preproc <- function(data, discount_function = c('hyperbolic', 'exponential
 #' @param data Responses to score.
 #' @returns An object of class \code{td_bclm}.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data("td_bc_single_ptpt")
 #' mod <- wileyto_score(td_bc_single_ptpt)
 #' }
@@ -360,7 +360,7 @@ delwise_consistencies <- function(data) {
     # sdf$consistency <- sapply(1:nrow(sdf), function(idx) {
     #   mean(c(!sdf$imm_chosen[0:(idx-1)],
     #          sdf$imm_chosen[(idx):(nrow(sdf)+1)]),
-    #        na.rm = T)
+    #        na.rm = TRUE)
     # })
     # return(sdf)
     # browser()
@@ -381,7 +381,7 @@ delwise_consistencies <- function(data) {
 #' @param mod A model of class \code{\link{td_bcnm}}, \code{\link{td_ipm}}, or \code{\link{td_ddm}} for which the "model-free" discount function has been fit.
 #' @returns A dataframe with columns \code{del} (delay) and \code{indiff} (indifference point).
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data("td_bc_single_ptpt")
 #' mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'model-free')
 #' indiff_data <- indiffs(mod)

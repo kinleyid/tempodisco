@@ -22,7 +22,7 @@ A vector of predictions.
 Generate predictions from a temporal discounting binary choice model.
 }
 \examples{
-\dontrun{
+\donttest{
 data("td_bc_single_ptpt")
 mod <- td_bcnm(td_bc_single_ptpt, discount_function = 'hyperbolic')
 indiffs <- predict(mod, newdata = data.frame(del = 1:100), type = 'indiff')

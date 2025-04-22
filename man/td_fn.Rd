@@ -41,9 +41,8 @@ An object of class \code{td_fn}.
 Get a predefined discount function or create a custom discount function.
 }
 \examples{
-\dontrun{
+\donttest{
 data("td_bc_single_ptpt")
-mod <- td_bcnm(td_bc_single_ptpt, discount_function = "hyperbolic", fixed_ends = T)
 # Custom discount function
 custom_discount_function <- td_fn(
   name = 'custom',
@@ -52,6 +51,6 @@ custom_discount_function <- td_fn(
   par_lims = list(k = c(0, Inf), b = c(0, 1)),
   ED50 = 'non-analytic'
 )
-mod <- td_bcnm(td_bc_single_ptpt, discount_function = custom_discount_function, fit_err_rate = T)
+mod <- td_bcnm(td_bc_single_ptpt, discount_function = custom_discount_function, fit_err_rate = TRUE)
 }
 }

@@ -7,7 +7,7 @@
 #' @param ppn Logical: return proportions of attention checks participant failed, versus absolute numbers?
 #' @returns Named vector counting the number of times the participant chose an immediate reward of 0 (\code{imm_0}) or chose a delayed reward equal in face value to an immediate reward (\code{del_eq_imm}).
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # On a model
 #' data("td_bc_single_ptpt")
 #' attention_checks(td_bc_single_ptpt)
@@ -50,7 +50,7 @@ attention_checks <- function(data, warn = FALSE, ppn = FALSE) {
 #' @param warn Logical: give a warning for invariant responding?
 #' @returns Named vector specifying whether the participant chose only immediate rewards (\code{all_imm}) or chose all delayed rewards (\code{all_del}).
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # On a model
 #' data("td_bc_single_ptpt")
 #' attention_checks(td_bc_single_ptpt)

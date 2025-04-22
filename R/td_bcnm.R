@@ -15,7 +15,7 @@
 #' @family nonlinear binary choice model functions
 #' @return An object of class \code{td_bcnm} with components \code{data} (containing the data used for fitting), \code{config} (containing the internal configuration of the model, including the \code{discount_function}), and \code{optim} (the output of \code{optim()}).
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data("td_bc_single_ptpt")
 #' mod <- td_bcnm(td_bc_single_ptpt, discount_function = "hyperbolic", fixed_ends = TRUE)
 #' # Custom discount function

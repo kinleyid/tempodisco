@@ -36,10 +36,9 @@ Compute either the model-based or model-free area under the curve.
 An indifference point of 1 is assumed at delay 0.
 }
 \examples{
-\dontrun{
+\donttest{
 data("td_bc_single_ptpt")
-mod <- td_bcnm(td_bc_single_ptpt)
+mod <- td_bcnm(td_bc_single_ptpt, discount_function = "exponential")
 print(AUC(mod))
-data("td_ip_simulated_ptpt")
 }
 }

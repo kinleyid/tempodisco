@@ -17,7 +17,7 @@
 #' @family linear binary choice model functions
 #' @return An object of class \code{td_bclm}, nearly identical to a \code{glm} but with an additional \code{config} component.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data("td_bc_single_ptpt")
 #' mod <- td_bclm(td_bc_single_ptpt, model = 'hyperbolic.1')
 #' print(coef(mod))
@@ -42,8 +42,8 @@ td_bclm <- function(data,
     data,
     required_columns = c('val_imm', 'val_del', 'del', 'imm_chosen')
   )
-  attention_checks(data, warn = T)
-  invariance_checks(data, warn = T)
+  attention_checks(data, warn = TRUE)
+  invariance_checks(data, warn = TRUE)
   if (length(grep('\\.B', names(data))) > 0) {
     stop('No columns can have a name that begins with ".B"')
   }
@@ -96,15 +96,15 @@ td_bclm <- function(data,
   #                               derivative_1 <- 1/2*(p['.B_tA'] - (p['.B_tA']^2*data$del + 2*p['.B_tA']*p['.B_xA']*data$val_del + p['.B_I']*p['.B_tA'] - 2*p['.B_tA']*p['.B_xR'])/sqrt(p['.B_tA']^2*data$del^2 + 4*p['.B_xA']^2*data$val_del^2 + p['.B_I']^2 - 4*p['.B_I']*p['.B_xR'] + 4*p['.B_xR']^2 + 2*(p['.B_I']*p['.B_tA'] - 2*p['.B_tA']*p['.B_xR'])*data$del + 4*(p['.B_tA']*p['.B_xA']*data$del + p['.B_I']*p['.B_xA'] + 2*p['.B_xA']*p['.B_xR'])*data$val_del))/(p['.B_xA']*data$val_del)
   #                               derivative_2 <- 1/2*(p['.B_tA'] + (p['.B_tA']^2*data$del + 2*p['.B_tA']*p['.B_xA']*data$val_del + p['.B_I']*p['.B_tA'] - 2*p['.B_tA']*p['.B_xR'])/sqrt(p['.B_tA']^2*data$del^2 + 4*p['.B_xA']^2*data$val_del^2 + p['.B_I']^2 - 4*p['.B_I']*p['.B_xR'] + 4*p['.B_xR']^2 + 2*(p['.B_I']*p['.B_tA'] - 2*p['.B_tA']*p['.B_xR'])*data$del + 4*(p['.B_tA']*p['.B_xA']*data$del + p['.B_I']*p['.B_xA'] + 2*p['.B_xA']*p['.B_xR'])*data$val_del))/(p['.B_xA']*data$val_del)
   #                               
-  #                               derivative_1 <- mean(derivative_1, na.rm = T)
-  #                               derivative_2 <- mean(derivative_2, na.rm = T)
+  #                               derivative_1 <- mean(derivative_1, na.rm = TRUE)
+  #                               derivative_2 <- mean(derivative_2, na.rm = TRUE)
   #                               if (derivative_1 < 0 & derivative_2 > 0) {
   #                                 out <- out_1
   #                               } else if (derivative_1 > 0 & derivative_2 < 0) {
   #                                 out <- out_2
   #                               } else {
   #                                 # Which is within a reasonable range?
-  #                                 closest <- which.min(c(abs(mean(out_1, na.rm = T) - 0.5) - abs(mean(out_2, na.rm = T) - 0.5)))
+  #                                 closest <- which.min(c(abs(mean(out_1, na.rm = TRUE) - 0.5) - abs(mean(out_2, na.rm = TRUE) - 0.5)))
   #                                 if (closest == 1) {
   #                                   out <- out_1
   #                                 } else {
