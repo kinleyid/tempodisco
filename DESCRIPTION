@@ -6,7 +6,7 @@ Authors@R: person("Isaac", "Kinley", email = "isaac.kinley@gmail.com", role = c(
 Author: Isaac Kinley [aut, cre]
 Maintainer: Isaac Kinley <isaac.kinley@gmail.com>
 License: GPL-3
-Version: 1.0.0
+Version: 1.0.1
 RoxygenNote: 7.3.1
 Encoding: UTF-8
 Depends:

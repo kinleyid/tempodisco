@@ -85,8 +85,6 @@ td_ddm <- function(
   } else if (drift_transform == 'bias-correct') {
     drift_trans <- list(
       fn = function(drift, par) {
-        # cdf <- function()
-        # get_median(cdf)
         mdn <- median_pimm_ddm(par)
         return(drift + mdn)
       },
@@ -128,8 +126,8 @@ td_ddm <- function(
       list(
         v = c(0, Inf),
         beta = c(0, 1),
-        alpha = c(0, Inf),
-        tau = c(0, Inf)
+        alpha = c(1e-10, Inf), # Not exactly 0 because this throws an error
+        tau = c(1e-10, Inf) # Ditto
       ),
       drift_trans$par_lims
     )

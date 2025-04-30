@@ -481,6 +481,7 @@ logLik.td_ddm <- function(object, type = c('resp_rt', 'resp', 'rt'), ...) {
   if (type == 'resp_rt') {
     prob_func <- do.call(get_prob_func_ddm, object$config)
     p <- prob_func(object$data, coef(object))
+    p <- laplace_smooth(p)
     val <- sum(log(p))
   } else if (type == 'resp') {
     p <- laplace_smooth(predict(object, type = 'response'))
