@@ -48,7 +48,8 @@ td_ddm <- function(
     beta_par_starts = c(0.25, 0.5, 0.75),
     alpha_par_starts = c(0.5, 1, 10),
     tau_par_starts = c(0.2, 0.8),
-    drift_transform = c('none', 'sigmoid', 'bias-correct'),
+    drift_transform = c('none', 'logis'),
+    bias_adjust = c(FALSE, TRUE)
     silent = TRUE,
     optim_args = list()) {
   # Input validation--------------------------
@@ -73,31 +74,18 @@ td_ddm <- function(
   # Parse drift transform (produce an object called drift_trans)
   drift_transform <- match.arg(drift_transform)
   if (drift_transform == 'none') {
-    drift_trans <- list(
-      fn = function(drift, par) identity(drift),
+    drift_transform <- list(
+      fn = function(drift, ...) identity(drift),
       par_lims = NULL,
-      par_starts = NULL)
-  } else if (drift_transform == 'sigmoid') {
-    drift_trans <- list(
-      fn = function(drift, par) par['max_abs_drift']*( 2*plogis(drift) - 1 ),
+      par_starts = NULL
+    )
+  } else {
+    cdf <- get(sprintf('p%s', drift_transform)) # Get CDF---works for "logis", might add "norm"
+    drift_transform <- list(
+      fn = function(drift, par) par['max_abs_drift']*( 2*cdf(drift) - 1 ),
       par_lims = list(max_abs_drift = c(0, Inf)),
-      par_starts = list(max_abs_drift = c(0.5, 1, 2)))
-  } else if (drift_transform == 'bias-correct') {
-    drift_trans <- list(
-      fn = function(drift, par) {
-        mdn <- median_pimm_ddm(par)
-        return(drift + mdn)
-      },
-      par_lims = NULL,
-      par_starts = NULL)
-  } else if (drift_transform == 'bias-correct-sigmoid') {
-    drift_trans <- list(
-      fn = function(drift, par) {
-        # mdn <- get_median(<func>)
-        par['max_abs_drift']*( 2*plogis(drift) - 1 ) + median_pimm_ddm(par)
-      },
-      par_lims = list(max_abs_drift = c(0, Inf)),
-      par_starts = list(max_abs_drift = c(0.1, 1, 10)))
+      par_starts = list(max_abs_drift = c(0.5, 1, 2))
+    )
   }
   drift_trans$name <- drift_transform
 
@@ -114,7 +102,8 @@ td_ddm <- function(
     # Candidate model
     cand_mod <- list(data = data,
                      config = list(discount_function = disc_func,
-                                   drift_transform = drift_trans))
+                                   drift_transform = drift_trans,
+                                   bias_adjust = bias_adjust))
     class(cand_mod) <- c('td_ddm', 'td_um')
     
     # Get parameter bounds and starts for
@@ -144,7 +133,8 @@ td_ddm <- function(
     
     # Get function for computing resp/RT densities
     prob_func <- get_prob_func_ddm(discount_function = disc_func,
-                                   drift_transform = drift_trans)
+                                   drift_transform = drift_trans,
+                                   bias_adjust = bias_adjust)
     
     # Get NLL function
     nll_fn <- function(par) {
@@ -210,7 +200,7 @@ median_pimm_ddm <- function(par) {
 #   1/(2*v*a)*log(2 / (1 + exp(-2*v*a)))
 # }
 
-get_linpred_func_ddm <- function(discount_function, drift_transform) {
+get_linpred_func_ddm <- function(discount_function, drift_transform, bias_adjust) {
   
   # Returns a function to compute linear predictor (i.e., drift rate)
   
@@ -221,6 +211,10 @@ get_linpred_func_ddm <- function(discount_function, drift_transform) {
     drift <- svd*par['gamma']
     # Transform drift rate
     drift <- drift_transform$fn(drift, par)
+    # Bias-adjust, if applicable
+    if (bias_adjust) {
+      drift <- drift + median_pimm_ddm(par)
+    }
     return(drift)
   }
   
@@ -244,11 +238,11 @@ pimm_ddm <- function(drift, par) {
   
 }
 
-get_prob_func_ddm <- function(discount_function, drift_transform) {
+get_prob_func_ddm <- function(discount_function, drift_transform, bias_adjust) {
   # Get function for computing probability density for responses and RTs
   
   # First get function for computing linear predictor (i.e., drift rate)
-  linpred_func <- get_linpred_func_ddm(discount_function, drift_transform)
+  linpred_func <- get_linpred_func_ddm(discount_function, drift_transform, bias_adjust)
   
   prob_func <- function(data, par) {
     
