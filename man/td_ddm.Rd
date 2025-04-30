@@ -12,9 +12,9 @@ td_ddm(
   alpha_par_starts = c(0.5, 1, 10),
   tau_par_starts = c(0.2, 0.8),
   max_abs_drift_par_starts = c(0.1, 1, 10),
-  drift_transform = c("none", "sigmoid", "logis", "norm"),
-  bias_correct = F,
-  silent = T,
+  drift_transform = c("none", "logis"),
+  bias_adjust = FALSE,
+  silent = TRUE,
   optim_args = list()
 )
 }
@@ -23,7 +23,7 @@ td_ddm(
 
 \item{discount_function}{A string specifying the name of the discount functions to use, or an object of class \code{td_fn} (used for creating custom discount functions), or a list of objects of class \code{td_fn}.}
 
-\item{gamma_par_starts}{A vector of starting values to try for the "v" parameter (drift rate multiplier) during optimization.}
+\item{gamma_par_starts}{A vector of starting values to try for the "gamma" parameter (drift rate multiplier or sharpness parameter) during optimization.}
 
 \item{beta_par_starts}{A vector of starting values to try for the "beta" parameter (bias) during optimization.}
 
@@ -31,7 +31,9 @@ td_ddm(
 
 \item{tau_par_starts}{A vector of starting values to try for the "tau" parameter (non-decision time) during optimization.}
 
-\item{drift_transform}{A transform to apply to drift rates. Either \code{"none"} (no transform), \code{"sigmoid"} (sigmoidal transform described by Peters & D'Esposito, 2020, \doi{10.1371/journal.pcbi.1007615}, and Fontanesi et al., 2019, \doi{10.3758/s13423-018-1554-2}), or \code{"bias-correct"} (experimental; see note below).}
+\item{drift_transform}{Transformation to apply to drift rates. Either \code{"none"} (no transform), \code{"logis"} (sigmoidal transform described by Peters & D'Esposito, 2020, \doi{10.1371/journal.pcbi.1007615}, and Fontanesi et al., 2019, \doi{10.3758/s13423-018-1554-2}).}
+
+\item{bias_adjust}{Experimental feature; see notes below.}
 
 \item{silent}{Boolean (true by default). The call to \code{optim()} occurs within a \code{try()} wrapper. The value of \code{silent} is passed along to \code{try()}.}
 
@@ -44,7 +46,7 @@ An object of class \code{td_bcnm} with components \code{data} (containing the da
 Fit a drift diffusion model for a single subject using maximum likelihood estimation.
 }
 \note{
-Drift rates are computed based on the difference in subjective values between the immediate and delayed rewards. In theory, when they are equally valued, they should have equal probability of being chosen. However, this is only true when the bias parameter of the drift diffusion model (\code{beta}) is 0.5 (i.e., no bias). To make sure the immediate and delayed reward have equal probability of being chosen when they are equally valued, we can set \code{drift_transform = "bias-correct"} to add a bias correction factor to the drift rate. However, this feature is experimental and its effects on model fit etc. have not been tested.
+Drift rates are computed based on the difference in subjective values between the immediate and delayed rewards. In theory, when they are equally valued, they should have equal probability of being chosen. However, this is only true when the bias parameter of the drift diffusion model (\code{beta}) is 0.5 (i.e., no bias). To make sure the immediate and delayed reward have equal probability of being chosen when they are equally valued, we can set \code{bias_adjust = TRUE} to add a bias adjustment factor to the drift rate. However, this feature is experimental.
 }
 \examples{
 \dontrun{
