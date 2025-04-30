@@ -127,8 +127,8 @@ to compute first passage times for the diffusion process.</p>
 <p>Following <a href="https://doi.org/10.1371/journal.pcbi.1007615" class="external-link">Peters &amp;
 D’Esposito (2020)</a>, the drift rate is computed by multiplying the
 difference in subjective values by a scale factor
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>v</mi><annotation encoding="application/x-tex">v</annotation></semantics></math>:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mo>=</mo><mi>v</mi><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><msub><mi>V</mi><mtext mathvariant="normal">imm</mtext></msub><mo>−</mo><msub><mi>V</mi><mtext mathvariant="normal">del</mtext></msub><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>𝐩</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\delta = v\big( V_\text{imm} - V_\text{del}f(t;\mathbf{p})\big)</annotation></semantics></math></p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>γ</mi><annotation encoding="application/x-tex">\gamma</annotation></semantics></math>:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mo>=</mo><mi>γ</mi><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><msub><mi>V</mi><mtext mathvariant="normal">imm</mtext></msub><mo>−</mo><msub><mi>V</mi><mtext mathvariant="normal">del</mtext></msub><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>𝐩</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\delta = \gamma\big( V_\text{imm} - V_\text{del}f(t;\mathbf{p})\big)</annotation></semantics></math></p>
 <p>where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>V</mi><mtext mathvariant="normal">imm</mtext></msub><annotation encoding="application/x-tex">V_\text{imm}</annotation></semantics></math>
 is the value of the immediate reward,
@@ -153,14 +153,14 @@ relative cutoffs. Here, we will exclude the fastest 2.5% and slowest
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"td_bc_single_ptpt"</span><span class="op">)</span></span>
 <span><span class="va">rt_cutoffs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span><span class="op">$</span><span class="va">rt</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.975</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">td_bc_single_ptpt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>, <span class="va">rt</span> <span class="op">&gt;</span> <span class="va">rt_cutoffs</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&amp;</span> <span class="va">rt</span> <span class="op">&lt;</span> <span class="va">rt_cutoffs</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">td_bc_single_ptpt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>, <span class="va">rt_cutoffs</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;</span> <span class="va">rt</span> <span class="op">&amp;</span> <span class="va">rt</span> <span class="op">&lt;</span> <span class="va">rt_cutoffs</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <p>Next, we can fit a drift diffusion model. Here, for the sake of
 speed, we are providing starting values for the parameters that are
 close to optimal and are only testing the exponential discount
 function.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ddm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_ddm.html">td_ddm</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>, discount_function <span class="op">=</span> <span class="st">'exponential'</span>,</span>
-<span>              v_par_starts <span class="op">=</span> <span class="fl">0.01</span>,</span>
+<span>              gamma_par_starts <span class="op">=</span> <span class="fl">0.01</span>,</span>
 <span>              beta_par_starts <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>              alpha_par_starts <span class="op">=</span> <span class="fl">3.5</span>,</span>
 <span>              tau_par_starts <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
@@ -171,7 +171,7 @@ function.</p>
 <span><span class="co">#&gt; Discount function: exponential</span></span>
 <span><span class="co">#&gt; Coefficients:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;           k           v        beta       alpha         tau </span></span>
+<span><span class="co">#&gt;           k       gamma        beta       alpha         tau </span></span>
 <span><span class="co">#&gt; 0.009533540 0.008701496 0.574767840 3.386250994 0.960690451 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; "none" transform applied to drift rates.</span></span>
@@ -183,7 +183,7 @@ function.</p>
 function
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>),
 but also for the DDM
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>v</mi><annotation encoding="application/x-tex">v</annotation></semantics></math>,
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>γ</mi><annotation encoding="application/x-tex">\gamma</annotation></semantics></math>,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>β</mi><annotation encoding="application/x-tex">\beta</annotation></semantics></math>,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>
 and
@@ -226,15 +226,17 @@ al. (2019)</a> suggest applying a sigmoid transform to drift rates
 according the the following equation, which is reported by <a href="https://doi.org/10.1371/journal.pcbi.1007615" class="external-link">Peters &amp;
 D’Esposito (2020)</a> to improve model fit for intertemporal choice
 data:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mi>′</mi><mo>=</mo><msub><mi>v</mi><mtext mathvariant="normal">max</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mn>2</mn><mrow><mn>1</mn><mo>+</mo><mo>exp</mo><mo stretchy="false" form="prefix">{</mo><mo>−</mo><mi>δ</mi><mo stretchy="false" form="postfix">}</mo></mrow></mfrac><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\delta' = v_\text{max} \left(\frac{2}{1 + \exp\{-\delta\}} - 1\right)</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mi>′</mi><mo>=</mo><msub><mi>δ</mi><mtext mathvariant="normal">max</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mn>2</mn><mrow><mn>1</mn><mo>+</mo><mo>exp</mo><mo stretchy="false" form="prefix">{</mo><mo>−</mo><mi>δ</mi><mo stretchy="false" form="postfix">}</mo></mrow></mfrac><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\delta' = \delta_\text{max} \left(\frac{2}{1 + \exp\{-\delta\}} - 1\right)</annotation></semantics></math></p>
 <p>We can incorporate this into the model using the argument
-<code>drift_transform = "sigmoid"</code>:</p>
+<code>drift_transform = "logis"</code>:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ddm_sig</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_ddm.html">td_ddm</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>, discount_function <span class="op">=</span> <span class="st">'exponential'</span>, drift_transform <span class="op">=</span> <span class="st">'sigmoid'</span>,</span>
-<span>              v_par_starts <span class="op">=</span> <span class="fl">0.01</span>,</span>
-<span>              beta_par_starts <span class="op">=</span> <span class="fl">0.5</span>,</span>
-<span>              alpha_par_starts <span class="op">=</span> <span class="fl">3.5</span>,</span>
-<span>              tau_par_starts <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">ddm_sig</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_ddm.html">td_ddm</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>,</span>
+<span>                  discount_function <span class="op">=</span> <span class="st">'exponential'</span>,</span>
+<span>                  drift_transform <span class="op">=</span> <span class="st">'logis'</span>,</span>
+<span>                  gamma_par_starts <span class="op">=</span> <span class="fl">0.01</span>,</span>
+<span>                  beta_par_starts <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>                  alpha_par_starts <span class="op">=</span> <span class="fl">3.5</span>,</span>
+<span>                  tau_par_starts <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">BIC</a></span><span class="op">(</span><span class="va">ddm</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 236.3215</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">BIC</a></span><span class="op">(</span><span class="va">ddm_sig</span><span class="op">)</span><span class="op">)</span></span>

@@ -65,11 +65,12 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">td_ddm</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
 <span>  <span class="va">discount_function</span>,</span>
-<span>  v_par_starts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  gamma_par_starts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  beta_par_starts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span><span class="op">)</span>,</span>
 <span>  alpha_par_starts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">10</span><span class="op">)</span>,</span>
 <span>  tau_par_starts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.8</span><span class="op">)</span>,</span>
-<span>  drift_transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"sigmoid"</span>, <span class="st">"bias-correct"</span><span class="op">)</span>,</span>
+<span>  drift_transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"logis"</span><span class="op">)</span>,</span>
+<span>  bias_adjust <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  silent <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  optim_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -87,8 +88,8 @@
 <dd><p>A string specifying the name of the discount functions to use, or an object of class <code>td_fn</code> (used for creating custom discount functions), or a list of objects of class <code>td_fn</code>.</p></dd>
 
 
-<dt id="arg-v-par-starts">v_par_starts<a class="anchor" aria-label="anchor" href="#arg-v-par-starts"></a></dt>
-<dd><p>A vector of starting values to try for the "v" parameter (drift rate multiplier) during optimization.</p></dd>
+<dt id="arg-gamma-par-starts">gamma_par_starts<a class="anchor" aria-label="anchor" href="#arg-gamma-par-starts"></a></dt>
+<dd><p>A vector of starting values to try for the "gamma" parameter (drift rate multiplier or sharpness parameter) during optimization.</p></dd>
 
 
 <dt id="arg-beta-par-starts">beta_par_starts<a class="anchor" aria-label="anchor" href="#arg-beta-par-starts"></a></dt>
@@ -104,9 +105,13 @@
 
 
 <dt id="arg-drift-transform">drift_transform<a class="anchor" aria-label="anchor" href="#arg-drift-transform"></a></dt>
-<dd><p>A transform to apply to drift rates. Either <code>"none"</code> (no transform), <code>"sigmoid"</code> (sigmoidal transform described by Peters &amp; D'Esposito, 2020, <a href="https://doi.org/10.1371/journal.pcbi.1007615" class="external-link">doi:10.1371/journal.pcbi.1007615</a>
+<dd><p>A transform to apply to drift rates. Either <code>"none"</code> (no transform), <code>"logis"</code> (sigmoidal transform described by Peters &amp; D'Esposito, 2020, <a href="https://doi.org/10.1371/journal.pcbi.1007615" class="external-link">doi:10.1371/journal.pcbi.1007615</a>
 , and Fontanesi et al., 2019, <a href="https://doi.org/10.3758/s13423-018-1554-2" class="external-link">doi:10.3758/s13423-018-1554-2</a>
-), or <code>"bias-correct"</code> (experimental; see note below).</p></dd>
+).</p></dd>
+
+
+<dt id="arg-bias-adjust">bias_adjust<a class="anchor" aria-label="anchor" href="#arg-bias-adjust"></a></dt>
+<dd><p>Experimental feature. See not below.</p></dd>
 
 
 <dt id="arg-silent">silent<a class="anchor" aria-label="anchor" href="#arg-silent"></a></dt>
@@ -123,7 +128,7 @@
     </div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
-    <p>Drift rates are computed based on the difference in subjective values between the immediate and delayed rewards. In theory, when they are equally valued, they should have equal probability of being chosen. However, this is only true when the bias parameter of the drift diffusion model (<code>beta</code>) is 0.5 (i.e., no bias). To make sure the immediate and delayed reward have equal probability of being chosen when they are equally valued, we can set <code>drift_transform = "bias-correct"</code> to add a bias correction factor to the drift rate. However, this feature is experimental and its effects on model fit etc. have not been tested.</p>
+    <p>Drift rates are computed based on the difference in subjective values between the immediate and delayed rewards. In theory, when they are equally valued, they should have equal probability of being chosen. However, this is only true when the bias parameter of the drift diffusion model (<code>beta</code>) is 0.5 (i.e., no bias). To make sure the immediate and delayed reward have equal probability of being chosen when they are equally valued, we can set <code>bias_adjust = TRUE</code> to add a bias correction factor to the drift rate. However, this feature is experimental and its effects on model fit etc. have not been tested.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -140,7 +145,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"td_bc_single_ptpt"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ddm</span> <span class="op">&lt;-</span> <span class="fu">td_ddm</span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>, discount_function <span class="op">=</span> <span class="st">'exponential'</span>,</span></span>
-<span class="r-in"><span>              v_par_starts <span class="op">=</span> <span class="fl">0.01</span>,</span></span>
+<span class="r-in"><span>              gamma_par_starts <span class="op">=</span> <span class="fl">0.01</span>,</span></span>
 <span class="r-in"><span>              beta_par_starts <span class="op">=</span> <span class="fl">0.5</span>,</span></span>
 <span class="r-in"><span>              alpha_par_starts <span class="op">=</span> <span class="fl">3.5</span>,</span></span>
 <span class="r-in"><span>              tau_par_starts <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span></span>
