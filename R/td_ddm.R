@@ -172,12 +172,6 @@ td_ddm <- function(
   
 }
 
-get_median <- function(fn) {
-  # Get the input to fn that produces 0.5
-  o <- optim(0, function(x) {(fn(x) - 0.5)**2}, method = 'L-BFGS-B')
-  o$par
-}
-
 median_pimm_ddm <- function(par) {
   # Get drift rate producing indifferent (i.e., p = 0.5 for imm. and del.)
   o <- optim(0, function(v) {(pimm_ddm(v, par) - 0.5)**2}, control = list(warn.1d.NelderMead = FALSE))
