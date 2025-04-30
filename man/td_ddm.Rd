@@ -7,11 +7,12 @@
 td_ddm(
   data,
   discount_function,
-  v_par_starts = c(0.01, 0.1, 1),
+  gamma_par_starts = c(0.01, 0.1, 1),
   beta_par_starts = c(0.25, 0.5, 0.75),
   alpha_par_starts = c(0.5, 1, 10),
   tau_par_starts = c(0.2, 0.8),
-  drift_transform = c("none", "sigmoid", "bias-correct"),
+  drift_transform = c("none", "logis"),
+  bias_adjust = c(FALSE, TRUE),
   silent = TRUE,
   optim_args = list()
 )
@@ -21,7 +22,7 @@ td_ddm(
 
 \item{discount_function}{A string specifying the name of the discount functions to use, or an object of class \code{td_fn} (used for creating custom discount functions), or a list of objects of class \code{td_fn}.}
 
-\item{v_par_starts}{A vector of starting values to try for the "v" parameter (drift rate multiplier) during optimization.}
+\item{gamma_par_starts}{A vector of starting values to try for the "gamma" parameter (drift rate multiplier or sharpness parameter) during optimization.}
 
 \item{beta_par_starts}{A vector of starting values to try for the "beta" parameter (bias) during optimization.}
 
@@ -48,7 +49,7 @@ Drift rates are computed based on the difference in subjective values between th
 \donttest{
 data("td_bc_single_ptpt")
 ddm <- td_ddm(td_bc_single_ptpt, discount_function = 'exponential',
-              v_par_starts = 0.01,
+              gamma_par_starts = 0.01,
               beta_par_starts = 0.5,
               alpha_par_starts = 3.5,
               tau_par_starts = 0.9)

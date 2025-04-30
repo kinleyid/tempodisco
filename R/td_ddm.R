@@ -24,13 +24,14 @@
 #' @param beta_par_starts A vector of starting values to try for the "beta" parameter (bias) during optimization.
 #' @param alpha_par_starts A vector of starting values to try for the "alpha" parameter (boundary separation) during optimization.
 #' @param tau_par_starts A vector of starting values to try for the "tau" parameter (non-decision time) during optimization.
-#' @param drift_transform A transform to apply to drift rates. Either \code{"none"} (no transform), \code{"sigmoid"} (sigmoidal transform described by Peters & D'Esposito, 2020, \doi{10.1371/journal.pcbi.1007615}, and Fontanesi et al., 2019, \doi{10.3758/s13423-018-1554-2}), or \code{"bias-correct"} (experimental; see note below).
-#' @param optim_args Additional arguments to pass to \code{optim()}. Default is \code{list(silent = TRUE)}.
+#' @param drift_transform A transform to apply to drift rates. Either \code{"none"} (no transform), \code{"logis"} (sigmoidal transform described by Peters & D'Esposito, 2020, \doi{10.1371/journal.pcbi.1007615}, and Fontanesi et al., 2019, \doi{10.3758/s13423-018-1554-2}).
+#' @param bias_adjust Experimental feature. See not below.
 #' @param silent Boolean (true by default). The call to \code{optim()} occurs within a \code{try()} wrapper. The value of \code{silent} is passed along to \code{try()}.
+#' @param optim_args Additional arguments to pass to \code{optim()}. Default is \code{list(silent = TRUE)}.
 #' @family drift diffusion model functions
 #' @return An object of class \code{td_bcnm} with components \code{data} (containing the data used for fitting), \code{config} (containing the internal configuration of the model, including the \code{discount_function}), and \code{optim} (the output of \code{optim()}).
 #' @note
-#' Drift rates are computed based on the difference in subjective values between the immediate and delayed rewards. In theory, when they are equally valued, they should have equal probability of being chosen. However, this is only true when the bias parameter of the drift diffusion model (\code{beta}) is 0.5 (i.e., no bias). To make sure the immediate and delayed reward have equal probability of being chosen when they are equally valued, we can set \code{drift_transform = "bias-correct"} to add a bias correction factor to the drift rate. However, this feature is experimental and its effects on model fit etc. have not been tested.
+#' Drift rates are computed based on the difference in subjective values between the immediate and delayed rewards. In theory, when they are equally valued, they should have equal probability of being chosen. However, this is only true when the bias parameter of the drift diffusion model (\code{beta}) is 0.5 (i.e., no bias). To make sure the immediate and delayed reward have equal probability of being chosen when they are equally valued, we can set \code{bias_adjust = TRUE} to add a bias correction factor to the drift rate. However, this feature is experimental and its effects on model fit etc. have not been tested.
 #' @examples
 #' \donttest{
 #' data("td_bc_single_ptpt")
@@ -49,7 +50,7 @@ td_ddm <- function(
     alpha_par_starts = c(0.5, 1, 10),
     tau_par_starts = c(0.2, 0.8),
     drift_transform = c('none', 'logis'),
-    bias_adjust = c(FALSE, TRUE)
+    bias_adjust = FALSE,
     silent = TRUE,
     optim_args = list()) {
   # Input validation--------------------------
@@ -74,21 +75,21 @@ td_ddm <- function(
   # Parse drift transform (produce an object called drift_trans)
   drift_transform <- match.arg(drift_transform)
   if (drift_transform == 'none') {
-    drift_transform <- list(
+    drift_trans <- list(
       fn = function(drift, ...) identity(drift),
       par_lims = NULL,
       par_starts = NULL
     )
   } else {
     cdf <- get(sprintf('p%s', drift_transform)) # Get CDF---works for "logis", might add "norm"
-    drift_transform <- list(
+    drift_trans <- list(
       fn = function(drift, par) par['max_abs_drift']*( 2*cdf(drift) - 1 ),
       par_lims = list(max_abs_drift = c(0, Inf)),
       par_starts = list(max_abs_drift = c(0.5, 1, 2))
     )
   }
   drift_trans$name <- drift_transform
-
+  
   # Get a list of candidate discount functions
   disc_func_cands <- get_candidate_discount_functions(arg = discount_function)
   
@@ -182,6 +183,14 @@ get_linpred_func_ddm <- function(discount_function, drift_transform, bias_adjust
   
   # Returns a function to compute linear predictor (i.e., drift rate)
   
+  # Get bias adjustment function
+  if (bias_adjust) {
+    bias_adjust_fn <- function(drift, par) drift + median_pimm_ddm(par)
+  } else {
+    bias_adjust_fn <- function(drift, par) drift
+  }
+  
+  # Get linear predictor function
   linpred_func <- function(data, par) {
     # Compute subjective value difference
     svd <- data$val_imm - data$val_del*discount_function$fn(data, par)
