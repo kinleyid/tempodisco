@@ -15,8 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-# library(tempodisco)
-devtools::load_all()
+library(tempodisco)
 ```
 
 ## The drift diffusion model
@@ -84,11 +83,13 @@ $$\delta' = \delta_\text{max} \left(\frac{2}{1 + \exp\{-\delta\}} - 1\right)$$
 We can incorporate this into the model using the argument `drift_transform = "logis"`:
 
 ```{r}
-ddm_sig <- td_ddm(td_bc_single_ptpt, discount_function = 'exponential', drift_transform = 'logis',
-              gamma_par_starts = 0.01,
-              beta_par_starts = 0.5,
-              alpha_par_starts = 3.5,
-              tau_par_starts = 0.9)
+ddm_sig <- td_ddm(td_bc_single_ptpt,
+                  discount_function = 'exponential',
+                  drift_transform = 'logis',
+                  gamma_par_starts = 0.01,
+                  beta_par_starts = 0.5,
+                  alpha_par_starts = 3.5,
+                  tau_par_starts = 0.9)
 print(BIC(ddm))
 print(BIC(ddm_sig))
 ```
