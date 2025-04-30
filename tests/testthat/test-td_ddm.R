@@ -10,7 +10,7 @@ df <- td_bc_single_ptpt
 
 default_args <- list(data = td_bc_single_ptpt,
                      discount_function = 'exponential',
-                     v_par_starts = 0.01,
+                     gamma_par_starts = 0.01,
                      beta_par_starts = 0.5,
                      alpha_par_starts = 3.5,
                      tau_par_starts = 0.9)
@@ -75,9 +75,9 @@ test_that('multiple discount functions', {
 
 test_that('drift transformations', {
   args <- default_args
-  args$drift_transform <- 'sigmoid'
+  args$drift_transform <- 'logis'
   expect_no_error(do.call(td_ddm, args))
-  args$drift_transform <- 'bias-correct'
+  args$bias_adjust <- TRUE
   expect_no_error(do.call(td_ddm, args))
 })
 
