@@ -178,22 +178,6 @@ median_pimm_ddm <- function(par) {
   o$par
 }
 
-# Function to get the median, given some set of w and a
-# pddm_median <- function(w = 0.5, a = 1) {
-#   o <- optim(0, function(v) {(pddm(v, w, a) - 0.5)**2}, control = list(warn.1d.NelderMead = FALSE))
-#   o$par
-# }
-
-# # Function to get the optimal bias, given some v and a
-# pddm_bias <- function(v, a = 1) {
-#   o <- optim(0, function(w) {(pddm(v, w, a) - 0.5)**2}, control = list(warn.1d.NelderMead = FALSE))
-#   o$par
-# }
-# 
-# pddm_bias_2 <- function(v, a = 1) {
-#   1/(2*v*a)*log(2 / (1 + exp(-2*v*a)))
-# }
-
 get_linpred_func_ddm <- function(discount_function, drift_transform, bias_adjust) {
   
   # Returns a function to compute linear predictor (i.e., drift rate)
