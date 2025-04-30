@@ -20,7 +20,7 @@
 #' Fit a drift diffusion model for a single subject using maximum likelihood estimation.
 #' @param data A data frame with columns \code{val_imm} and \code{val_del} for the values of the immediate and delayed rewards, \code{del} for the delays, \code{imm_chosen} (Boolean) for whether the immediate rewards were chosen, and \code{rt} for the reaction times (in seconds). Other columns can also be present but will be ignored.
 #' @param discount_function A string specifying the name of the discount functions to use, or an object of class \code{td_fn} (used for creating custom discount functions), or a list of objects of class \code{td_fn}.
-#' @param v_par_starts A vector of starting values to try for the "v" parameter (drift rate multiplier) during optimization.
+#' @param gamma_par_starts A vector of starting values to try for the "gamma" parameter (drift rate multiplier or sharpness parameter) during optimization.
 #' @param beta_par_starts A vector of starting values to try for the "beta" parameter (bias) during optimization.
 #' @param alpha_par_starts A vector of starting values to try for the "alpha" parameter (boundary separation) during optimization.
 #' @param tau_par_starts A vector of starting values to try for the "tau" parameter (non-decision time) during optimization.
@@ -35,7 +35,7 @@
 #' \donttest{
 #' data("td_bc_single_ptpt")
 #' ddm <- td_ddm(td_bc_single_ptpt, discount_function = 'exponential',
-#'               v_par_starts = 0.01,
+#'               gamma_par_starts = 0.01,
 #'               beta_par_starts = 0.5,
 #'               alpha_par_starts = 3.5,
 #'               tau_par_starts = 0.9)
@@ -44,7 +44,7 @@
 td_ddm <- function(
     data,
     discount_function,
-    v_par_starts = c(0.01, 0.1, 1),
+    gamma_par_starts = c(0.01, 0.1, 1),
     beta_par_starts = c(0.25, 0.5, 0.75),
     alpha_par_starts = c(0.5, 1, 10),
     tau_par_starts = c(0.2, 0.8),
@@ -124,7 +124,7 @@ td_ddm <- function(
     par_lims <- c(
       disc_func$par_lims,
       list(
-        v = c(0, Inf),
+        gamma = c(0, Inf),
         beta = c(0, 1),
         alpha = c(1e-10, Inf), # Not exactly 0 because this throws an error
         tau = c(1e-10, Inf) # Ditto
@@ -134,7 +134,7 @@ td_ddm <- function(
     par_starts <- c(
       disc_func$par_starts,
       list(
-        v = v_par_starts,
+        gamma = gamma_par_starts,
         beta = beta_par_starts,
         alpha = alpha_par_starts,
         tau = tau_par_starts
@@ -218,7 +218,7 @@ get_linpred_func_ddm <- function(discount_function, drift_transform) {
     # Compute subjective value difference
     svd <- data$val_imm - data$val_del*discount_function$fn(data, par)
     # Compute drift rate
-    drift <- svd*par['v']
+    drift <- svd*par['gamma']
     # Transform drift rate
     drift <- drift_transform$fn(drift, par)
     return(drift)
