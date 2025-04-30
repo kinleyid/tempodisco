@@ -24,7 +24,7 @@ td_bcnm(
 
 \item{choice_rule}{A string specifying whether the \code{'logistic'} (default), \code{'probit'}, or \code{'power'} choice rule should be used.}
 
-\item{fixed_ends}{A Boolean (false by default) specifying whether the model should satisfy the desiderata that subjects should always prefer something over nothing (i.e., nonzero delayed reward over nothing) and the same reward sooner rather than later.}
+\item{fixed_ends}{A Boolean (false by default) specifying whether the model should satisfy the desiderata that subjects should always prefer something over nothing (i.e., nonzero delayed reward over nothing) and the same reward sooner rather than later. See here: https://doi.org/10.1016/j.jmp.2025.102902}
 
 \item{fit_err_rate}{A Boolean (false by default) specifying whether the model should include an error rate (parameterized by "eps"). See Eq. 5 here: https://doi.org/10.3758/s13428-015-0672-2.}
 
@@ -36,7 +36,7 @@ td_bcnm(
 
 \item{optim_args}{Additional arguments to pass to \code{optim()}. Default is \code{list(silent = T)}.}
 
-\item{...}{Additional arguments to provide finer-grained control over the model configuration.}
+\item{...}{Additional arguments to provide finer-grained control over the choice rule. Note that using a custom choice rule causes the \code{choice_rule} and \code{fixed_ends} arguments to be ignored.}
 }
 \value{
 An object of class \code{td_bcnm} with components \code{data} (containing the data used for fitting), \code{config} (containing the internal configuration of the model, including the \code{discount_function}), and \code{optim} (the output of \code{optim()}).

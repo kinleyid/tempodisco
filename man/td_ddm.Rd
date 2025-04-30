@@ -7,11 +7,13 @@
 td_ddm(
   data,
   discount_function,
-  v_par_starts = c(0.01, 0.1, 1),
+  gamma_par_starts = c(0.01, 0.1, 1),
   beta_par_starts = c(0.25, 0.5, 0.75),
   alpha_par_starts = c(0.5, 1, 10),
   tau_par_starts = c(0.2, 0.8),
-  drift_transform = c("none", "sigmoid", "bias-correct"),
+  max_abs_drift_par_starts = c(0.1, 1, 10),
+  drift_transform = c("none", "sigmoid", "logis", "norm"),
+  bias_correct = F,
   silent = T,
   optim_args = list()
 )
@@ -21,7 +23,7 @@ td_ddm(
 
 \item{discount_function}{A string specifying the name of the discount functions to use, or an object of class \code{td_fn} (used for creating custom discount functions), or a list of objects of class \code{td_fn}.}
 
-\item{v_par_starts}{A vector of starting values to try for the "v" parameter (drift rate multiplier) during optimization.}
+\item{gamma_par_starts}{A vector of starting values to try for the "v" parameter (drift rate multiplier) during optimization.}
 
 \item{beta_par_starts}{A vector of starting values to try for the "beta" parameter (bias) during optimization.}
 
