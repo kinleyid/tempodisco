@@ -28,6 +28,9 @@
 td_fn <- function(predefined = c('hyperbolic',
                                  'exponential',
                                  'power',
+                                 'nonlinear-time-power',
+                                 'arithmetic',
+                                 'nonlinear-time-arithmetic',
                                  'inverse-q-exponential',
                                  'nonlinear-time-hyperbolic',
                                  'scaled-exponential',
@@ -174,8 +177,41 @@ td_fn <- function(predefined = c('hyperbolic',
                      k = c(0.001, 0.01, 0.1)),
                    par_lims = list(
                      k = c(0, Inf)),
-                   ED50 = function(p, ...) 2**p['k'] - 1)
+                   ED50 = function(p, ...) 2**(1/p['k']) - 1)
+      
+    } else if (name == 'nonlinear-time-power') {
+      
+      out <- td_fn(name = name,
+                   fn = function(data, p) 1 / (1 + data$del**p['s'])**p['k'],
+                   par_starts = list(
+                     k = c(0.001, 0.01, 0.1),
+                     s = c(0.001, 0.01, 0.1)),
+                   par_lims = list(
+                     k = c(0, Inf),
+                     s = c(0, Inf)),
+                   ED50 = function(p, ...) (2**(1/p['k']) - 1))**(1/p['s'])
     
+    } else if (name == 'arithmetic') {
+      
+      out <- td_fn(name = name,
+                   fn = function(data, p) pmax(0, 1 - p['k']*data$del / data$val_del), # pmax() applied to prevent negative utilities
+                   par_starts = list(
+                     k = c(0.001, 0.01, 0.1)),
+                   par_lims = list(
+                     k = c(0, Inf)),
+                   ED50 = function(p, val_del) val_del/(2*p['k']))
+    } else if (name == 'nonlinear-time-arithmetic') {
+      
+      out <- td_fn(name = name,
+                   fn = function(data, p) pmax(0, 1 - p['k']*data$del**p['s'] / data$val_del), # pmax() applied to prevent negative utilities
+                   par_starts = list(
+                     k = c(0.001, 0.01, 0.1),
+                     s = c(0.001, 0.01, 0.1)),
+                   par_lims = list(
+                     k = c(0, Inf),
+                     s = c(0, Inf)),
+                   ED50 = function(p, val_del) (val_del/(2*p['k']))**(1/p['s']))
+      
     } else if (name == 'inverse-q-exponential') {
       
       out <- td_fn(name = name,
