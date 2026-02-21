@@ -80,7 +80,7 @@
       <h1>Modeling binary choice data</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/kinleyid/tempodisco/blob/v2.0.0/vignettes/modeling-binary-choice-data.Rmd" class="external-link"><code>vignettes/modeling-binary-choice-data.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/kinleyid/tempodisco/blob/main/vignettes/modeling-binary-choice-data.Rmd" class="external-link"><code>vignettes/modeling-binary-choice-data.Rmd</code></a></small>
       <div class="d-none name"><code>modeling-binary-choice-data.Rmd</code></div>
     </div>
 
@@ -144,7 +144,7 @@ feature of <code>tempodisco</code>):</p>
 <span><span class="co">#&gt;         k </span></span>
 <span><span class="co">#&gt; 0.3052023 </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ED50: 0.235591893994806</span></span>
+<span><span class="co">#&gt; ED50: 8.69012421478859</span></span>
 <span><span class="co">#&gt; AUC: 0.1173431135372</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -451,7 +451,7 @@ is the linear predictor.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, type <span class="op">=</span> <span class="st">'endpoints'</span>, verbose <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="modeling-binary-choice-data_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
+<p><img src="modeling-binary-choice-data_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"epsilon = %.2f\n"</span>, <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span><span class="op">[</span><span class="st">'eps'</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; epsilon = 0.11</span></span></code></pre></div>
@@ -473,7 +473,7 @@ psychometric curve, where <code>val_imm = 0</code> and
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_bcnm.html">td_bcnm</a></span><span class="op">(</span><span class="va">df</span>, discount_function <span class="op">=</span> <span class="st">'exponential'</span>, fixed_ends <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, type <span class="op">=</span> <span class="st">'endpoints'</span>, verbose <span class="op">=</span> <span class="cn">F</span>, del <span class="op">=</span> <span class="fl">50</span>, val_del <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span></code></pre></div>
-<p><img src="modeling-binary-choice-data_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
+<p><img src="modeling-binary-choice-data_files/figure-html/unnamed-chunk-11-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 </div>
 </div>
@@ -488,7 +488,7 @@ psychometric curve, where <code>val_imm = 0</code> and
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

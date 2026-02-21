@@ -80,7 +80,7 @@
       <h1>Getting started</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/kinleyid/tempodisco/blob/v2.0.0/vignettes/tempodisco.Rmd" class="external-link"><code>vignettes/tempodisco.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/kinleyid/tempodisco/blob/main/vignettes/tempodisco.Rmd" class="external-link"><code>vignettes/tempodisco.Rmd</code></a></small>
       <div class="d-none name"><code>tempodisco.Rmd</code></div>
     </div>
 
@@ -145,7 +145,7 @@ or delayed reward:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">indiff_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_bcnm.html">td_bcnm</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>, discount_function <span class="op">=</span> <span class="st">'model-free'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">indiff_mod</span>, verbose <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
-<p><img src="tempodisco_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
+<p><img src="tempodisco_files/figure-html/unnamed-chunk-4-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level2">
 <h2 id="data-quality-checks">Data quality checks<a class="anchor" aria-label="anchor" href="#data-quality-checks"></a>
@@ -181,7 +181,7 @@ done using the <code>td_ipm</code> function:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hyperbolic_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_ipm.html">td_ipm</a></span><span class="op">(</span><span class="va">indiff_data</span>, discount_function <span class="op">=</span> <span class="st">'hyperbolic'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">hyperbolic_mod</span><span class="op">)</span></span></code></pre></div>
-<p><img src="tempodisco_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
+<p><img src="tempodisco_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">hyperbolic_mod</span><span class="op">)</span></span>
 <span><span class="co">#&gt;          k </span></span>
@@ -194,7 +194,7 @@ immediate vs delayed reward.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hyperbolic_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_bcnm.html">td_bcnm</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>, discount_function <span class="op">=</span> <span class="st">'hyperbolic'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">hyperbolic_mod</span>, verbose <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
-<p><img src="tempodisco_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
+<p><img src="tempodisco_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">hyperbolic_mod</span><span class="op">)</span></span>
 <span><span class="co">#&gt;          k      gamma </span></span>
@@ -217,7 +217,7 @@ means steeper discounting).</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

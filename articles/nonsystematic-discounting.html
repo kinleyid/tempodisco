@@ -80,7 +80,7 @@
       <h1>Indentifying non-systematic discounting</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/kinleyid/tempodisco/blob/v2.0.0/vignettes/nonsystematic-discounting.Rmd" class="external-link"><code>vignettes/nonsystematic-discounting.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/kinleyid/tempodisco/blob/main/vignettes/nonsystematic-discounting.Rmd" class="external-link"><code>vignettes/nonsystematic-discounting.Rmd</code></a></small>
       <div class="d-none name"><code>nonsystematic-discounting.Rmd</code></div>
     </div>
 
@@ -107,7 +107,7 @@ guaranteed monotonically decreasing, meaning the first criterion
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/adj_amt_indiffs.html">adj_amt_indiffs</a></span><span class="op">(</span><span class="va">adj_amt_sim</span><span class="op">)</span></span>
 <span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_ipm.html">td_ipm</a></span><span class="op">(</span><span class="va">df</span>, discount_function <span class="op">=</span> <span class="st">'model-free'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, verbose <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
-<p><img src="nonsystematic-discounting_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
+<p><img src="nonsystematic-discounting_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="700"></p>
 <p>As we can see, this data meets the first criterion for
 non-systematicity but not the second:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -119,7 +119,7 @@ non-systematicity but not the second:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"td_bc_single_ptpt"</span><span class="op">)</span></span>
 <span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_bcnm.html">td_bcnm</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>, discount_function <span class="op">=</span> <span class="st">'model-free'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, log <span class="op">=</span> <span class="st">'x'</span>, verbose <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
-<p><img src="nonsystematic-discounting_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
+<p><img src="nonsystematic-discounting_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="700"></p>
 <p>This data meets neither criterion:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/nonsys.html">nonsys</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
@@ -135,7 +135,7 @@ non-systematicity but not the second:</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

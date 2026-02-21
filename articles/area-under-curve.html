@@ -80,7 +80,7 @@
       <h1>Computing area under the curve (AUC)</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/kinleyid/tempodisco/blob/v2.0.0/vignettes/area-under-curve.Rmd" class="external-link"><code>vignettes/area-under-curve.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/kinleyid/tempodisco/blob/main/vignettes/area-under-curve.Rmd" class="external-link"><code>vignettes/area-under-curve.Rmd</code></a></small>
       <div class="d-none name"><code>area-under-curve.Rmd</code></div>
     </div>
 
@@ -177,12 +177,12 @@ is evident in the curved interpolations in the second plot below:</p>
 <code class="sourceCode R"><span><span class="co"># Linear in transformed scale:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">indiff</span> <span class="op">~</span> <span class="va">del</span>, <span class="va">td_ip_simulated_ptpt</span>, log <span class="op">=</span> <span class="st">'x'</span>, type <span class="op">=</span> <span class="st">'l'</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span><span class="va">indiff</span> <span class="op">~</span> <span class="va">del</span>, <span class="va">td_ip_simulated_ptpt</span><span class="op">)</span></span></code></pre></div>
-<p><img src="area-under-curve_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
+<p><img src="area-under-curve_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Linear in original scale:</span></span>
 <span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_ipm.html">td_ipm</a></span><span class="op">(</span><span class="va">td_ip_simulated_ptpt</span>, discount_function <span class="op">=</span> <span class="st">'model-free'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, log <span class="op">=</span> <span class="st">'x'</span>, verbose <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
-<p><img src="area-under-curve_files/figure-html/unnamed-chunk-8-2.png" width="700"></p>
+<p><img src="area-under-curve_files/figure-html/unnamed-chunk-8-2.png" class="r-plt" alt="" width="700"></p>
 <p>And indeed, the AUC calculations are slightly different:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/AUC.html">AUC</a></span><span class="op">(</span><span class="va">td_ip_simulated_ptpt</span>, del_transform <span class="op">=</span> <span class="st">'log'</span><span class="op">)</span></span>
@@ -201,7 +201,7 @@ is evident in the curved interpolations in the second plot below:</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
