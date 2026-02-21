@@ -174,7 +174,7 @@ td_fn <- function(predefined = c('hyperbolic',
                      k = c(0.001, 0.01, 0.1)),
                    par_lims = list(
                      k = c(0, Inf)),
-                   ED50 = function(p, ...) 2**p['k'] - 1)
+                   ED50 = function(p, ...) 2**(1/p['k']) - 1)
     
     } else if (name == 'inverse-q-exponential') {
       
