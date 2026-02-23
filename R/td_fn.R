@@ -26,16 +26,16 @@
 #' }
 #' @export
 td_fn <- function(predefined = c('hyperbolic',
+                                 'nonlinear-time-hyperbolic',
                                  'exponential',
+                                 'nonlinear-time-exponential',
                                  'power',
                                  'nonlinear-time-power',
                                  'arithmetic',
                                  'nonlinear-time-arithmetic',
                                  'inverse-q-exponential',
-                                 'nonlinear-time-hyperbolic',
                                  'scaled-exponential',
                                  'dual-systems-exponential',
-                                 'nonlinear-time-exponential',
                                  'additive-utility',
                                  'model-free',
                                  'constant'),
