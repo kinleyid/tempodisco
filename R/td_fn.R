@@ -200,6 +200,7 @@ td_fn <- function(predefined = c('hyperbolic',
                    par_lims = list(
                      k = c(0, Inf)),
                    ED50 = function(p, val_del) val_del/(2*p['k']))
+
     } else if (name == 'nonlinear-time-arithmetic') {
       
       out <- td_fn(name = name,
