@@ -28,7 +28,6 @@ get_candidate_discount_functions <- function(arg, val_del_avail = TRUE) {
           predefined_disc_funcs <- predefined_disc_funcs[predefined_disc_funcs != 'additive-utility']
         }
         # get corresponding td_fn objects and append them
-        browser()
         curr_cands <- lapply(predefined_disc_funcs, function(x) {print(x); td_fn(x)})
       } else if (is.character(item)) {
         curr_cands <- list(td_fn(predefined = item))

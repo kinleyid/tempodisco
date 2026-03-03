@@ -29,12 +29,15 @@ td_fn <- function(predefined = c('hyperbolic',
                                  'nonlinear-time-hyperbolic',
                                  'exponential',
                                  'nonlinear-time-exponential',
+                                 'absolute-stationarity',
+                                 'relative-stationarity',
                                  'power',
                                  'nonlinear-time-power',
                                  'arithmetic',
                                  'nonlinear-time-arithmetic',
                                  'inverse-q-exponential',
                                  'scaled-exponential',
+                                 'scaled-hyperbolic',
                                  'fixed-cost',
                                  'dual-systems-exponential',
                                  'additive-utility',
@@ -175,6 +178,38 @@ td_fn <- function(predefined = c('hyperbolic',
                    par_lims = list(
                      k = c(0, Inf)),
                    ED50 = function(p, ...) log(2)/p['k'])
+    
+    } else if (name == 'absolute-stationarity') {
+    
+      out <- td_fn(name = name,
+                   fn = function(data, p) {
+                     del <- data$del * p['s'] # Account for differing units
+                     tau <- del / (1 + del)
+                     return(exp(-p['k']*tau))
+                   },
+                   par_starts = list(
+                     k = c(0.001, 0.01, 0.1),
+                     s = c(0.001, 0.01, 0.1)),
+                   par_lims = list(
+                     k = c(0, Inf),
+                     s = c(0, Inf)),
+                   ED50 = function(p, ...) 1/p['s'] * 1/p['k']*log(2) / (1 - 1/p['k']*log(2)))
+    
+    } else if (name == 'relative-stationarity') {
+      
+      out <- td_fn(name = name,
+                   fn = function(data, p) {
+                     del <- data$del * p['s'] # Account for differing units
+                     tau <- del / (1 + del)
+                     return((1 / (tau + 1))**p['k'])
+                   },
+                   par_starts = list(
+                     k = c(0.001, 0.01, 0.1),
+                     s = c(0.001, 0.01, 0.1)),
+                   par_lims = list(
+                     k = c(0, Inf),
+                     s = c(0, Inf)),
+                   ED50 = function(p, ...) 1/p['s'] * 1/p['k']*log(2) / (1 - 1/p['k']*log(2)))
       
     } else if (name == 'power') {
       
@@ -255,6 +290,18 @@ td_fn <- function(predefined = c('hyperbolic',
                      w = c(0, 1),
                      k = c(0, Inf)),
                    ED50 = function(p, ...) log(2*p['w'])/p['k'])
+      
+    } else if (name == 'scaled-hyperbolic') {
+      
+      out <- td_fn(name = name,
+                   fn = function(data, p) p['w']*1 / (1 + p['k']*data$del),
+                   par_starts = list(
+                     w = c(0.1, 0.5, 0.9),
+                     k = c(0.001, 0.01, 0.1)),
+                   par_lims = list(
+                     w = c(0, 1),
+                     k = c(0, Inf)),
+                   ED50 = function(p, ...) (2*p['w'] - 1) / p['k'])
       
     } else if (name == 'fixed-cost') {
       
