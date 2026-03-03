@@ -4,7 +4,10 @@
 \alias{kirby_score}
 \title{Kirby MCQ-style scoring}
 \usage{
-kirby_score(data, discount_function = c("hyperbolic", "exponential", "power"))
+kirby_score(
+  data,
+  discount_function = c("hyperbolic", "exponential", "power", "arithmetic")
+)
 }
 \arguments{
 \item{data}{Responses to score.}

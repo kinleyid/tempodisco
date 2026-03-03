@@ -196,7 +196,7 @@ td_fn <- function(predefined = c('hyperbolic',
                    par_lims = list(
                      k = c(0, Inf),
                      s = c(0, Inf)),
-                   ED50 = function(p, ...) (2**(1/p['k']) - 1))**(1/p['s'])
+                   ED50 = function(p, ...) (2**(1/p['k']) - 1)**(1/p['s']))
     
     } else if (name == 'arithmetic') {
       
@@ -357,4 +357,5 @@ td_fn <- function(predefined = c('hyperbolic',
   }
   
   return(out)
+
 }

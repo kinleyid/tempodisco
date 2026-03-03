@@ -212,7 +212,7 @@ adj_amt_indiffs <- function(data, block_indic = 'del', order_indic = NULL) {
 #' mod <- kirby_score(td_bc_single_ptpt)
 #' }
 #' @export
-kirby_score <- function(data, discount_function = c('hyperbolic', 'exponential', 'power')) {
+kirby_score <- function(data, discount_function = c('hyperbolic', 'exponential', 'power', 'arithmetic')) {
   
   discount_function <- match.arg(discount_function)
   
@@ -249,7 +249,7 @@ kirby_score <- function(data, discount_function = c('hyperbolic', 'exponential',
 #'
 #' Compute the consistency score per the method of Kirby et al. (1999, \doi{10.1037//0096-3445.128.1.78}). This is described in detail in Kaplan et al. (2016, \doi{10.1007/s40614-016-0070-9}), where it's suggested that a consistency score below 0.75 might be a sign of inattentive responding.
 #' @param data Responses to score.
-#' @param discount_function Should \eqn{k} values be computed according to the hyperbolic, exponential, or power discount function? The original method uses the hyperbolic, but in principle the exponential and power are also possible (though these should be considered experimental features).
+#' @param discount_function Should \eqn{k} values be computed according to the hyperbolic, exponential, power, or arithmetic discount function? The original method uses the hyperbolic, but in principle any single-parameter discount function can also be used (though these should be considered experimental features).
 #' @return A consistency score between 0 and 1.
 #' @examples
 #' \donttest{
@@ -257,14 +257,14 @@ kirby_score <- function(data, discount_function = c('hyperbolic', 'exponential',
 #' mod <- kirby_consistency(td_bc_single_ptpt)
 #' }
 #' @export
-kirby_consistency <- function(data, discount_function = c('hyperbolic', 'exponential', 'power')) {
+kirby_consistency <- function(data, discount_function = c('hyperbolic', 'exponential', 'power', 'arithmetic')) {
   
   data <- kirby_preproc(data, discount_function)
   return(max(data$consistency))
   
 }
 
-kirby_preproc <- function(data, discount_function = c('hyperbolic', 'exponential', 'power')) {
+kirby_preproc <- function(data, discount_function = c('hyperbolic', 'exponential', 'power', 'arithmetic')) {
   # Compute k and consistency scores
   discount_function <- match.arg(discount_function)
   validate_td_data(data,
@@ -273,7 +273,8 @@ kirby_preproc <- function(data, discount_function = c('hyperbolic', 'exponential
   data$k <- switch (discount_function,
                     'hyperbolic' = (data$val_del/data$val_imm - 1) / data$del,
                     'exponential' = -log(data$val_imm/data$val_del) / data$del,
-                    'power' = log(data$val_del/data$val_imm) / log(1 + data$del)
+                    'power' = log(data$val_del/data$val_imm) / log(1 + data$del),
+                    'arithmetic' = (data$val_del - data$val_imm) / data$del
   )
   
   data <- data[order(data$k), ]
