@@ -35,6 +35,7 @@ td_fn <- function(predefined = c('hyperbolic',
                                  'nonlinear-time-arithmetic',
                                  'inverse-q-exponential',
                                  'scaled-exponential',
+                                 'fixed-cost',
                                  'dual-systems-exponential',
                                  'additive-utility',
                                  'model-free',
@@ -75,7 +76,7 @@ td_fn <- function(predefined = c('hyperbolic',
       if (missing(init)) {
         stop('par_starts must be supplied if it will not be created by init')
       } else {
-        par_starts <- list(placeholder = 0)
+        par_starts <- list(placeholder_ = 0)
       }
     } else {
       stopifnot(
@@ -94,16 +95,22 @@ td_fn <- function(predefined = c('hyperbolic',
         is.list(par_lims),
         !is.null(names(par_lims))
       )
+      # Check for variables defined in par_lims but not par_starts
       extra_names <- setdiff(names(par_lims), names(par_starts))
       if (length(extra_names) > 0) {
-        stop(sprintf('parameter(s) %s exist in par_lims but not par_starts',
-                     paste(extra_names, collapse = ' and ')))
+        if (!('placeholder_' %in% names(par_starts))) {
+          stop(sprintf('parameter(s) %s exist in par_lims but not par_starts',
+                       paste(extra_names, collapse = ' and ')))
+        }
       }
-      
     }
+    
+    # Enforce default par_lims of [-inf, inf]
     for (par_name in names(par_starts)) {
-      if (!(par_name %in% names(par_lims))) {
-        par_lims[[par_name]] <- c(-Inf, Inf)
+      if (par_name != 'placeholder_') {
+        if (!(par_name %in% names(par_lims))) {
+          par_lims[[par_name]] <- c(-Inf, Inf)
+        }
       }
     }
     out$par_lims <- par_lims
@@ -212,7 +219,7 @@ td_fn <- function(predefined = c('hyperbolic',
                      k = c(0, Inf),
                      s = c(0, Inf)),
                    ED50 = function(p, val_del) (val_del/(2*p['k']))**(1/p['s']))
-      
+    
     } else if (name == 'inverse-q-exponential') {
       
       out <- td_fn(name = name,
@@ -249,6 +256,22 @@ td_fn <- function(predefined = c('hyperbolic',
                      k = c(0, Inf)),
                    ED50 = function(p, ...) log(2*p['w'])/p['k'])
       
+    } else if (name == 'fixed-cost') {
+      
+      out <- td_fn(name = name,
+                   fn = function(data, p) pmax(0, exp(-p['k']*data$del) - p['w']/data$val_del), # pmax() applied to prevent negative utilities
+                   init = function(self, data) {
+                     # Get a sense of the range of maximal val_del
+                     self$par_starts <- list(
+                       k = c(0.001, 0.01, 0.1),
+                       w = c(0.01, 0.1, 0.2) * max(data$val_del))
+                     return(self)
+                   },
+                   par_lims = list(
+                     k = c(0, Inf),
+                     w = c(0, Inf)),
+                   ED50 = function(p, val_del) -log(1/2 + p['w']/val_del)/p['k'])
+    
     } else if (name == 'dual-systems-exponential') {
       
       out <- td_fn(name = name,
@@ -329,7 +352,6 @@ td_fn <- function(predefined = c('hyperbolic',
                      return(self)},
                    ED50 = 'none')
                    
-      
     }
     
   }
