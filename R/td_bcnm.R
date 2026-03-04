@@ -3,7 +3,7 @@
 #'
 #' Compute a binary choice model for a single subject
 #' @param data A data frame with columns \code{val_imm} and \code{val_del} for the values of the immediate and delayed rewards, \code{del} for the delay, and \code{imm_chosen} (Boolean) for whether the immediate reward was chosen. Other columns can also be present but will be ignored.
-#' @param discount_function A string specifying the name of the discount functions to use, or an object of class \code{td_fn} (used for creating custom discount functions), or a list of objects of class \code{td_fn}.
+#' @param discount_function A string specifying the name of the discount functions to use, or an object of class \code{td_fn} (used for creating custom discount functions), or a list of objects of class \code{td_fn}. Default is \code{'franck-2015'}, which is the set of widely used discount functions from Franck et al., 2015: https://doi.org/10.1002/jeab.128.
 #' @param choice_rule A string specifying whether the \code{'logistic'} (default), \code{'probit'}, or \code{'power'} choice rule should be used.
 #' @param fixed_ends A Boolean (false by default) specifying whether the model should satisfy the desiderata that subjects should always prefer something over nothing (i.e., nonzero delayed reward over nothing) and the same reward sooner rather than later. See here: https://doi.org/10.1016/j.jmp.2025.102902
 #' @param fit_err_rate A Boolean (false by default) specifying whether the model should include an error rate (parameterized by "eps"). See Eq. 5 here: https://doi.org/10.3758/s13428-015-0672-2.

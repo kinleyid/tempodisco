@@ -13,7 +13,7 @@ get_rss_fn <- function(data, discount_function) {
 #'
 #' Compute a model of a single subject's indifference points.
 #' @param data A data frame with columns \code{indiff} for the pre-computed indifference points and \code{del} for the delay.
-#' @param discount_function A vector of strings specifying the name of the discount functions to use, or an object of class \code{td_fn} (used for creating custom discount functions), or a list of objects of class \code{td_fn}.
+#' @param discount_function A vector of strings specifying the name of the discount functions to use, or an object of class \code{td_fn} (used for creating custom discount functions), or a list of objects of class \code{td_fn}. Default is \code{'franck-2015'}, which is the set of widely used discount functions from Franck et al., 2015: https://doi.org/10.1002/jeab.128.
 #' @param optim_args A list of additional args to pass to \code{optim}.
 #' @param silent A Boolean specifying whether the call to \code{optim} (which occurs in a \code{try} block) should be silent on error.
 #' @family indifference point model functions.
