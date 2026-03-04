@@ -6,10 +6,10 @@
 \usage{
 td_fn(
   predefined = c("hyperbolic", "nonlinear-time-hyperbolic", "exponential",
-    "nonlinear-time-exponential", "power", "nonlinear-time-power", "arithmetic",
-    "nonlinear-time-arithmetic", "inverse-q-exponential", "scaled-exponential",
-    "fixed-cost", "dual-systems-exponential", "additive-utility", "model-free",
-    "constant"),
+    "nonlinear-time-exponential", "absolute-stationarity", "relative-stationarity",
+    "power", "nonlinear-time-power", "arithmetic", "nonlinear-time-arithmetic",
+    "inverse-q-exponential", "scaled-exponential", "scaled-hyperbolic", "fixed-cost",
+    "dual-systems-exponential", "additive-utility", "model-free", "constant"),
   name = "unnamed",
   fn = NULL,
   par_starts = NULL,
