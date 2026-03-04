@@ -7,9 +7,7 @@ Compute a model of a single subject's indifference points.
 ``` r
 td_ipm(
   data,
-  discount_function = c("all", "hyperbolic", "exponential", "inverse-q-exponential",
-    "nonlinear-time-hyperbolic", "scaled-exponential", "dual-systems-exponential",
-    "nonlinear-time-exponential", "model-free", "constant"),
+  discount_function = "franck-2015",
   optim_args = list(),
   silent = TRUE
 )

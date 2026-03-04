@@ -9,7 +9,10 @@ Score a set of responses according to the method of Kirby et al. (1999,
 ## Usage
 
 ``` r
-kirby_score(data, discount_function = c("hyperbolic", "exponential", "power"))
+kirby_score(
+  data,
+  discount_function = c("hyperbolic", "exponential", "power", "arithmetic")
+)
 ```
 
 ## Arguments

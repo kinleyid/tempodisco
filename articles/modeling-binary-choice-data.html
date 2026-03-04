@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tempodisco</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -118,7 +118,7 @@ Questionnaire <a href="https://doi.org/10.1037//0096-3445.128.1.78" class="exter
 <p>Although this method computes
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
 values according to the hyperbolic discount function, in principle it’s
-possible to use the exponential or power discount functions (though this
+possible to use other single-parameter discount functions (though this
 is not an established practice and should be considered an experimental
 feature of <code>tempodisco</code>):</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -145,7 +145,19 @@ feature of <code>tempodisco</code>):</p>
 <span><span class="co">#&gt; 0.3052023 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ED50: 8.69012421478859</span></span>
-<span><span class="co">#&gt; AUC: 0.1173431135372</span></span></code></pre></div>
+<span><span class="co">#&gt; AUC: 0.1173431135372</span></span>
+<span><span class="va">mod_ari</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/kirby_score.html">kirby_score</a></span><span class="op">(</span><span class="va">td_bc_single_ptpt</span>, discount_function <span class="op">=</span> <span class="st">'arithmetic'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mod_ari</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Temporal discounting indifference point model</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Discount function: arithmetic, with coefficients:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;        k </span></span>
+<span><span class="co">#&gt; 1.034244 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ED50: 95.8739950116839</span></span>
+<span><span class="co">#&gt; AUC: 0.0262488714558682</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="wileyto-scoring">Wileyto scoring<a class="anchor" aria-label="anchor" href="#wileyto-scoring"></a>
@@ -335,23 +347,24 @@ built-in discount functions is as follows:</p>
 </tr>
 <tr class="even">
 <td>
-<code>scaled-exponential</code> (<a href="https://doi.org/10.1162/003355397555253" class="external-link">Laibson, 1997</a>)</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo>,</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>w</mi><msup><mi>e</mi><mrow><mo>−</mo><mi>k</mi><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">f(t; k, w) = w e^{-k t}</annotation></semantics></math></td>
-<td>Also known as quasi-hyperbolic or beta-delta</td>
+<code>hyperbolic</code> (<a href="https://doi.org/10.4324/9781315825502" class="external-link">Mazur, 1987</a>)</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><mi>k</mi><mi>t</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">f(t; k) = \frac{1}{1 + kt}</annotation></semantics></math></td>
+<td></td>
 </tr>
 <tr class="odd">
+<td>
+<code>scaled-exponential</code> (<a href="https://doi.org/10.1162/003355397555253" class="external-link">Laibson, 1997</a>)</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo>,</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>w</mi><msup><mi>e</mi><mrow><mo>−</mo><mi>k</mi><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">f(t; k, w) = w e^{-k t}</annotation></semantics></math></td>
+<td>Also known as quasi-hyperbolic or beta-delta and written as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>β</mi><mo>,</mo><mi>δ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>β</mi><msup><mi>e</mi><mrow><mo>−</mo><mi>δ</mi><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">f(t; \beta, \delta) = \beta e^{-\delta t}</annotation></semantics></math>
+</td>
+</tr>
+<tr class="even">
 <td>
 <code>nonlinear-time-exponential</code> (<a href="https://doi.org/10.1287/mnsc.1060.0671" class="external-link">Ebert &amp; Prelec,
 2007</a>)</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo>,</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mi>e</mi><mrow><mo>−</mo><mi>k</mi><msup><mi>t</mi><mi>s</mi></msup></mrow></msup></mrow><annotation encoding="application/x-tex">f(t; k, s) = e^{-k t^s}</annotation></semantics></math></td>
 <td>Also known as constant sensitivity</td>
-</tr>
-<tr class="even">
-<td>
-<code>dual-systems-exponential</code> (<a href="https://doi.org/10.1002/jeab.6" class="external-link">Ven den Bos &amp; McClure,
-2013</a>)</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><msub><mi>k</mi><mn>1</mn></msub><mo>,</mo><msub><mi>k</mi><mn>2</mn></msub><mo>,</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>w</mi><msup><mi>e</mi><mrow><mo>−</mo><msub><mi>k</mi><mn>1</mn></msub><mi>t</mi></mrow></msup><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow><msup><mi>e</mi><mrow><mo>−</mo><msub><mi>k</mi><mn>2</mn></msub><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">f(t; k_1, k_2, w) = w e^{-k_1 t} + (1 - w) e^{-k_2 t}</annotation></semantics></math></td>
-<td></td>
 </tr>
 <tr class="odd">
 <td>
@@ -365,31 +378,107 @@ hyperboloid (<a href="https://doi.org/10.1037/0033-2909.130.5.769" class="extern
 </tr>
 <tr class="even">
 <td>
-<code>hyperbolic</code> (<a href="https://doi.org/10.4324/9781315825502" class="external-link">Mazur, 1987</a>)</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><mi>k</mi><mi>t</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">f(t; k) = \frac{1}{1 + kt}</annotation></semantics></math></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>
 <code>nonlinear-time-hyperbolic</code> (<a href="https://doi.org/10.1901/jeab.2006.85-05" class="external-link">Rachlin, 2006</a>)</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo>,</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><mi>k</mi><msup><mi>t</mi><mi>s</mi></msup></mrow></mfrac></mrow><annotation encoding="application/x-tex">f(t; k, s) = \frac{1}{1 + k t^s}</annotation></semantics></math></td>
 <td>Also known as power-function (<a href="https://doi.org/10.1901/jeab.2006.85-05" class="external-link">Rachlin, 2006</a>)</td>
+</tr>
+<tr class="odd">
+<td>
+<code>dual-systems-exponential</code> (<a href="https://doi.org/10.1002/jeab.6" class="external-link">Ven den Bos &amp; McClure,
+2013</a>)</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><msub><mi>k</mi><mn>1</mn></msub><mo>,</mo><msub><mi>k</mi><mn>2</mn></msub><mo>,</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>w</mi><msup><mi>e</mi><mrow><mo>−</mo><msub><mi>k</mi><mn>1</mn></msub><mi>t</mi></mrow></msup><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow><msup><mi>e</mi><mrow><mo>−</mo><msub><mi>k</mi><mn>2</mn></msub><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">f(t; k_1, k_2, w) = w e^{-k_1 t} + (1 - w) e^{-k_2 t}</annotation></semantics></math></td>
+<td></td>
 </tr>
 <tr class="even">
 <td>
 <code>additive-utility</code> (<a href="https://doi.org/10.1037/a0016414" class="external-link">Killeen, 2009</a>)</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mfrac><mi>k</mi><msubsup><mi>V</mi><mi>D</mi><mi>a</mi></msubsup></mfrac><msup><mi>t</mi><mi>s</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow><mfrac><mn>1</mn><mi>a</mi></mfrac></msup></mrow><annotation encoding="application/x-tex">f(t; k, s, a) = \left( 1 - \frac{k}{V_D^a}t^s\right)^\frac{1}{a}</annotation></semantics></math></td>
-<td>Here,
+<td>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>V</mi><mi>D</mi></msub><annotation encoding="application/x-tex">V_D</annotation></semantics></math>
-is the value of the delayed reward. For
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>&gt;</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>V</mi><mi>D</mi><mi>a</mi></msubsup><mi>/</mi><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mn>1</mn><mi>/</mi><mi>s</mi></mrow></msup></mrow><annotation encoding="application/x-tex">t &gt; \left(V_D^a / k\right)^{1/s}</annotation></semantics></math>,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f(t; k, s, a) = 0</annotation></semantics></math>.</td>
+is the value of the delayed reward.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo>,</mo><mi>s</mi><mo>,</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f(t; k, s, a) = 0</annotation></semantics></math>
+for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>&gt;</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>V</mi><mi>D</mi><mi>a</mi></msubsup><mi>/</mi><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mn>1</mn><mi>/</mi><mi>s</mi></mrow></msup></mrow><annotation encoding="application/x-tex">t &gt; \left(V_D^a / k\right)^{1/s}</annotation></semantics></math>.</td>
 </tr>
 <tr class="odd">
 <td>
-<code>power</code> (<a href="https://doi.org/10.1287/mnsc.32.9.1123" class="external-link">Harvey, 1986</a>)</td>
+<code>power</code> (<a href="https://doi.org/10.1287/mnsc.32.9.1123" class="external-link">Harvey, 1986, eq.
+2</a>)</td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>k</mi></msup></mfrac></mrow><annotation encoding="application/x-tex">f(t; k) = \frac{1}{(1 + t)^k}</annotation></semantics></math></td>
-<td></td>
+<td>In equation 2 of the reference, the discount function is described
+as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mn>1</mn><msup><mi>t</mi><mi>k</mi></msup></mfrac><annotation encoding="application/x-tex">\frac{1}{t^k}</annotation></semantics></math>,
+but time begins at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t = 1</annotation></semantics></math>.</td>
+</tr>
+<tr class="even">
+<td>
+<code>arithmetic</code> (<a href="https://dx.doi.org/10.2139/ssrn.1609594" class="external-link">Doyle &amp; Chen,
+2010</a>)</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>1</mn><mo>−</mo><mfrac><mrow><mi>k</mi><mi>t</mi></mrow><msub><mi>V</mi><mi>D</mi></msub></mfrac></mrow><annotation encoding="application/x-tex">f(t; k) = 1 - \frac{kt}{V_D}</annotation></semantics></math></td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>V</mi><mi>D</mi></msub><annotation encoding="application/x-tex">V_D</annotation></semantics></math>
+is the value of the delayed reward.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f(t; k) = 0</annotation></semantics></math>
+for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mi>t</mi><mo>&gt;</mo><msub><mi>V</mi><mi>D</mi></msub></mrow><annotation encoding="application/x-tex">kt &gt; V_D</annotation></semantics></math>.</td>
+</tr>
+<tr class="odd">
+<td>
+<code>fixed-cost</code> (<a href="https://doi.org/10.1016/j.geb.2009.11.003" class="external-link">Benhabib, Bisin, &amp;
+Schotter, 2010</a>)</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mi>e</mi><mrow><mo>−</mo><mi>k</mi><mi>t</mi></mrow></msup><mo>−</mo><mfrac><mi>w</mi><msub><mi>V</mi><mi>D</mi></msub></mfrac></mrow><annotation encoding="application/x-tex">f(t; w) = e^{-kt} - \frac{w}{V_D}</annotation></semantics></math></td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>V</mi><mi>D</mi></msub><annotation encoding="application/x-tex">V_D</annotation></semantics></math>
+is the value of the delayed reward.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f(t; w) = 0</annotation></semantics></math>
+for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mi>w</mi><msub><mi>V</mi><mi>D</mi></msub></mfrac><mo>&gt;</mo><msup><mi>e</mi><mrow><mo>−</mo><mi>k</mi><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">\frac{w}{V_D} &gt; e^{-kt}</annotation></semantics></math>.</td>
+</tr>
+<tr class="even">
+<td>
+<code>absolute-stationarity</code> (<a href="https://doi.org/10.1016/j.econlet.2024.111559" class="external-link">Blavatskyy, 2024,
+eq. 3</a>)</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo>,</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">{</mo><mo>−</mo><mi>k</mi><mfrac><mrow><mi>t</mi><mi>s</mi></mrow><mrow><mi>t</mi><mi>s</mi><mo>+</mo><mn>1</mn></mrow></mfrac><mo stretchy="true" form="postfix">}</mo></mrow></mrow><annotation encoding="application/x-tex">f(t; k, s) = \exp\left\{ -k\frac{ts}{ts + 1}\right\}</annotation></semantics></math></td>
+<td>The original paper uses
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+rather than
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">ts</annotation></semantics></math>.
+However, a scale factor appears necessary to account for different time
+units.</td>
+</tr>
+<tr class="odd">
+<td>
+<code>relative-stationarity</code> (<a href="https://doi.org/10.1016/j.econlet.2024.111559" class="external-link">Blavatskyy, 2024,
+eq. 7</a>)</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo>,</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><mi>t</mi><mi>s</mi><mo>+</mo><mn>1</mn></mrow><mrow><mn>2</mn><mi>t</mi><mi>s</mi><mo>+</mo><mn>1</mn></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mi>k</mi></msup></mrow><annotation encoding="application/x-tex">f(t; k, s) = \left( \frac{ts + 1}{2ts + 1} \right)^k</annotation></semantics></math></td>
+<td>The original paper uses
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+rather than
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">ts</annotation></semantics></math>.
+However, a scale factor appears necessary to account for different time
+units.</td>
+</tr>
+<tr class="even">
+<td><code>nonlinear-time-power</code></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><msup><mi>t</mi><mi>s</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow><mi>k</mi></msup></mfrac></mrow><annotation encoding="application/x-tex">f(t; k) = \frac{1}{(1 + t^s)^k}</annotation></semantics></math></td>
+<td>Experimental extension of the <code>power</code> discount function
+along the lines of the <code>nonlinear-time-hyperbolic</code> and
+<code>nonlinear-time-exponential</code> functions.</td>
+</tr>
+<tr class="odd">
+<td><code>nonlinear-time-arithmetic</code></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>1</mn><mo>−</mo><mfrac><mrow><mi>k</mi><msup><mi>t</mi><mi>s</mi></msup></mrow><msub><mi>V</mi><mi>D</mi></msub></mfrac></mrow><annotation encoding="application/x-tex">f(t; k) = 1 - \frac{kt^s}{V_D}</annotation></semantics></math></td>
+<td>Experimental extension of the <code>arithmetic</code> discount
+function along the lines of the <code>nonlinear-time-hyperbolic</code>
+and <code>nonlinear-time-exponential</code> functions.</td>
+</tr>
+<tr class="even">
+<td><code>scaled-hyperbolic</code></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo>,</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mi>w</mi><mrow><mn>1</mn><mo>+</mo><mi>k</mi><mi>t</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">f(t; k, w) = \frac{w}{1 + kt}</annotation></semantics></math></td>
+<td>Experimental extension of the <code>hyperbolic</code> discount
+function along the lines of the <code>scaled-exponential</code>
+function.</td>
 </tr>
 </tbody>
 </table>
@@ -399,19 +488,19 @@ is the value of the delayed reward. For
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Temporal discounting binary choice model</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Discount function: exponential, with coefficients:</span></span>
+<span><span class="co">#&gt; Discount function: arithmetic, with coefficients:</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;          k      gamma </span></span>
-<span><span class="co">#&gt; 0.01083049 0.09341821 </span></span>
+<span><span class="co">#&gt; 1.05682221 0.08007441 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Config:</span></span>
 <span><span class="co">#&gt;  noise_dist: logis</span></span>
 <span><span class="co">#&gt;  gamma_scale: linear</span></span>
 <span><span class="co">#&gt;  transform: identity</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ED50: 63.9996305466619</span></span>
-<span><span class="co">#&gt; AUC: 0.0252791100912786</span></span>
-<span><span class="co">#&gt; BIC: 25.9537097154224</span></span></code></pre></div>
+<span><span class="co">#&gt; ED50: 93.8257558942613</span></span>
+<span><span class="co">#&gt; AUC: 0.0256880960367851</span></span>
+<span><span class="co">#&gt; BIC: 25.5896625868426</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="choice-rules">Choice rules<a class="anchor" aria-label="anchor" href="#choice-rules"></a>
 </h4>

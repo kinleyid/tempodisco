@@ -12,7 +12,7 @@ sign of inattentive responding.
 ``` r
 kirby_consistency(
   data,
-  discount_function = c("hyperbolic", "exponential", "power")
+  discount_function = c("hyperbolic", "exponential", "power", "arithmetic")
 )
 ```
 
@@ -25,9 +25,10 @@ kirby_consistency(
 - discount_function:
 
   Should \\k\\ values be computed according to the hyperbolic,
-  exponential, or power discount function? The original method uses the
-  hyperbolic, but in principle the exponential and power are also
-  possible (though these should be considered experimental features).
+  exponential, power, or arithmetic discount function? The original
+  method uses the hyperbolic, but in principle any single-parameter
+  discount function can also be used (though these should be considered
+  experimental features).
 
 ## Value
 
