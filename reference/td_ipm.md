@@ -24,7 +24,9 @@ td_ipm(
 
   A vector of strings specifying the name of the discount functions to
   use, or an object of class `td_fn` (used for creating custom discount
-  functions), or a list of objects of class `td_fn`.
+  functions), or a list of objects of class `td_fn`. Default is
+  `'franck-2015'`, which is the set of widely used discount functions
+  from Franck et al., 2015: https://doi.org/10.1002/jeab.128.
 
 - optim_args:
 

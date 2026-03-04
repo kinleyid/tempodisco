@@ -17,6 +17,8 @@
   : Predefined or custom discount function
 - [`discount_function()`](https://kinleyid.github.io/tempodisco/reference/discount_function.md)
   : Get discount function from model
+- [`get_available_discount_functions()`](https://kinleyid.github.io/tempodisco/reference/get_available_discount_functions.md)
+  : Get all available pre-defined discount functions
 
 ## Scoring response data
 

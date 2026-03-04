@@ -4,6 +4,8 @@
 
 - [Working with data from an adjusting amount
   procedure](https://kinleyid.github.io/tempodisco/articles/adjusting-amounts.md):
+- [Available discount
+  functions](https://kinleyid.github.io/tempodisco/articles/all-discount-functions.md):
 - [Analyzing data from multiple
   participants](https://kinleyid.github.io/tempodisco/articles/analyzing-study.md):
 - [Computing area under the curve

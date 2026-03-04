@@ -39,6 +39,7 @@
     <li><h6 class="dropdown-header" data-toc-skip>Model fitting</h6></li>
     <li><a class="dropdown-item" href="../articles/modeling-binary-choice-data.html">Modeling choice-level data</a></li>
     <li><a class="dropdown-item" href="../articles/visualizing-models.html">Visualizing models</a></li>
+    <li><a class="dropdown-item" href="../articles/all-disocunt-functions.html">Available discount functions</a></li>
     <li><h6 class="dropdown-header" data-toc-skip>Statistical inference</h6></li>
     <li><a class="dropdown-item" href="../articles/area-under-curve.html">Measuring area under the curve</a></li>
     <li><a class="dropdown-item" href="../articles/comparing-models.html">Comparing across discount functions</a></li>
@@ -460,20 +461,28 @@ However, a scale factor appears necessary to account for different time
 units.</td>
 </tr>
 <tr class="even">
+<td>
+<code>constant</code> (<a href="https://doi.org/10.1002/jeab.128" class="external-link">Franck et al., 2015</a>)</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>k</mi></mrow><annotation encoding="application/x-tex">f(t; k) = k</annotation></semantics></math></td>
+<td>Null model; participants can be excluded if this model provides the
+best fit (<a href="https://doi.org/10.1002/jeab.128" class="external-link">Franck et al.,
+2015</a>)</td>
+</tr>
+<tr class="odd">
 <td><code>nonlinear-time-power</code></td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><msup><mi>t</mi><mi>s</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow><mi>k</mi></msup></mfrac></mrow><annotation encoding="application/x-tex">f(t; k) = \frac{1}{(1 + t^s)^k}</annotation></semantics></math></td>
 <td>Experimental extension of the <code>power</code> discount function
 along the lines of the <code>nonlinear-time-hyperbolic</code> and
 <code>nonlinear-time-exponential</code> functions.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>nonlinear-time-arithmetic</code></td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>1</mn><mo>−</mo><mfrac><mrow><mi>k</mi><msup><mi>t</mi><mi>s</mi></msup></mrow><msub><mi>V</mi><mi>D</mi></msub></mfrac></mrow><annotation encoding="application/x-tex">f(t; k) = 1 - \frac{kt^s}{V_D}</annotation></semantics></math></td>
 <td>Experimental extension of the <code>arithmetic</code> discount
 function along the lines of the <code>nonlinear-time-hyperbolic</code>
 and <code>nonlinear-time-exponential</code> functions.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>scaled-hyperbolic</code></td>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>;</mo><mi>k</mi><mo>,</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mi>w</mi><mrow><mn>1</mn><mo>+</mo><mi>k</mi><mi>t</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">f(t; k, w) = \frac{w}{1 + kt}</annotation></semantics></math></td>
 <td>Experimental extension of the <code>hyperbolic</code> discount
