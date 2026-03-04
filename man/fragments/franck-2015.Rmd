@@ -1,0 +1,8 @@
+| Name | Functional form | Notes |
+|------------------------|------------------------|------------------------|
+| `hyperbolic` ([Mazur, 1987](https://doi.org/10.4324/9781315825502)) | $f(t; k) = \frac{1}{1 + kt}$ |  |
+| `exponential` ([Samuelson, 1937](https://doi.org/10.2307/2967612)) | $f(t; k) = e^{-k t}$ |  |
+| `inverse-q-exponential` ([Green & Myerson, 2004](https://doi.org/10.1037/0033-2909.130.5.769)) | $f(t; k, s) = \frac{1}{(1 + k t)^s}$ | Also known as generalized hyperbolic ([Loewenstin & Prelec](https://doi.org/10.2307/2118482)), hyperboloid ([Green & Myerson, 2004](https://doi.org/10.1037/0033-2909.130.5.769)), or q-exponential ([Han & Takahashi, 2012](https://doi.org/10.1016/j.physa.2012.07.012)) |
+| `nonlinear-time-hyperbolic` ([Rachlin, 2006](https://doi.org/10.1901/jeab.2006.85-05)) | $f(t; k, s) = \frac{1}{1 + k t^s}$ | Also known as power-function ([Rachlin, 2006](https://doi.org/10.1901/jeab.2006.85-05)) |
+| `scaled-exponential` ([Laibson, 1997](https://doi.org/10.1162/003355397555253)) | $f(t; k, w) = w e^{-k t}$ | Also known as quasi-hyperbolic or beta-delta and written as $f(t; \beta, \delta) = \beta e^{-\delta t}$ |
+| `constant` ([Franck et al., 2015](https://doi.org/10.1002/jeab.128)) | $f(t; k) = k$ | Null model; participants can be excluded if this model provides the best fit ([Franck et al., 2015](https://doi.org/10.1002/jeab.128)) |

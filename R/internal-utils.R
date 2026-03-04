@@ -22,7 +22,7 @@ get_candidate_discount_functions <- function(arg, val_del_avail = TRUE) {
     if (is.character(item)) {
       if (item == 'all') {
         # get names of predefined discount functions
-        predefined_disc_funcs <- eval(formals(td_fn)$predefined)
+        predefined_disc_funcs <- get_available_discount_functions()
         if (!val_del_avail) {
           # val_del is not a column in the data, therefore discount functions that require this can't be used
           rm_funcs <- c('arithmetic',

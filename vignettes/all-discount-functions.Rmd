@@ -1,0 +1,30 @@
+---
+title: "Available discount functions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Available discount functions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(tempodisco)
+```
+
+`tempodisco` implements many lesser-known discount functions beyond the smaller set of popular functions used by [Franck et al., 2015](https://doi.org/10.1002/jeab.128). The full list is as follows:
+
+```{r child="../man/fragments/predefined-discount-functions.Rmd"}
+```
+
+The names of these discount functions can be accessed using `get_available_discount_functions()`:
+
+```{r}
+print(get_available_discount_functions())
+```

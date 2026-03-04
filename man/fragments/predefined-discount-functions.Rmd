@@ -1,5 +1,5 @@
 | Name | Functional form | Notes |
-|----|----|----|
+|------------------------|------------------------|------------------------|
 | `exponential` ([Samuelson, 1937](https://doi.org/10.2307/2967612)) | $f(t; k) = e^{-k t}$ |  |
 | `hyperbolic` ([Mazur, 1987](https://doi.org/10.4324/9781315825502)) | $f(t; k) = \frac{1}{1 + kt}$ |  |
 | `scaled-exponential` ([Laibson, 1997](https://doi.org/10.1162/003355397555253)) | $f(t; k, w) = w e^{-k t}$ | Also known as quasi-hyperbolic or beta-delta and written as $f(t; \beta, \delta) = \beta e^{-\delta t}$ |
@@ -13,6 +13,7 @@
 | `fixed-cost` ([Benhabib, Bisin, & Schotter, 2010](https://doi.org/10.1016/j.geb.2009.11.003)) | $f(t; w) = e^{-kt} - \frac{w}{V_D}$ | $V_D$ is the value of the delayed reward. $f(t; w) = 0$ for $\frac{w}{V_D} > e^{-kt}$. |
 | `absolute-stationarity` ([Blavatskyy, 2024, eq. 3](https://doi.org/10.1016/j.econlet.2024.111559)) | $f(t; k, s) = \exp\left\{ -k\frac{ts}{ts + 1}\right\}$ | The original paper uses $t$ rather than $ts$. However, a scale factor appears necessary to account for different time units. |
 | `relative-stationarity` ([Blavatskyy, 2024, eq. 7](https://doi.org/10.1016/j.econlet.2024.111559)) | $f(t; k, s) = \left( \frac{ts + 1}{2ts + 1} \right)^k$ | The original paper uses $t$ rather than $ts$. However, a scale factor appears necessary to account for different time units. |
+| `constant` ([Franck et al., 2015](https://doi.org/10.1002/jeab.128)) | $f(t; k) = k$ | Null model; participants can be excluded if this model provides the best fit ([Franck et al., 2015](https://doi.org/10.1002/jeab.128)) |
 | `nonlinear-time-power` | $f(t; k) = \frac{1}{(1 + t^s)^k}$ | Experimental extension of the `power` discount function along the lines of the `nonlinear-time-hyperbolic` and `nonlinear-time-exponential` functions. |
 | `nonlinear-time-arithmetic` | $f(t; k) = 1 - \frac{kt^s}{V_D}$ | Experimental extension of the `arithmetic` discount function along the lines of the `nonlinear-time-hyperbolic` and `nonlinear-time-exponential` functions. |
 | `scaled-hyperbolic` | $f(t; k, w) = \frac{w}{1 + kt}$ | Experimental extension of the `hyperbolic` discount function along the lines of the `scaled-exponential` function. |

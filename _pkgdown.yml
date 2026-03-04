@@ -23,6 +23,8 @@ navbar:
       href: articles/modeling-binary-choice-data.html
     - text: Visualizing models
       href: articles/visualizing-models.html
+    - text: Available discount functions
+      href: articles/all-disocunt-functions.html
     - text: Statistical inference
     - text: Measuring area under the curve
       href: articles/area-under-curve.html
@@ -50,6 +52,7 @@ reference:
   contents:
   - td_fn
   - discount_function
+  - get_available_discount_functions
   
 - title: Scoring response data
   contents:

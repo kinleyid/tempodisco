@@ -152,11 +152,11 @@ td_fn <- function(predefined = c('hyperbolic',
     if (name == 'constant') {
       
       out <- td_fn(name = name,
-                   fn = function(data, p) rep(p['c'], length(data$del)),
+                   fn = function(data, p) rep(p['k'], length(data$del)),
                    par_starts = list(
-                     c = 0.5),
+                     k = 0.5),
                    par_lims = list(
-                     c = c(0, 1)),
+                     k = c(0, 1)),
                    ED50 = 'none')
       
     } else if (name == 'hyperbolic') {

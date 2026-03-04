@@ -58,14 +58,21 @@ for a given individual according to the Bayesian information criterion
 | Name | Functional form | Notes |
 |----|----|----|
 | `exponential` ([Samuelson, 1937](https://doi.org/10.2307/2967612)) | $f(t; k) = e^{-k t}$ |  |
-| `scaled-exponential` ([Laibson, 1997](https://doi.org/10.1162/003355397555253)) | $f(t; k, w) = w e^{-k t}$ | Also known as quasi-hyperbolic or beta-delta |
-| `nonlinear-time-exponential` ([Ebert & Prelec, 2007](https://doi.org/10.1287/mnsc.1060.0671)) | $f(t; k, s) = e^{-k t^s}$ | Also known as constant sensitivity |
-| `dual-systems-exponential` ([Ven den Bos & McClure, 2013](https://doi.org/10.1002/jeab.6)) | $f(t; k_1, k_2, w) = w e^{-k_1 t} + (1 - w) e^{-k_2 t}$ |  |
-| `inverse-q-exponential` ([Green & Myerson, 2004](https://doi.org/10.1037/0033-2909.130.5.769)) | $f(t; k, s) = \frac{1}{(1 + k t)^s}$ | Also known as generalized hyperbolic ([Loewenstin & Prelec](https://doi.org/10.2307/2118482)), hyperboloid ([Green & Myerson, 2004](https://doi.org/10.1037/0033-2909.130.5.769)), or q-exponential ([Han & Takahashi, 2012](https://doi.org/10.1016/j.physa.2012.07.012)) |
 | `hyperbolic` ([Mazur, 1987](https://doi.org/10.4324/9781315825502)) | $f(t; k) = \frac{1}{1 + kt}$ |  |
+| `scaled-exponential` ([Laibson, 1997](https://doi.org/10.1162/003355397555253)) | $f(t; k, w) = w e^{-k t}$ | Also known as quasi-hyperbolic or beta-delta and written as $f(t; \beta, \delta) = \beta e^{-\delta t}$ |
+| `nonlinear-time-exponential` ([Ebert & Prelec, 2007](https://doi.org/10.1287/mnsc.1060.0671)) | $f(t; k, s) = e^{-k t^s}$ | Also known as constant sensitivity |
+| `inverse-q-exponential` ([Green & Myerson, 2004](https://doi.org/10.1037/0033-2909.130.5.769)) | $f(t; k, s) = \frac{1}{(1 + k t)^s}$ | Also known as generalized hyperbolic ([Loewenstin & Prelec](https://doi.org/10.2307/2118482)), hyperboloid ([Green & Myerson, 2004](https://doi.org/10.1037/0033-2909.130.5.769)), or q-exponential ([Han & Takahashi, 2012](https://doi.org/10.1016/j.physa.2012.07.012)) |
 | `nonlinear-time-hyperbolic` ([Rachlin, 2006](https://doi.org/10.1901/jeab.2006.85-05)) | $f(t; k, s) = \frac{1}{1 + k t^s}$ | Also known as power-function ([Rachlin, 2006](https://doi.org/10.1901/jeab.2006.85-05)) |
-| `additive-utility` ([Killeen, 2009](https://doi.org/10.1037/a0016414)) | $f(t; k, s, a) = \left( 1 - \frac{k}{V_D^a}t^s\right)^\frac{1}{a}$ | Here, $V_D$ is the value of the delayed reward. |
-| `power` ([Harvey, 1986](https://doi.org/10.1287/mnsc.32.9.1123)) | $f(t; k) = \frac{1}{(1 + t)^k}$ |  |
+| `dual-systems-exponential` ([Ven den Bos & McClure, 2013](https://doi.org/10.1002/jeab.6)) | $f(t; k_1, k_2, w) = w e^{-k_1 t} + (1 - w) e^{-k_2 t}$ |  |
+| `additive-utility` ([Killeen, 2009](https://doi.org/10.1037/a0016414)) | $f(t; k, s, a) = \left( 1 - \frac{k}{V_D^a}t^s\right)^\frac{1}{a}$ | $V_D$ is the value of the delayed reward. $f(t; k, s, a) = 0$ for $t > \left(V_D^a / k\right)^{1/s}$. |
+| `power` ([Harvey, 1986, eq. 2](https://doi.org/10.1287/mnsc.32.9.1123)) | $f(t; k) = \frac{1}{(1 + t)^k}$ | In equation 2 of the reference, the discount function is described as $\frac{1}{t^k}$, but time begins at $t = 1$. |
+| `arithmetic` ([Doyle & Chen, 2010](https://dx.doi.org/10.2139/ssrn.1609594)) | $f(t; k) = 1 - \frac{kt}{V_D}$ | $V_D$ is the value of the delayed reward. $f(t; k) = 0$ for $kt > V_D$. |
+| `fixed-cost` ([Benhabib, Bisin, & Schotter, 2010](https://doi.org/10.1016/j.geb.2009.11.003)) | $f(t; w) = e^{-kt} - \frac{w}{V_D}$ | $V_D$ is the value of the delayed reward. $f(t; w) = 0$ for $\frac{w}{V_D} > e^{-kt}$. |
+| `absolute-stationarity` ([Blavatskyy, 2024, eq. 3](https://doi.org/10.1016/j.econlet.2024.111559)) | $f(t; k, s) = \exp\left\{ -k\frac{ts}{ts + 1}\right\}$ | The original paper uses $t$ rather than $ts$. However, a scale factor appears necessary to account for different time units. |
+| `relative-stationarity` ([Blavatskyy, 2024, eq. 7](https://doi.org/10.1016/j.econlet.2024.111559)) | $f(t; k, s) = \left( \frac{ts + 1}{2ts + 1} \right)^k$ | The original paper uses $t$ rather than $ts$. However, a scale factor appears necessary to account for different time units. |
+| `nonlinear-time-power` | $f(t; k) = \frac{1}{(1 + t^s)^k}$ | Experimental extension of the `power` discount function along the lines of the `nonlinear-time-hyperbolic` and `nonlinear-time-exponential` functions. |
+| `nonlinear-time-arithmetic` | $f(t; k) = 1 - \frac{kt^s}{V_D}$ | Experimental extension of the `arithmetic` discount function along the lines of the `nonlinear-time-hyperbolic` and `nonlinear-time-exponential` functions. |
+| `scaled-hyperbolic` | $f(t; k, w) = \frac{w}{1 + kt}$ | Experimental extension of the `hyperbolic` discount function along the lines of the `scaled-exponential` function. |
 
 These discount functions can be fit to indifference point data (see
 [`td_ipm`](https://kinleyid.github.io/tempodisco/reference/td_ipm.html)),
@@ -86,7 +93,7 @@ mod <- td_bcnm(td_bc_single_ptpt, discount_function = c('hyperbolic', 'exponenti
 plot(mod, p_lines = c(0.1, 0.9), log = 'x', verbose = F)
 ```
 
-<img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-3-1.png" alt="" width="100%" />
 
 Note that the discount curve contains an inflection point because the
 x-axis is on a log scale. See the “[Visualizing

@@ -38,10 +38,12 @@ See the [documentation](https://kinleyid.github.io/tempodisco/), particularly th
 
 ## Overview
 
-A good practice in delay discounting research is to not assume that the same discount function describes every individual ([Franck et al., 2015](https://doi.org/10.1002/jeab.128)). `tempodisco` implements the following discount functions and can automatically select the best one for a given individual according to the Bayesian information criterion ([Schwartz, 1978](https://doi.org/10.1214/aos/1176344136)):
+A good practice in delay discounting research is to not assume that the same discount function describes every individual ([Franck et al., 2015](https://doi.org/10.1002/jeab.128)). `tempodisco` implements the a core set of discount functions (used by [Franck et al., 2015](https://doi.org/10.1002/jeab.128)) and can automatically select the best one for a given individual according to the Bayesian information criterion ([Schwartz, 1978](https://doi.org/10.1214/aos/1176344136)):
 
-```{r child="man/fragments/predefined-discount-functions.Rmd"}
+```{r child="man/fragments/franck-2015.Rmd"}
 ```
+
+A much wider range of functions, including more obscure and experimental functions, is also implemented. See the full list in the "[Available discount functions](https://kinleyid.github.io/tempodisco/articles/all-discount-functions.html)" page of the documentation.
 
 These discount functions can be fit to indifference point data (see [`td_ipm`](https://kinleyid.github.io/tempodisco/reference/td_ipm.html)), choice-level data (see [`td_bcnm`](https://kinleyid.github.io/tempodisco/reference/td_bcnm.html)), or data including both choices and reaction times (see [`td_ddm`](https://kinleyid.github.io/tempodisco/reference/td_ddm.html)).
 

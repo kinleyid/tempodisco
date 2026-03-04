@@ -395,3 +395,14 @@ indiffs <- function(mod) {
   out$indiff <- predict(mod, type = 'indiff', newdata = out)
   return(out)
 }
+
+#' Get all available pre-defined discount functions
+#' 
+#' Get a list of all of the available pre-defined discount functions.
+#' @returns A character vector containing the names of the avialable pre-defined discount functions.
+#' @examples
+#' \donttest{
+#' get_available_discount_functions()
+#' }
+#' @export
+get_available_discount_functions <- function() eval(formals(td_fn)$predefined)
