@@ -24,7 +24,7 @@ navbar:
     - text: Visualizing models
       href: articles/visualizing-models.html
     - text: Available discount functions
-      href: articles/all-disocunt-functions.html
+      href: articles/all-discount-functions.html
     - text: Statistical inference
     - text: Measuring area under the curve
       href: articles/area-under-curve.html
