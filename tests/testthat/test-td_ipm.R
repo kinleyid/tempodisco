@@ -27,7 +27,6 @@ df_idx <- 1
 while (df_idx <= length(discount_functions)) {
   discount_function <- discount_functions[df_idx]
   df_idx <- df_idx + 1
-  
   if (discount_function == 'kirby-hyperbolic') {
     mod <- kirby_score(td_bc_single_ptpt, discount_function = 'hyperbolic')
   } else if (discount_function == 'kirby-exponential') {

@@ -24,8 +24,11 @@ get_candidate_discount_functions <- function(arg, val_del_avail = TRUE) {
         # get names of predefined discount functions
         predefined_disc_funcs <- eval(formals(td_fn)$predefined)
         if (!val_del_avail) {
-          # val_del is not a column in the data, therefore certain functions can't be used
-          rm_funcs <- c('arithmetic', 'additive-utility')
+          # val_del is not a column in the data, therefore discount functions that require this can't be used
+          rm_funcs <- c('arithmetic',
+                        'nonlinear-time-arithmetic',
+                        'additive-utility',
+                        'fixed-cost')
           predefined_disc_funcs <- predefined_disc_funcs[!(predefined_disc_funcs %in% rm_funcs)]
         }
         # get corresponding td_fn objects and append them

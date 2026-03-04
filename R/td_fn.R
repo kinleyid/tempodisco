@@ -162,7 +162,10 @@ td_fn <- function(predefined = c('hyperbolic',
     } else if (name == 'hyperbolic') {
       
       out <- td_fn(name = name,
-                   fn = function(data, p) 1 / (1 + p['k']*data$del),
+                   fn = function(data, p) {
+                     out <- 1 / (1 + p['k']*data$del)
+                     return(out)
+                   },
                    par_starts = list(
                      k = c(0.001, 0.01, 0.1)),
                    par_lims = list(
