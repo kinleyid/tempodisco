@@ -6,13 +6,13 @@
 \usage{
 kirby_consistency(
   data,
-  discount_function = c("hyperbolic", "exponential", "power")
+  discount_function = c("hyperbolic", "exponential", "power", "arithmetic")
 )
 }
 \arguments{
 \item{data}{Responses to score.}
 
-\item{discount_function}{Should \eqn{k} values be computed according to the hyperbolic, exponential, or power discount function? The original method uses the hyperbolic, but in principle the exponential and power are also possible (though these should be considered experimental features).}
+\item{discount_function}{Should \eqn{k} values be computed according to the hyperbolic, exponential, power, or arithmetic discount function? The original method uses the hyperbolic, but in principle any single-parameter discount function can also be used (though these should be considered experimental features).}
 }
 \value{
 A consistency score between 0 and 1.

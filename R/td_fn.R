@@ -26,13 +26,20 @@
 #' }
 #' @export
 td_fn <- function(predefined = c('hyperbolic',
-                                 'exponential',
-                                 'power',
-                                 'inverse-q-exponential',
                                  'nonlinear-time-hyperbolic',
-                                 'scaled-exponential',
-                                 'dual-systems-exponential',
+                                 'exponential',
                                  'nonlinear-time-exponential',
+                                 'absolute-stationarity',
+                                 'relative-stationarity',
+                                 'power',
+                                 'nonlinear-time-power',
+                                 'arithmetic',
+                                 'nonlinear-time-arithmetic',
+                                 'inverse-q-exponential',
+                                 'scaled-exponential',
+                                 'scaled-hyperbolic',
+                                 'fixed-cost',
+                                 'dual-systems-exponential',
                                  'additive-utility',
                                  'model-free',
                                  'constant'),
@@ -72,7 +79,7 @@ td_fn <- function(predefined = c('hyperbolic',
       if (missing(init)) {
         stop('par_starts must be supplied if it will not be created by init')
       } else {
-        par_starts <- list(placeholder = 0)
+        par_starts <- list(placeholder_ = 0)
       }
     } else {
       stopifnot(
@@ -91,16 +98,22 @@ td_fn <- function(predefined = c('hyperbolic',
         is.list(par_lims),
         !is.null(names(par_lims))
       )
+      # Check for variables defined in par_lims but not par_starts
       extra_names <- setdiff(names(par_lims), names(par_starts))
       if (length(extra_names) > 0) {
-        stop(sprintf('parameter(s) %s exist in par_lims but not par_starts',
-                     paste(extra_names, collapse = ' and ')))
+        if (!('placeholder_' %in% names(par_starts))) {
+          stop(sprintf('parameter(s) %s exist in par_lims but not par_starts',
+                       paste(extra_names, collapse = ' and ')))
+        }
       }
-      
     }
+    
+    # Enforce default par_lims of [-inf, inf]
     for (par_name in names(par_starts)) {
-      if (!(par_name %in% names(par_lims))) {
-        par_lims[[par_name]] <- c(-Inf, Inf)
+      if (par_name != 'placeholder_') {
+        if (!(par_name %in% names(par_lims))) {
+          par_lims[[par_name]] <- c(-Inf, Inf)
+        }
       }
     }
     out$par_lims <- par_lims
@@ -149,7 +162,10 @@ td_fn <- function(predefined = c('hyperbolic',
     } else if (name == 'hyperbolic') {
       
       out <- td_fn(name = name,
-                   fn = function(data, p) 1 / (1 + p['k']*data$del),
+                   fn = function(data, p) {
+                     out <- 1 / (1 + p['k']*data$del)
+                     return(out)
+                   },
                    par_starts = list(
                      k = c(0.001, 0.01, 0.1)),
                    par_lims = list(
@@ -165,6 +181,38 @@ td_fn <- function(predefined = c('hyperbolic',
                    par_lims = list(
                      k = c(0, Inf)),
                    ED50 = function(p, ...) log(2)/p['k'])
+    
+    } else if (name == 'absolute-stationarity') {
+    
+      out <- td_fn(name = name,
+                   fn = function(data, p) {
+                     del <- data$del * p['s'] # Account for differing units
+                     tau <- del / (1 + del)
+                     return(exp(-p['k']*tau))
+                   },
+                   par_starts = list(
+                     k = c(0.001, 0.01, 0.1),
+                     s = c(0.001, 0.01, 0.1)),
+                   par_lims = list(
+                     k = c(0, Inf),
+                     s = c(0, Inf)),
+                   ED50 = function(p, ...) 1/p['s'] * 1/p['k']*log(2) / (1 - 1/p['k']*log(2)))
+    
+    } else if (name == 'relative-stationarity') {
+      
+      out <- td_fn(name = name,
+                   fn = function(data, p) {
+                     del <- data$del * p['s'] # Account for differing units
+                     tau <- del / (1 + del)
+                     return((1 / (tau + 1))**p['k'])
+                   },
+                   par_starts = list(
+                     k = c(0.001, 0.01, 0.1),
+                     s = c(0.001, 0.01, 0.1)),
+                   par_lims = list(
+                     k = c(0, Inf),
+                     s = c(0, Inf)),
+                   ED50 = function(p, ...) 1/p['s'] * 1/p['k']*log(2) / (1 - 1/p['k']*log(2)))
       
     } else if (name == 'power') {
       
@@ -175,6 +223,40 @@ td_fn <- function(predefined = c('hyperbolic',
                    par_lims = list(
                      k = c(0, Inf)),
                    ED50 = function(p, ...) 2**(1/p['k']) - 1)
+      
+    } else if (name == 'nonlinear-time-power') {
+      
+      out <- td_fn(name = name,
+                   fn = function(data, p) 1 / (1 + data$del**p['s'])**p['k'],
+                   par_starts = list(
+                     k = c(0.001, 0.01, 0.1),
+                     s = c(0.001, 0.01, 0.1)),
+                   par_lims = list(
+                     k = c(0, Inf),
+                     s = c(0, Inf)),
+                   ED50 = function(p, ...) (2**(1/p['k']) - 1)**(1/p['s']))
+    
+    } else if (name == 'arithmetic') {
+      
+      out <- td_fn(name = name,
+                   fn = function(data, p) pmax(0, 1 - p['k']*data$del / data$val_del), # pmax() applied to prevent negative utilities
+                   par_starts = list(
+                     k = c(0.001, 0.01, 0.1)),
+                   par_lims = list(
+                     k = c(0, Inf)),
+                   ED50 = function(p, val_del) val_del/(2*p['k']))
+
+    } else if (name == 'nonlinear-time-arithmetic') {
+      
+      out <- td_fn(name = name,
+                   fn = function(data, p) pmax(0, 1 - p['k']*data$del**p['s'] / data$val_del), # pmax() applied to prevent negative utilities
+                   par_starts = list(
+                     k = c(0.001, 0.01, 0.1),
+                     s = c(0.001, 0.01, 0.1)),
+                   par_lims = list(
+                     k = c(0, Inf),
+                     s = c(0, Inf)),
+                   ED50 = function(p, val_del) (val_del/(2*p['k']))**(1/p['s']))
     
     } else if (name == 'inverse-q-exponential') {
       
@@ -212,6 +294,34 @@ td_fn <- function(predefined = c('hyperbolic',
                      k = c(0, Inf)),
                    ED50 = function(p, ...) log(2*p['w'])/p['k'])
       
+    } else if (name == 'scaled-hyperbolic') {
+      
+      out <- td_fn(name = name,
+                   fn = function(data, p) p['w']*1 / (1 + p['k']*data$del),
+                   par_starts = list(
+                     w = c(0.1, 0.5, 0.9),
+                     k = c(0.001, 0.01, 0.1)),
+                   par_lims = list(
+                     w = c(0, 1),
+                     k = c(0, Inf)),
+                   ED50 = function(p, ...) (2*p['w'] - 1) / p['k'])
+      
+    } else if (name == 'fixed-cost') {
+      
+      out <- td_fn(name = name,
+                   fn = function(data, p) pmax(0, exp(-p['k']*data$del) - p['w']/data$val_del), # pmax() applied to prevent negative utilities
+                   init = function(self, data) {
+                     # Get a sense of the range of maximal val_del
+                     self$par_starts <- list(
+                       k = c(0.001, 0.01, 0.1),
+                       w = c(0.01, 0.1, 0.2) * max(data$val_del))
+                     return(self)
+                   },
+                   par_lims = list(
+                     k = c(0, Inf),
+                     w = c(0, Inf)),
+                   ED50 = function(p, val_del) -log(1/2 + p['w']/val_del)/p['k'])
+    
     } else if (name == 'dual-systems-exponential') {
       
       out <- td_fn(name = name,
@@ -292,10 +402,10 @@ td_fn <- function(predefined = c('hyperbolic',
                      return(self)},
                    ED50 = 'none')
                    
-      
     }
     
   }
   
   return(out)
+
 }

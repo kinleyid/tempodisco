@@ -5,9 +5,11 @@
 \title{Predefined or custom discount function}
 \usage{
 td_fn(
-  predefined = c("hyperbolic", "exponential", "power", "inverse-q-exponential",
-    "nonlinear-time-hyperbolic", "scaled-exponential", "dual-systems-exponential",
-    "nonlinear-time-exponential", "additive-utility", "model-free", "constant"),
+  predefined = c("hyperbolic", "nonlinear-time-hyperbolic", "exponential",
+    "nonlinear-time-exponential", "absolute-stationarity", "relative-stationarity",
+    "power", "nonlinear-time-power", "arithmetic", "nonlinear-time-arithmetic",
+    "inverse-q-exponential", "scaled-exponential", "scaled-hyperbolic", "fixed-cost",
+    "dual-systems-exponential", "additive-utility", "model-free", "constant"),
   name = "unnamed",
   fn = NULL,
   par_starts = NULL,

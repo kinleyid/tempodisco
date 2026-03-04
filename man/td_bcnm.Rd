@@ -6,7 +6,7 @@
 \usage{
 td_bcnm(
   data,
-  discount_function = "all",
+  discount_function = "franck-2015",
   choice_rule = c("logistic", "probit", "power"),
   fixed_ends = FALSE,
   fit_err_rate = FALSE,
