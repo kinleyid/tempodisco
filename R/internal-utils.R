@@ -107,12 +107,13 @@ validate_td_data <- function(data, required_columns) {
         stop_flag <- TRUE
       }
       
-      if (!all(curr_col >= expected$lims[1]) || !all(curr_col <= expected$lims[2])) {
-        message(sprintf('%s is %s; should be >= %s, <= %s',
-                colname,
-                curr_col,
+      outside_lims <- curr_col < expected$lims[1] | curr_col > expected$lims[2]
+      if (any(outside_lims)) {
+        message(sprintf('%s <= %s <= %s was not true in %s cases',
                 expected$lims[1],
-                expected$lims[2]))
+                colname,
+                expected$lims[2],
+                sum(outside_lims)))
         stop_flag <- TRUE
       }
     }
