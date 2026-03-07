@@ -73,13 +73,13 @@ print(ddm)
 #> Coefficients:
 #> 
 #>           k       gamma        beta       alpha         tau 
-#> 0.009533540 0.008701496 0.574767840 3.386250993 0.960690451 
+#> 0.009533540 0.008701496 0.574767840 3.386250994 0.960690451 
 #> 
 #> "none" transform applied to drift rates.
 #> 
-#> ED50: 72.706172609032
-#> AUC: 0.0287180929952272
-#> BIC: 236.321495722607
+#> ED50: 72.7061726304536
+#> AUC: 0.0287180930036885
+#> BIC: 236.321495722544
 ```
 
 As we can see, parameters are estimated not only for the discount
@@ -154,7 +154,7 @@ ddm_sig <- td_ddm(td_bc_single_ptpt,
 print(BIC(ddm))
 #> [1] 236.3215
 print(BIC(ddm_sig))
-#> [1] 230.0988
+#> [1] 230.099
 ```
 
 Sure enough, the model with the sigmoid transform performs better per
