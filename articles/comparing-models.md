@@ -29,12 +29,12 @@ mod2 <- td_bcnm(td_bc_single_ptpt, discount_function = 'nonlinear-time-hyperboli
 k1 <- coef(mod1)['k']
 k2 <- coef(mod2)['k']
 cat(sprintf('Percentage difference in k values: %.2f%%\n', 100*abs((k1 - k2)/((k1 + k2)/2))))
-#> Percentage difference in k values: 156.91%
+#> Percentage difference in k values: 156.87%
 
 ed501 <- ED50(mod1)
 ed502 <- ED50(mod2)
 cat(sprintf('Percentage difference in ED50 values: %.2f%%\n', 100*abs(ed501 - ed502)/((ed501 + ed501)/2)))
-#> Percentage difference in ED50 values: 11.20%
+#> Percentage difference in ED50 values: 11.28%
 ```
 
 Another option is to use the model-based area under the curve (AUC) with
@@ -44,7 +44,7 @@ the `AUC` function:
 auc1 <- AUC(mod1)
 auc2 <- AUC(mod2)
 cat(sprintf('Percentage difference in AUC values: %.2f%%\n', 100*abs(auc1 - auc2)/((auc1 + auc2)/2)))
-#> Percentage difference in AUC values: 16.75%
+#> Percentage difference in AUC values: 16.66%
 ```
 
 This latter method has the advantage of being well-defined for the

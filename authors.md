@@ -7,7 +7,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/kinleyid/tempodisco/blob/main/inst/CITATION)
+[`inst/CITATION`](https://github.com/kinleyid/tempodisco/blob/v2.1.0/inst/CITATION)
 
 Kinley I, Oluwasola J, Becker S (2023). “Probabilistic models of delay
 discounting: improving plausibility and performance.” *PsyArXiv*.

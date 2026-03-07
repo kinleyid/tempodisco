@@ -92,16 +92,16 @@ print(mod)
 #> Discount function: hyp-mag-eff, with coefficients:
 #> 
 #>          m          c      gamma 
-#> 0.06467234 0.01230133 0.06721089 
+#> 0.06478745 0.01229341 0.06720696 
 #> 
 #> Config:
 #>  noise_dist: logis
 #>  gamma_scale: linear
 #>  transform: identity
 #> 
-#> ED50: 57.7394519246891
-#> AUC: 0.0658081315115585
-#> BIC: 39.8740195369945
+#> ED50: 57.7414610802828
+#> AUC: 0.0658098799067236
+#> BIC: 39.8739319350317
 ```
 
 ## Example 2: dual-systems hyperbolic
@@ -171,7 +171,7 @@ print(mod)
 #>  gamma_scale: linear
 #>  transform: identity
 #> 
-#> ED50: 57.8818909718295
-#> AUC: 0.0659320948311096
+#> ED50: 57.8818909718336
+#> AUC: 0.0659320948311124
 #> BIC: 44.1751992280079
 ```

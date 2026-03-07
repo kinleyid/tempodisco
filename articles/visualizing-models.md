@@ -97,7 +97,7 @@ plot(mod, type = 'endpoints')
 #> Thus, the curve will have different steepness for a different value of val_del.
 #> Defaulting to val_del = 198.314285714286 (mean of val_del from data used to fit model).
 #> Use the `val_del` argument to specify a custom value or use verbose = F to suppress this message.
-#> Setting del = 57.8700610123057 (ED50) to center the curve.
+#> Setting del = 57.8700610122914 (ED50) to center the curve.
 #> This can be changed using the `del` argument.
 ```
 

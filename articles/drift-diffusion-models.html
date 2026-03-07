@@ -81,7 +81,7 @@
       <h1>Drift diffusion models</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/kinleyid/tempodisco/blob/main/vignettes/drift-diffusion-models.Rmd" class="external-link"><code>vignettes/drift-diffusion-models.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/kinleyid/tempodisco/blob/v2.1.0/vignettes/drift-diffusion-models.Rmd" class="external-link"><code>vignettes/drift-diffusion-models.Rmd</code></a></small>
       <div class="d-none name"><code>drift-diffusion-models.Rmd</code></div>
     </div>
 
@@ -173,13 +173,13 @@ function.</p>
 <span><span class="co">#&gt; Coefficients:</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;           k       gamma        beta       alpha         tau </span></span>
-<span><span class="co">#&gt; 0.009533540 0.008701496 0.574767840 3.386250994 0.960690451 </span></span>
+<span><span class="co">#&gt; 0.009533540 0.008701496 0.574767840 3.386250993 0.960690451 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; "none" transform applied to drift rates.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ED50: 72.7061726304536</span></span>
-<span><span class="co">#&gt; AUC: 0.0287180930036885</span></span>
-<span><span class="co">#&gt; BIC: 236.321495722544</span></span></code></pre></div>
+<span><span class="co">#&gt; ED50: 72.706172609032</span></span>
+<span><span class="co">#&gt; AUC: 0.0287180929952272</span></span>
+<span><span class="co">#&gt; BIC: 236.321495722607</span></span></code></pre></div>
 <p>As we can see, parameters are estimated not only for the discount
 function
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>),
@@ -241,7 +241,7 @@ data:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">BIC</a></span><span class="op">(</span><span class="va">ddm</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 236.3215</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">BIC</a></span><span class="op">(</span><span class="va">ddm_sig</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 230.099</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 230.0988</span></span></code></pre></div>
 <p>Sure enough, the model with the sigmoid transform performs better per
 the Bayesian information criterion. Plotting the probability of choosing
 the immediate reward against the drift rate, we can see that many
