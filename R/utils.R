@@ -146,15 +146,13 @@ run_optimization <- function(fn, par_starts, par_lims, optim_args, silent = FALS
     )
   }
   # Manually enforce lims because of occasional precision issues
-  for (par_name in par_names) {
-    best_optimized$par[par_name] <- pmax( # Enforce lower
-      lower[par_name],
-      pmin( # Enforce upper
-        upper[par_name],
-        best_optimized$par[par_name]
-      )
+  best_optimized$par[par_names] <- pmax( # Enforce lower
+    lower[par_names],
+    pmin( # Enforce upper
+      upper[par_names],
+      best_optimized$par[par_names]
     )
-  }
+  )
   return(best_optimized)
 }
 
