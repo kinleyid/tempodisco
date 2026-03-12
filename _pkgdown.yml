@@ -84,6 +84,7 @@ reference:
   - starts_with("residuals")
 
 - title: Visualization
+  contents:
   - plot.td_um
   - plot_choices
   
