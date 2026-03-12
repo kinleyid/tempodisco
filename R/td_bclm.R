@@ -56,9 +56,11 @@ td_bclm <- function(data,
     model <- model[model != 'all']
   }
   
-  # Check data based on model(s) being fit---attention check trials are problematic
+  # Check data based on model(s) being fit---attention check trials are problematic for most
   if (any(data$val_imm == 0)) {
-    stop('Models cannot be fit with trials where val_imm is 0. Remove these trials before fitting.')
+    if (!(model %in% c('arithmetic.1', 'arithmetic.2'))) {
+      stop('Models cannot be fit with trials where val_imm is 0. Remove these trials before fitting.')
+    }
   }
   if (any(data$val_imm == data$val_del)) {
     if (any(model %in% c('hyperbolic.1',
@@ -72,10 +74,12 @@ td_bclm <- function(data,
   best_mod <- NULL
   best_mod_name <- NULL
   for (curr_mod_name in model) {
-    data <- add_beta_terms(data, model = curr_mod_name)
-    beta_terms <- names(data)[grep('\\.B', names(data))]
+    # Add beta values to regress on
+    data_with_betas <- add_beta_terms(data, model = curr_mod_name)
+    cols <- names(data_with_betas)
+    beta_terms <- cols[grep('\\.B', cols)]
     fml <- sprintf('imm_chosen ~ %s', paste(c(beta_terms, '0'), collapse = ' + '))
-    curr_mod <- glm(formula = fml, data = data, family = binomial(link = 'logit'), ...)
+    curr_mod <- glm(formula = fml, data = data_with_betas, family = binomial(link = 'logit'), ...)
     curr_crit <- BIC(curr_mod)
     if (curr_crit < best_crit) {
       best_crit <- curr_crit

@@ -8,6 +8,7 @@ models <- eval(formals(td_bclm)$model)
 
 model_idx <- 1
 while (model_idx <= length(models)) {
+  print(models[model_idx])
   
   mod <- td_bclm(df, model = models[model_idx])
   model_idx <- model_idx + 1
