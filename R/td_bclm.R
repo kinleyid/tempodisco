@@ -76,10 +76,14 @@ td_bclm <- function(data,
   for (curr_mod_name in model) {
     # Add beta values to regress on
     data_with_betas <- add_beta_terms(data, model = curr_mod_name)
+    # Find names of beta terms
     cols <- names(data_with_betas)
     beta_terms <- cols[grep('\\.B', cols)]
+    # Create formula (always without the implicit intercept)
     fml <- sprintf('imm_chosen ~ %s', paste(c(beta_terms, '0'), collapse = ' + '))
+    # Fit model
     curr_mod <- glm(formula = fml, data = data_with_betas, family = binomial(link = 'logit'), ...)
+    # Evaluate
     curr_crit <- BIC(curr_mod)
     if (curr_crit < best_crit) {
       best_crit <- curr_crit
