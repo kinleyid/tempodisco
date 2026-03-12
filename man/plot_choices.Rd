@@ -22,6 +22,6 @@ Create a plot that displays binary choices at each delay
 \examples{
 \donttest{
 data('td_bc_single_ptpt')
-plot_choice(td_bc_single_ptpt)
+plot_choices(td_bc_single_ptpt)
 }
 }

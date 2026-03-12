@@ -33,7 +33,8 @@ td_bclm <- function(data,
                               'nonlinear-time-hyperbolic',
                               'power',
                               'nonlinear-time-exponential',
-                              'arithmetic'),
+                              'arithmetic.1',
+                              'arithmetic.2'),
                               # 'itch',
                               # 'naive'),
                     ...) {
@@ -180,9 +181,12 @@ add_beta_terms <- function(data, model) {
   } else if (model == 'power') {
     data$.B1 <- log(data$val_imm / data$val_del)
     data$.B2 <- log(1 + data$del)
-  } else if (model == 'arithmetic') {
+  } else if (model == 'arithmetic.1') {
     data$.B1 <- data$val_imm - data$val_del
     data$.B2 <- data$del
+  } else if (model == 'arithmetic.2') {
+    data$.B1 <- log(data$del) - log(data$val_del - data$val_imm)
+    data$.B2 <- 1
   }
   # } else if (model == 'itch') {
   #   data$.B_I <- 1
