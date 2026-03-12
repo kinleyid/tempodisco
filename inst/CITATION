@@ -1,9 +1,8 @@
-@article{kinley2025tempodisco,
-  title={tempodisco: an R package for temporal discounting},
-  author={Kinley, Isaac},
-  journal={Journal of Open Source Software},
-  volume={10},
-  number={108},
-  pages={7472},
-  year={2025}
-}
+bibentry(
+  bibtype="Article",
+  title="tempodisco: an R package for temporal discounting",
+  author="Isaac Kinley",
+  year="2025",
+  journal="Journal of Open Source Software",
+  doi="10.21105/joss.07472"
+)

@@ -1,5 +1,5 @@
 | Name | Functional form | Notes |
-|------------------------|------------------------|------------------------|
+|----|----|----|
 | `exponential` ([Samuelson, 1937](https://doi.org/10.2307/2967612)) | $f(t; k) = e^{-k t}$ |  |
 | `hyperbolic` ([Mazur, 1987](https://doi.org/10.4324/9781315825502)) | $f(t; k) = \frac{1}{1 + kt}$ |  |
 | `scaled-exponential` ([Laibson, 1997](https://doi.org/10.1162/003355397555253)) | $f(t; k, w) = w e^{-k t}$ | Also known as quasi-hyperbolic or beta-delta and written as $f(t; \beta, \delta) = \beta e^{-\delta t}$ |

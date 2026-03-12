@@ -32,7 +32,8 @@ td_bclm <- function(data,
                               'scaled-exponential',
                               'nonlinear-time-hyperbolic',
                               'power',
-                              'nonlinear-time-exponential'),
+                              'nonlinear-time-exponential',
+                              'arithmetic'),
                               # 'itch',
                               # 'naive'),
                     ...) {
@@ -179,6 +180,9 @@ add_beta_terms <- function(data, model) {
   } else if (model == 'power') {
     data$.B1 <- log(data$val_imm / data$val_del)
     data$.B2 <- log(1 + data$del)
+  } else if (model == 'arithmetic') {
+    data$.B1 <- data$val_imm - data$val_del
+    data$.B2 <- data$del
   }
   # } else if (model == 'itch') {
   #   data$.B_I <- 1

@@ -424,7 +424,7 @@ get_available_discount_functions <- function() eval(formals(td_fn)$predefined)
 #' @examples
 #' \donttest{
 #' data('td_bc_single_ptpt')
-#' plot_choice(td_bc_single_ptpt)
+#' plot_choices(td_bc_single_ptpt)
 #' }
 #' @export
 plot_choices <- function(data, legend = TRUE, ...) {
