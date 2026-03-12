@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tempodisco</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -180,7 +180,7 @@ coefficients:</p>
 <span><span class="co">#&gt;          k </span></span>
 <span><span class="co">#&gt; 0.04372626 </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Call:  glm(formula = fml, family = binomial(link = "logit"), data = data)</span></span>
+<span><span class="co">#&gt; Call:  glm(formula = fml, family = binomial(link = "logit"), data = data_with_betas)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Coefficients:</span></span>
 <span><span class="co">#&gt;     .B1      .B2  </span></span>
@@ -256,6 +256,24 @@ Becker, 2025</a>.):</p>
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mfrac><msub><mi>β</mi><mn>2</mn></msub><msub><mi>β</mi><mn>1</mn></msub></mfrac></mrow><annotation encoding="application/x-tex">k = \frac{\beta_2}{\beta_1}</annotation></semantics></math></td>
 </tr>
 <tr class="even">
+<td><code>arithmetic.1</code></td>
+<td>Arithmetic (<a href="https://dx.doi.org/10.2139/ssrn.1609594" class="external-link">Doyle
+&amp; Chen,
+2010</a>):<br><br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>k</mi><mfrac><mi>t</mi><msub><mi>v</mi><mi>D</mi></msub></mfrac></mrow><annotation encoding="application/x-tex">1 - k\frac{t}{v_D}</annotation></semantics></math>
+</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>β</mi><mn>1</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>v</mi><mi>I</mi></msub><mo>−</mo><msub><mi>v</mi><mi>D</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><msub><mi>β</mi><mn>2</mn></msub><mi>t</mi></mrow><annotation encoding="application/x-tex">\beta_1\left(v_I - v_D\right) + \beta_2 t</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mfrac><msub><mi>β</mi><mn>2</mn></msub><msub><mi>β</mi><mn>1</mn></msub></mfrac></mrow><annotation encoding="application/x-tex">k = \frac{\beta_2}{\beta_1}</annotation></semantics></math></td>
+</tr>
+<tr class="odd">
+<td><code>arithmetic.2</code></td>
+<td>Arithmetic (<a href="https://dx.doi.org/10.2139/ssrn.1609594" class="external-link">Doyle
+&amp; Chen,
+2010</a>):<br><br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>k</mi><mfrac><mi>t</mi><msub><mi>v</mi><mi>D</mi></msub></mfrac></mrow><annotation encoding="application/x-tex">1 - k\frac{t}{v_D}</annotation></semantics></math>
+</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>β</mi><mn>1</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo>log</mo><mi>t</mi><mo>−</mo><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>v</mi><mi>D</mi></msub><mo>−</mo><msub><mi>v</mi><mi>I</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><msub><mi>β</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">\beta_1\left(\log t - \log\left(v_D - v_I\right)\right) + \beta_2</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><msup><mi>e</mi><mfrac><msub><mi>β</mi><mn>2</mn></msub><msub><mi>β</mi><mn>1</mn></msub></mfrac></msup></mrow><annotation encoding="application/x-tex">k = e^\frac{\beta_2}{\beta_1}</annotation></semantics></math></td>
+</tr>
+<tr class="even">
 <td><code>scaled-exponential</code></td>
 <td>Scaled exponential (beta-delta; <a href="https://doi.org/10.1162/003355397555253" class="external-link">Laibson,
 1997</a>):<br><br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><msup><mi>e</mi><mrow><mo>−</mo><mi>k</mi><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">w e^{-kt}</annotation></semantics></math>
@@ -303,24 +321,25 @@ Bayesian Information Criterion as follows:</p>
 <span><span class="co">#&gt; Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span>
 <span><span class="co">#&gt; Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span>
 <span><span class="co">#&gt; Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span>
+<span><span class="co">#&gt; Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Temporal discounting binary choice linear model</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Discount function: exponential from model exponential.2, with coefficients:</span></span>
+<span><span class="co">#&gt; Discount function: arithmetic from model arithmetic.2, with coefficients:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;          k </span></span>
-<span><span class="co">#&gt; 0.01003216 </span></span>
+<span><span class="co">#&gt;        k </span></span>
+<span><span class="co">#&gt; 1.287432 </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Call:  glm(formula = fml, family = binomial(link = "logit"), data = data)</span></span>
+<span><span class="co">#&gt; Call:  glm(formula = fml, family = binomial(link = "logit"), data = data_with_betas)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Coefficients:</span></span>
-<span><span class="co">#&gt;     .B1      .B2  </span></span>
-<span><span class="co">#&gt;   3.597  -16.553  </span></span>
+<span><span class="co">#&gt;    .B1     .B2  </span></span>
+<span><span class="co">#&gt; 3.9532  0.9988  </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Degrees of Freedom: 70 Total (i.e. Null);  68 Residual</span></span>
 <span><span class="co">#&gt; Null Deviance:       97.04 </span></span>
-<span><span class="co">#&gt; Residual Deviance: 15.7  AIC: 19.7</span></span></code></pre></div>
+<span><span class="co">#&gt; Residual Deviance: 12.81     AIC: 16.81</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="nonlinear-models">Nonlinear models<a class="anchor" aria-label="anchor" href="#nonlinear-models"></a>

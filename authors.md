@@ -9,14 +9,14 @@
 Source:
 [`inst/CITATION`](https://github.com/kinleyid/tempodisco/blob/main/inst/CITATION)
 
-Kinley I, Oluwasola J, Becker S (2023). “Probabilistic models of delay
-discounting: improving plausibility and performance.” *PsyArXiv*.
-[doi:10.31234/osf.io/y2fdh](https://doi.org/10.31234/osf.io/y2fdh).
+Kinley I (2025). “tempodisco: an R package for temporal discounting.”
+*Journal of Open Source Software*.
+[doi:10.21105/joss.07472](https://doi.org/10.21105/joss.07472).
 
     @Article{,
-      title = {Probabilistic models of delay discounting: improving plausibility and performance},
-      author = {Isaac Kinley and Joseph Oluwasola and Suzanna Becker},
-      year = {2023},
-      journal = {PsyArXiv},
-      doi = {10.31234/osf.io/y2fdh},
+      title = {tempodisco: an R package for temporal discounting},
+      author = {Isaac Kinley},
+      year = {2025},
+      journal = {Journal of Open Source Software},
+      doi = {10.21105/joss.07472},
     }

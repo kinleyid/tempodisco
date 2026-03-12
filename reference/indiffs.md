@@ -1,7 +1,7 @@
 # Get model-free indifference points
 
-Convert a temporal discounting model with the "model-free" discount
-function to a dataframe of indifference points.
+Create a dataframe of delays and the corresponding indifference points
+predicted by a model.
 
 ## Usage
 
@@ -17,8 +17,7 @@ indiffs(mod)
   [`td_bcnm`](https://kinleyid.github.io/tempodisco/reference/td_bcnm.md),
   [`td_ipm`](https://kinleyid.github.io/tempodisco/reference/td_ipm.md),
   or
-  [`td_ddm`](https://kinleyid.github.io/tempodisco/reference/td_ddm.md)
-  for which the "model-free" discount function has been fit.
+  [`td_ddm`](https://kinleyid.github.io/tempodisco/reference/td_ddm.md).
 
 ## Value
 

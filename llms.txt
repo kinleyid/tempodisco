@@ -166,8 +166,6 @@ contributions.
 
 ## Methods
 
-- [`plot(`*`<td_um>`*`)`](https://kinleyid.github.io/tempodisco/reference/plot.td_um.md)
-  : Plot models
 - [`coef(`*`<td_bclm>`*`)`](https://kinleyid.github.io/tempodisco/reference/coef.td_bclm.md)
   : Extract model coefficients
 - [`coef(`*`<td_bcnm>`*`)`](https://kinleyid.github.io/tempodisco/reference/coef.td_bcnm.md)
@@ -204,6 +202,13 @@ contributions.
   : Residuals from temporal discounting model
 - [`residuals(`*`<td_ipm>`*`)`](https://kinleyid.github.io/tempodisco/reference/residuals.td_ipm.md)
   : Residuals from temporal discounting model
+
+## Visualization
+
+- [`plot(`*`<td_um>`*`)`](https://kinleyid.github.io/tempodisco/reference/plot.td_um.md)
+  : Plot models
+- [`plot_choices()`](https://kinleyid.github.io/tempodisco/reference/plot_choices.md)
+  : Plot choices
 
 ## Datasets
 

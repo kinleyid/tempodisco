@@ -98,7 +98,7 @@ print(mod)
 #>          k 
 #> 0.04372626 
 #> 
-#> Call:  glm(formula = fml, family = binomial(link = "logit"), data = data)
+#> Call:  glm(formula = fml, family = binomial(link = "logit"), data = data_with_betas)
 #> 
 #> Coefficients:
 #>     .B1      .B2  
@@ -132,24 +132,25 @@ mod <- td_bclm(td_bc_single_ptpt, model = 'all')
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+#> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 print(mod)
 #> 
 #> Temporal discounting binary choice linear model
 #> 
-#> Discount function: exponential from model exponential.2, with coefficients:
+#> Discount function: arithmetic from model arithmetic.2, with coefficients:
 #> 
-#>          k 
-#> 0.01003216 
+#>        k 
+#> 1.287432 
 #> 
-#> Call:  glm(formula = fml, family = binomial(link = "logit"), data = data)
+#> Call:  glm(formula = fml, family = binomial(link = "logit"), data = data_with_betas)
 #> 
 #> Coefficients:
-#>     .B1      .B2  
-#>   3.597  -16.553  
+#>    .B1     .B2  
+#> 3.9532  0.9988  
 #> 
 #> Degrees of Freedom: 70 Total (i.e. Null);  68 Residual
 #> Null Deviance:       97.04 
-#> Residual Deviance: 15.7  AIC: 19.7
+#> Residual Deviance: 12.81     AIC: 16.81
 ```
 
 ### Nonlinear models
