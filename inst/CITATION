@@ -1,8 +1,9 @@
-bibentry(
-  bibtype="Article",
-  title="Probabilistic models of delay discounting: improving plausibility and performance",
-  author="Isaac Kinley, Joseph Oluwasola, Suzanna Becker",
-  year="2023",
-  journal="PsyArXiv",
-  doi="10.31234/osf.io/y2fdh"
-)
+@article{kinley2025tempodisco,
+  title={tempodisco: an R package for temporal discounting},
+  author={Kinley, Isaac},
+  journal={Journal of Open Source Software},
+  volume={10},
+  number={108},
+  pages={7472},
+  year={2025}
+}

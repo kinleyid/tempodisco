@@ -7,13 +7,13 @@
 indiffs(mod)
 }
 \arguments{
-\item{mod}{A model of class \code{\link{td_bcnm}}, \code{\link{td_ipm}}, or \code{\link{td_ddm}} for which the "model-free" discount function has been fit.}
+\item{mod}{A model of class \code{\link{td_bcnm}}, \code{\link{td_ipm}}, or \code{\link{td_ddm}}.}
 }
 \value{
 A dataframe with columns \code{del} (delay) and \code{indiff} (indifference point).
 }
 \description{
-Convert a temporal discounting model with the "model-free" discount function to a dataframe of indifference points.
+Create a dataframe of delays and the corresponding indifference points predicted by a model.
 }
 \examples{
 \donttest{

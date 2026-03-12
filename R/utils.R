@@ -386,8 +386,8 @@ delwise_consistencies <- function(data) {
 
 #' Get model-free indifference points
 #' 
-#' Convert a temporal discounting model with the "model-free" discount function to a dataframe of indifference points.
-#' @param mod A model of class \code{\link{td_bcnm}}, \code{\link{td_ipm}}, or \code{\link{td_ddm}} for which the "model-free" discount function has been fit.
+#' Create a dataframe of delays and the corresponding indifference points predicted by a model.
+#' @param mod A model of class \code{\link{td_bcnm}}, \code{\link{td_ipm}}, or \code{\link{td_ddm}}.
 #' @returns A dataframe with columns \code{del} (delay) and \code{indiff} (indifference point).
 #' @examples
 #' \donttest{
@@ -398,7 +398,6 @@ delwise_consistencies <- function(data) {
 #' @export
 indiffs <- function(mod) {
   stopifnot(inherits(mod, 'td_um'))
-  stopifnot(discount_function(mod) == 'model-free')
   out <- data.frame(del = sort(unique(mod$data$del)))
   out$indiff <- predict(mod, type = 'indiff', newdata = out)
   return(out)
@@ -414,3 +413,50 @@ indiffs <- function(mod) {
 #' }
 #' @export
 get_available_discount_functions <- function() eval(formals(td_fn)$predefined)
+
+#' Plot choices
+#' 
+#' Create a plot that displays binary choices at each delay
+#' @param data A data frame with columns \code{val_imm} and \code{val_del} for the values of the immediate and delayed rewards, \code{del} for the delay, and \code{imm_chosen} (Boolean) for whether the immediate reward was chosen.
+#' @param legend Logical: display a legend?
+#' @param ... Additional arguments to \code{plot()}.
+#' @return No return value (called to produce a plot)
+#' @examples
+#' \donttest{
+#' data('td_bc_single_ptpt')
+#' plot_choice(td_bc_single_ptpt)
+#' }
+#' @export
+plot_choices <- function(data, legend = TRUE, ...) {
+  # Ensure binary choice data
+  validate_td_data(data, required_columns = c('val_imm',
+                                              'val_del',
+                                              'del',
+                                              'imm_chosen'))
+  
+  # Set up axes
+  max_del <- max(data$del)
+  min_del <- min(data$del)
+  plot(NA, NA,
+       xlim = c(min_del, max_del), ylim = c(0, 1),
+       xlab = 'Delay',
+       ylab = 'val_imm / val_del',
+       ...)
+  
+  # Plot binary choices, immediate in red, delayed in blue
+  data$rel_val <- data$val_imm / data$val_del
+  points(rel_val ~ del, col = "#F8766D",
+         data = data[data$imm_chosen, ])
+  points(rel_val ~ del, col = "#00BFC4",
+         data = data[!data$imm_chosen, ])
+  if (legend) {
+    legend("topright",
+           inset = 0.02,
+           title = 'Choices',
+           legend = c("Imm.", "Del."),
+           col = c("#F8766D", "#00BFC4"),
+           pch = 1,
+           box.lty = 0, # No border
+           bg = rgb(1, 1, 1, 0.5)) # Background color with transparency
+  }
+}

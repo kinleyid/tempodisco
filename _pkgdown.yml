@@ -76,13 +76,16 @@ reference:
   
 - title: Methods
   contents:
-  - plot.td_um
   - starts_with("coef")
   - starts_with("deviance")
   - starts_with("fitted")
   - starts_with("logLik")
   - starts_with("predict")
   - starts_with("residuals")
+
+- title: Visualization
+  - plot.td_um
+  - plot_choices
   
 - title: Datasets
   contents:

@@ -54,6 +54,18 @@ td_bclm <- function(data,
     model <- model[model != 'all']
   }
   
+  # Check data based on model(s) being fit---attention check trials are problematic
+  if (any(data$val_imm == 0)) {
+    stop('Models cannot be fit with trials where val_imm is 0. Remove these trials before fitting.')
+  }
+  if (any(data$val_imm == data$val_del)) {
+    if (any(model %in% c('hyperbolic.1',
+                        'exponential.2',
+                        'nonlinear-time-exponential'))) {
+      stop('Models cannot be fit with trials where val_imm and val_del are equal. Remove these trials before fitting.')
+    }
+  }
+  
   best_crit <- Inf
   best_mod <- NULL
   best_mod_name <- NULL
