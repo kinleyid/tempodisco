@@ -32,11 +32,10 @@ using drift diffusion models ([Peters & D’Esposito,
 
 ## Installation
 
-You can install `tempodisco` from GitHub with:
+You can install `tempodisco` from CRAN with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("kinleyid/tempodisco")
+install.packages('tempodisco')
 ```
 
 ## Getting started
